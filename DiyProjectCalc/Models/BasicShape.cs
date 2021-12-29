@@ -41,7 +41,7 @@ public class BasicShape
         this.Name = name;
     }
 
-    public int Area
+    public int Area //TODO: make this a double
     {
         get => ShapeType switch
         {
@@ -52,8 +52,24 @@ public class BasicShape
         };
     }
 
+    [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
+    public double Distance
+    {
+        get => ShapeType switch
+        {
+            BasicShapeType.Rectangle => StraightLineDistance(Number1),
+            BasicShapeType.Triangle => AngleDistance(Number1, Number2),
+            BasicShapeType.Curved => CurveDistance(Number1, Number2),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
     //============     Helper methods     =========================================================
     private static int RectangleArea(int side1, int side2) => side1 * side2;
     private static int TriangleArea(int side1, int side2) => side1 * side2 / 2;
     private static int CurvedArea(int radius, int degrees) => (int)( (radius * radius * Math.PI) * (degrees / 360.0) );
+
+    private static double StraightLineDistance(int distance) => (double)distance;
+    private static double AngleDistance(int side1, int side2) => Math.Sqrt( (side1 * side1) + (side2 * side2) );
+    private static double CurveDistance(int radius, int degrees) => (2 * radius * Math.PI) * (degrees / 360.0);
 }
