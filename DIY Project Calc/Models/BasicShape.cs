@@ -14,7 +14,7 @@ public enum BasicShapeType
 public class BasicShape 
 {
     
-    public int BasicShapeId { get; set; } //TODO: use private set for ID field
+    public int BasicShapeId { get; private set; } 
 
     [Display(Name = "Type of Shape")]
     [EnumDataType(typeof(BasicShapeType))]
