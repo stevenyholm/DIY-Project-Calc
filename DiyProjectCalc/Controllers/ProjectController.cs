@@ -1,6 +1,7 @@
 ﻿using DiyProjectCalc.Data;
 using DiyProjectCalc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Controllers;
 public class ProjectController : Controller
@@ -12,7 +13,7 @@ public class ProjectController : Controller
     }
     public IActionResult Index()
     {
-        var projects = _db.Projects.ToList();
+        var projects = _db.Projects.Include(p => p.BasicShapes).ToList();
         return View(projects);
     }
 

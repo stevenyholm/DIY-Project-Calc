@@ -21,6 +21,7 @@
     <thead>
         <tr>
             <td>Project Name</td>
+            <td>Total Area</td>
             <td></td>
         </tr>
     </thead>
@@ -29,6 +30,7 @@
         {
             <tr>
                 <td width="80%">@obj.Name</td>
+                <td>@obj.Area()</td>
                 <td >
                     <div class="w-75 btn-group" role="group">
                         <a asp-controller="Project" asp-action="Edit" asp-route-id="@obj.ProjectId"
