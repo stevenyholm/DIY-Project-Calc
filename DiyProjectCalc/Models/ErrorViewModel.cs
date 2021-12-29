@@ -1,4 +1,4 @@
-namespace DIY_Project_Calc.Models;
+namespace DiyProjectCalc.Models;
 
 public class ErrorViewModel
 {

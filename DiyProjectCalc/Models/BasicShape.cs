@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DIY_Project_Calc.Models;
+namespace DiyProjectCalc.Models;
 
 public enum BasicShapeType
 {

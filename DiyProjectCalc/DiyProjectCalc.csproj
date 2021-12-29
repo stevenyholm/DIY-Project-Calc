@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>DIY_Project_Calc</RootNamespace>
+    <RootNamespace>DiyProjectCalc</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

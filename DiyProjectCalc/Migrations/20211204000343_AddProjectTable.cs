@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DIY_Project_Calc.Migrations
+namespace DiyProjectCalc.Migrations
 {
     public partial class AddProjectTable : Migration
     {

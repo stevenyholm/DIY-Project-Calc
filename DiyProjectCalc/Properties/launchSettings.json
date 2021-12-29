@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "DIY_Project_Calc": {
+    "DiyProjectCalc": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

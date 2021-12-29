@@ -1,8 +1,8 @@
-﻿using DIY_Project_Calc.Data;
-using DIY_Project_Calc.Models;
+﻿using DiyProjectCalc.Data;
+using DiyProjectCalc.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DIY_Project_Calc.Controllers;
+namespace DiyProjectCalc.Controllers;
 public class ProjectController : Controller
 {
     private readonly ApplicationDbContext _db;
