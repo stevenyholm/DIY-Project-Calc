@@ -21,12 +21,12 @@ namespace DiyProjectCalc.Controllers
         }
 
         // GET: BasicShapes
-        public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] string projectId)
+        public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
             var applicationDbContext = _context.BasicShapes.Include(b => b.Project)
-                .Where(b => b.ProjectId == int.Parse(projectId));
+                .Where(b => b.ProjectId == projectId);
             ViewData["ProjectId"] = projectId;
-            ViewData["ProjectName"] = _context.Projects.Where(p => p.ProjectId == int.Parse(projectId)).FirstOrDefault().Name;
+            ViewData["ProjectName"] = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault().Name;
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -50,7 +50,7 @@ namespace DiyProjectCalc.Controllers
         }
 
         // GET: BasicShapes/Create
-        public IActionResult Create([FromQuery(Name = "ProjectId")] string projectId)
+        public IActionResult Create([FromQuery(Name = "ProjectId")] int projectId)
         {
             ViewData["ProjectId"] = projectId;
             return View();
