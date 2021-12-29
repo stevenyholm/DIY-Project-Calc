@@ -41,7 +41,8 @@ public class BasicShape
         this.Name = name;
     }
 
-    public int Area //TODO: make this a double
+    [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
+    public double Area 
     {
         get => ShapeType switch
         {
@@ -65,9 +66,9 @@ public class BasicShape
     }
 
     //============     Helper methods     =========================================================
-    private static int RectangleArea(int side1, int side2) => side1 * side2;
-    private static int TriangleArea(int side1, int side2) => side1 * side2 / 2;
-    private static int CurvedArea(int radius, int degrees) => (int)( (radius * radius * Math.PI) * (degrees / 360.0) );
+    private static double RectangleArea(int side1, int side2) => (double)(side1 * side2);
+    private static double TriangleArea(int side1, int side2) => side1 * side2 / 2.0;
+    private static double CurvedArea(int radius, int degrees) => (radius * radius * Math.PI) * (degrees / 360.0);
 
     private static double StraightLineDistance(int distance) => (double)distance;
     private static double AngleDistance(int side1, int side2) => Math.Sqrt( (side1 * side1) + (side2 * side2) );

@@ -13,6 +13,6 @@ public class Project
 
     public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
 
-    public int Area() => BasicShapes.Select(a => a.Area).Sum();
+    public double Area() => BasicShapes.Select(a => a.Area).Sum();
     public double Distance() => BasicShapes.Select(a => a.Distance).Sum();
 }
