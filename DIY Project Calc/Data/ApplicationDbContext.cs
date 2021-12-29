@@ -9,5 +9,6 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<Project> Projects { get; set; }
+    public DbSet<Project> Projects => Set<Project>();
+    public DbSet<BasicShape> BasicShapes => Set<BasicShape>();
 }

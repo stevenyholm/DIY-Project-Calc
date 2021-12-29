@@ -13,6 +13,11 @@
             <input asp-for="Name" class="form-control"/>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
+        <div class="text-info">
+            <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Shapes for this project</a>
+            <br />
+            <br />
+        </div>
         <button type="submit" class="btn btn-primary" style="width:150px">Edit</button>
         <a asp-controller="Project" asp-action="Index" class="btn btn-secondary" style="width:150px">
             Cancel

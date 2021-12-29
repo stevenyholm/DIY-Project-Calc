@@ -1,0 +1,54 @@
+﻿@model IEnumerable<DIY_Project_Calc.Models.BasicShape>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Shapes for Project: @ViewData["ProjectName"]</h1>
+
+<p>
+    <a asp-action="Create" asp-route-ProjectId="@ViewData["ProjectId"]">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ShapeType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Number1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Number2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- TODO: fix this error on Model property  CS8602	Dereference of a possibly null reference.	-->
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShapeType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number2)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.BasicShapeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.BasicShapeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.BasicShapeId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -2,12 +2,16 @@
 
 namespace DIY_Project_Calc.Models;
 
-public class Project
+public class Project 
 {
     [Key]
-    public int Id { get; set; }
+    public int ProjectId { get; set; }
 
     [Required]
     [Display(Name = "Project Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
+
+    public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
+
+    public int Area() => BasicShapes.Select(a => a.Area()).Sum();
 }
