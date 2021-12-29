@@ -1,8 +1,8 @@
-﻿using DIY_Project_Calc.Models;
+﻿using DiyProjectCalc.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace DIY_Project_Calc.Controllers
+namespace DiyProjectCalc.Controllers
 {
     public class HomeController : Controller
     {

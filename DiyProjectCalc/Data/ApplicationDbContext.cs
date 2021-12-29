@@ -1,7 +1,7 @@
-﻿using DIY_Project_Calc.Models;
+﻿using DiyProjectCalc.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DIY_Project_Calc.Data;
+namespace DiyProjectCalc.Data;
 
 public class ApplicationDbContext : DbContext 
 {

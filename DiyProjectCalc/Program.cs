@@ -1,6 +1,5 @@
-using DIY_Project_Calc.Data;
+using DiyProjectCalc.Data;
 using Microsoft.EntityFrameworkCore;
-//TODO: change project name to not have underscores
 
 var builder = WebApplication.CreateBuilder(args);
 

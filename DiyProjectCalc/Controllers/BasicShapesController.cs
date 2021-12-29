@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DIY_Project_Calc.Data;
-using DIY_Project_Calc.Models;
+using DiyProjectCalc.Data;
+using DiyProjectCalc.Models;
 
-namespace DIY_Project_Calc.Controllers
+namespace DiyProjectCalc.Controllers
 {
     public class BasicShapesController : Controller
     {
