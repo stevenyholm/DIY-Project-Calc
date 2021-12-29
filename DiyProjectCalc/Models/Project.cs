@@ -5,7 +5,7 @@ namespace DiyProjectCalc.Models;
 public class Project 
 {
     [Key]
-    public int ProjectId { get; private set; }
+    public int ProjectId { get; set; }
 
     [Required]
     [Display(Name = "Project Name")]
