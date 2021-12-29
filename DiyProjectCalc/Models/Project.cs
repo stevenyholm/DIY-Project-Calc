@@ -13,5 +13,5 @@ public class Project
 
     public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
 
-    public int Area() => BasicShapes.Select(a => a.Area()).Sum();
+    public int Area() => BasicShapes.Select(a => a.Area).Sum();
 }

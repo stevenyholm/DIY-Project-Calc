@@ -41,16 +41,19 @@ public class BasicShape
         this.Name = name;
     }
 
-    public int Area() => ShapeType switch
+    public int Area
     {
-        BasicShapeType.Rectangle => RectangleArea(Number1, Number2),
-        BasicShapeType.Triangle => TriangleArea(Number1, Number2),
-        BasicShapeType.Curved => CurvedArea(Number1, Number2),
-        _ => throw new ArgumentOutOfRangeException()
-    };
+        get => ShapeType switch
+        {
+            BasicShapeType.Rectangle => RectangleArea(Number1, Number2),
+            BasicShapeType.Triangle => TriangleArea(Number1, Number2),
+            BasicShapeType.Curved => CurvedArea(Number1, Number2),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
 
     //============     Helper methods     =========================================================
     private static int RectangleArea(int side1, int side2) => side1 * side2;
     private static int TriangleArea(int side1, int side2) => side1 * side2 / 2;
-    private static int CurvedArea(int radius, int degrees) => (int)( (radius * radius * Math.PI) / (degrees / 360) );
+    private static int CurvedArea(int radius, int degrees) => (int)( (radius * radius * Math.PI) * (degrees / 360.0) );
 }
