@@ -78,7 +78,7 @@ public class ProjectController : Controller //TODO: rename the controller to be 
         {
             ModelState.AddModelError("Name", "Name cannot be 42. That number is reserved.");
         }
-        if (ModelState.IsValid) //TODO: fix bug were ProjectId is not getting binding correctly
+        if (ModelState.IsValid) 
         {
             _db.Projects.Update(obj);
             _db.SaveChanges();
