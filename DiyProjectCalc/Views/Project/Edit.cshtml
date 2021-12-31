@@ -14,6 +14,9 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="text-info">
+            <a asp-controller="Materials" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Materials for this project</a>
+            <br />
+            <br />
             <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Shapes for this project</a>
             <br />
             <br />

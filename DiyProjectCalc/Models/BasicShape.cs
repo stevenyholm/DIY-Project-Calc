@@ -20,28 +20,25 @@ public class BasicShape
     [EnumDataType(typeof(BasicShapeType))]
     public BasicShapeType ShapeType { get; set; }
 
+    public string? Name { get; set; }
+
+    //navigation properties 
+    [ForeignKey("Project")] //TODO: move data annotation to the context class, make this a pure domain model object
+    public int ProjectId { get; set; }
+    [ValidateNever]
+    public virtual Project Project { get; set; } = null!;
+
+    public virtual ICollection<Material> Materials { get; set; } = new HashSet<Material>();
+
+    //size of shape 
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     [Display(Name = "Side 1 / radius")]
     public double Number1 { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     [Display(Name = "Side 2 / degrees")] //TODO: move view annotations to a ViewModel, make this a pure domain model object
-    public double Number2 { get; set; }
+    public double Number2 { get; set; } //TODO: handle case for a straight line that only needs one number
 
-    public string? Name { get; set; }
-
-    [ForeignKey("Project")] //TODO: move data annotation to the context class, make this a pure domain model object
-    public int ProjectId { get; set; }
-    [ValidateNever]
-    public virtual Project Project { get; set; } = null!;
-
-    public void Edit(BasicShapeType shapeType, double number1, double number2, string name)
-    {
-        this.ShapeType = shapeType;
-        this.Number1 = number1;
-        this.Number2 = number2;
-        this.Name = name;
-    }
 
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     public double Area 

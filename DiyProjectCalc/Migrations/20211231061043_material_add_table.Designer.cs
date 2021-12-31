@@ -4,6 +4,7 @@ using DiyProjectCalc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DiyProjectCalc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211231061043_material_add_table")]
+    partial class material_add_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace DiyProjectCalc.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("BasicShapes", (string)null);
+                    b.ToTable("BasicShapes");
                 });
 
             modelBuilder.Entity("DiyProjectCalc.Models.Material", b =>
@@ -99,7 +101,7 @@ namespace DiyProjectCalc.Migrations
 
                     b.HasKey("ProjectId");
 
-                    b.ToTable("Projects", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("MaterialBasicShape", b =>
@@ -114,7 +116,7 @@ namespace DiyProjectCalc.Migrations
 
                     b.HasIndex("MaterialId");
 
-                    b.ToTable("MaterialBasicShape", (string)null);
+                    b.ToTable("MaterialBasicShape");
                 });
 
             modelBuilder.Entity("DiyProjectCalc.Models.BasicShape", b =>

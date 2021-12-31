@@ -4,17 +4,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Controllers;
-public class ProjectController : Controller
+public class ProjectController : Controller //TODO: rename the controller to be "ProjectsController", and fix all asp-controller="Project"
 {
     private readonly ApplicationDbContext _db;
     public ProjectController(ApplicationDbContext db)
     {
         this._db = db;
     }
+    //TODO: I wrote this controller along with a tutorial - upgrade it to use practices recommended by MS scaffolded code 
     public IActionResult Index()
     {
         var projects = _db.Projects.Include(p => p.BasicShapes).ToList();
         return View(projects);
+    }
+
+    // GET: Projects/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var project = await _db.Projects.FirstOrDefaultAsync(p => p.ProjectId == id);
+        if (project == null)
+        {
+            return NotFound();
+        }
+
+        return View(project);
     }
 
     public IActionResult Create()
@@ -60,7 +78,7 @@ public class ProjectController : Controller
         {
             ModelState.AddModelError("Name", "Name cannot be 42. That number is reserved.");
         }
-        if (ModelState.IsValid)
+        if (ModelState.IsValid) //TODO: fix bug were ProjectId is not getting binding correctly
         {
             _db.Projects.Update(obj);
             _db.SaveChanges();

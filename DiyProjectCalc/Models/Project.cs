@@ -12,7 +12,6 @@ public class Project
     public string? Name { get; set; }
 
     public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
+    public virtual ICollection<Material> Materials { get; set; } = new HashSet<Material>();
 
-    public double Area() => BasicShapes.Select(a => a.Area).Sum();
-    public double Distance() => BasicShapes.Select(a => a.Distance).Sum();
 }
