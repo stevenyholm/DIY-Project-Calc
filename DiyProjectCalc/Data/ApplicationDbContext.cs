@@ -11,8 +11,12 @@ public sealed class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Material>().ToTable("Material"); //TODO: change other table names to be singular
+        //Make SQL table names be singular, while C# DbSet names are plural
+        modelBuilder.Entity<Project>().ToTable("Project");
+        modelBuilder.Entity<Material>().ToTable("Material");
+        modelBuilder.Entity<BasicShape>().ToTable("BasicShape"); 
 
+        //fixes cascade path error and naming conventions that code generator would add
         modelBuilder.Entity<Material>()
             .HasMany(p => p.BasicShapes)
             .WithMany(p => p.Materials)
