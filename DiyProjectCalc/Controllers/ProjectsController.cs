@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Controllers;
-public class ProjectController : Controller //TODO: rename the controller to be "ProjectsController", and fix all asp-controller="Project"
+public class ProjectsController : Controller
 {
     private readonly ApplicationDbContext _db;
-    public ProjectController(ApplicationDbContext db)
+    public ProjectsController(ApplicationDbContext db)
     {
         this._db = db;
     }
