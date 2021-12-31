@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Data;
 
-public class ApplicationDbContext : DbContext //TODO: add sealed keyword
+public sealed class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
