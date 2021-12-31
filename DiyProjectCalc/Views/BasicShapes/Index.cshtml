@@ -7,6 +7,9 @@
 <h1>Shapes for Project: @ViewData["ProjectName"]</h1>
 
 <p>
+    <a asp-controller="Project" asp-action="Details" asp-route-Id="@ViewData["ProjectId"]">Back to Project Details</a>
+</p>
+<p>
     <a asp-action="Create" asp-route-ProjectId="@ViewData["ProjectId"]">Create New</a>
 </p>
 <table class="table">
@@ -34,7 +37,7 @@
         </tr>
     </thead>
     <tbody>
-        <!-- TODO: fix this error on Model property  CS8602	Dereference of a possibly null reference.	-->
+        <!-- //TODO: fix this error on Model property  CS8602	Dereference of a possibly null reference.	-->
 @foreach (var item in Model) {
         <tr>
             <td>
