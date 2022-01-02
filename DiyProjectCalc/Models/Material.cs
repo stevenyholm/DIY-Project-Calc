@@ -40,9 +40,33 @@ public class Material
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     public double? Depth { get; set; }
 
+    //TODO: implement a more sophisticated quantity needed that accounts for waste 
 
-    public double Area() => BasicShapes.Select(a => a.Area).Sum();
-    public double Distance() => BasicShapes.Select(a => a.Distance).Sum();
-    public double Volume() => this.Area() * this.Depth??1;
+    public double QuantityNeeded() =>
+        (!CanCalculateQuantity()) ? 0 :
+        this.MeasurementType switch
+        {
+            MaterialMeasurement.Linear => DistanceNeeded() / MaterialDistance(),
+            MaterialMeasurement.Area => AreaNeeded() / MaterialArea(),
+            MaterialMeasurement.Volume => VolumeNeeded(),
+            _ => 0
+        };
+
+    public bool CanCalculateQuantity() => 
+        this.MeasurementType switch
+        {
+            MaterialMeasurement.Linear => IsMeasurementValid(this.Length),
+            MaterialMeasurement.Area => IsMeasurementValid(this.Length) && IsMeasurementValid(this.Width),
+            MaterialMeasurement.Volume => IsMeasurementValid(this.Depth),
+            _ => false
+        };
+
+    private bool IsMeasurementValid(double? measurement) => measurement != null && measurement.HasValue && measurement > 0;
+
+    private double MaterialDistance() => this.Length ?? 1.0;
+    private double MaterialArea() => (this.Length ?? 1) * (this.Width ?? 1);
+    public double DistanceNeeded() => this.BasicShapes.Select(a => a.Distance).Sum();
+    public double AreaNeeded() => this.BasicShapes.Select(a => a.Area).Sum();
+    public double VolumeNeeded() => this.AreaNeeded() * this.Depth??1;
 
 }

@@ -46,7 +46,12 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Depth)
         </dd>
-    </dl>
+        <dt class = "col-sm-2">
+            Quantity Needed 
+        </dt>
+        <dd class = "col-sm-10">
+            @String.Format("{0:0.0}", Model.QuantityNeeded())
+        </dd>    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.MaterialId">Edit</a> |

@@ -33,6 +33,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Depth)
             </th>
+            <th>
+                Quantity
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -56,6 +59,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Depth)
+            </td>
+            <td>
+                @String.Format("{0:0.0}", item.QuantityNeeded())
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MaterialId">Edit</a> |

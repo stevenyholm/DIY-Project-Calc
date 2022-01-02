@@ -24,7 +24,7 @@ namespace DiyProjectCalc.Controllers
         // GET: Materials
         public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
-            var applicationDbContext = _context.Materials.Include(m => m.Project)
+            var applicationDbContext = _context.Materials.Include(m => m.Project).Include(m => m.BasicShapes)
                 .Where(b => b.ProjectId == projectId);
             ViewData["ProjectId"] = projectId;
             ViewData["ProjectName"] = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault().Name;
@@ -41,6 +41,7 @@ namespace DiyProjectCalc.Controllers
 
             var material = await _context.Materials
                 .Include(m => m.Project)
+                .Include(m => m.BasicShapes)
                 .FirstOrDefaultAsync(m => m.MaterialId == id);
             if (material == null)
             {
