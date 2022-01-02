@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DiyProjectCalc.Data;
 using DiyProjectCalc.Models;
+using DiyProjectCalc.ViewModels;
 
 namespace DiyProjectCalc.Controllers
 {
@@ -50,27 +51,26 @@ namespace DiyProjectCalc.Controllers
         }
 
         // GET: Materials/Create
-        public IActionResult Create([FromQuery(Name = "ProjectId")] int projectId)
+        public async Task<IActionResult> Create([FromQuery(Name = "ProjectId")] int projectId)
         {
-            ViewData["ProjectId"] = projectId;
-            return View();
+            return View(await GetModelAsync(projectId));
         }
 
         // POST: Materials/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaterialId,MeasurementType,Name,ProjectId,Length,Width,Depth")] Material material)
+        public async Task<IActionResult> Create(MaterialEditViewModel model, int[] selectedBasicShapeIds)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(material);
+                SetBasicShapesForMaterial(model.Material, selectedBasicShapeIds);
+                _context.Add(model.Material);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index), new { ProjectId = material.ProjectId });
+                return RedirectToAction(nameof(Index), new { ProjectId = model.ProjectId });
             }
-            ViewData["ProjectId"] = material.ProjectId;
-            return View(material);
+            SetBasicShapesForMaterial(model.Material, selectedBasicShapeIds);
+            model.BasicShapesForProject = AllBasicShapesForProject(model.ProjectId);
+            return View(model);
         }
 
         // GET: Materials/Edit/5
@@ -81,22 +81,20 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials.FindAsync(id);
-            if (material == null)
+            var model = await GetModelAsync(id ?? default(int), true);
+            if (model == null)
             {
                 return NotFound();
             }
-            return View(material);
+            return View(model);
         }
 
         // POST: Materials/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaterialId,MeasurementType,Name,ProjectId,Length,Width,Depth")] Material material)
+        public async Task<IActionResult> Edit(int id, MaterialEditViewModel model, int[] selectedBasicShapeIds)
         {
-            if (id != material.MaterialId)
+            if (id != model.Material.MaterialId) 
             {
                 return NotFound();
             }
@@ -105,23 +103,40 @@ namespace DiyProjectCalc.Controllers
             {
                 try
                 {
-                    _context.Update(material);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MaterialExists(material.MaterialId))
+                    var materialToSave = _context.Materials
+                        .Include(m => m.BasicShapes)
+                        .FirstOrDefault(m => m.MaterialId == model.Material.MaterialId);
+
+                    if (materialToSave is not null) //TODO: change "== null" to "is null" across the project
                     {
-                        return NotFound();
+                        _context.Entry(materialToSave).CurrentValues.SetValues(model.Material);
+                        SetBasicShapesForMaterial(materialToSave, selectedBasicShapeIds);
+                        _context.Update(materialToSave);
+                        await _context.SaveChangesAsync();
                     }
                     else
                     {
-                        throw;
+                        throw new DbUpdateConcurrencyException();
                     }
                 }
-                return RedirectToAction(nameof(Index), new { ProjectId = material.ProjectId });
+                catch (DbUpdateConcurrencyException)
+                {
+                    //TODO: handle errors more gracefully than returning page NotFound or throwing an error
+                    if (!MaterialExists(model.Material.MaterialId))
+                    {
+                        return NotFound(); 
+                    }
+                    else
+                    {
+                        throw;  
+                    }
+                }
+                return RedirectToAction(nameof(Index), new { ProjectId = model.ProjectId });
             }
-            return View(material);
+
+            SetBasicShapesForMaterial(model.Material, selectedBasicShapeIds);
+            model.BasicShapesForProject = AllBasicShapesForProject(model.ProjectId);
+            return View(model);
         }
 
         // GET: Materials/Delete/5
@@ -155,9 +170,60 @@ namespace DiyProjectCalc.Controllers
             return RedirectToAction(nameof(Index), new { ProjectId = projectId });
         }
 
+        //================== Helper functions ========================================================
         private bool MaterialExists(int id)
         {
             return _context.Materials.Any(e => e.MaterialId == id);
         }
+
+        private async Task<MaterialEditViewModel> GetModelAsync(int id) => await GetModelAsync(id, false);
+        private async Task<MaterialEditViewModel> GetModelAsync(int id, bool includeMaterial)
+        {
+            var model = new MaterialEditViewModel();
+            if (includeMaterial)
+            {
+                model.Material = await _context.Materials
+                    .Include(m => m.BasicShapes)
+                    .AsNoTracking() 
+                    .FirstOrDefaultAsync(m => m.MaterialId == id);
+                if (model.Material == null)
+                    return null;
+                model.ProjectId = model.Material.ProjectId;
+            }
+            else
+            {
+                model.ProjectId = id;
+            }
+            model.BasicShapesForProject = AllBasicShapesForProject(model.ProjectId);
+            return model;
+        }
+
+        private List<BasicShape> AllBasicShapesForProject(int projectId) =>
+            _context.BasicShapes.Where(b => b.ProjectId == projectId).ToList();
+
+        private void SetBasicShapesForMaterial(Material model, int[] selectedBasicShapeIds)
+        {
+            var allBasicShapesForProject = AllBasicShapesForProject(model.ProjectId);
+
+            var basicShapesToAdd = allBasicShapesForProject
+                .Where(b => selectedBasicShapeIds.Any(s => s == b.BasicShapeId))
+                .Where(b => !model.BasicShapes.Any(m => m.BasicShapeId == b.BasicShapeId));
+            foreach(var basicShape in basicShapesToAdd)
+            {
+                model.BasicShapes.Add(basicShape);
+            }
+
+            bool isEditView = (model.MaterialId != default(int));
+            if (isEditView)
+            {
+                var basicShapesToRemove = model.BasicShapes
+                    .Where(b => !selectedBasicShapeIds.Any(s => s == b.BasicShapeId));
+                foreach (var basicShape in basicShapesToRemove)
+                {
+                    model.BasicShapes.Remove(basicShape);
+                }
+            }
+        }
+
     }
 }

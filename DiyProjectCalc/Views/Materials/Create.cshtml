@@ -1,4 +1,4 @@
-﻿@model DiyProjectCalc.Models.Material
+﻿@model DiyProjectCalc.ViewModels.MaterialEditViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,33 +12,51 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProjectId" value="@ViewData["ProjectId"]" />
+            <input type="hidden" asp-for="ProjectId" value="@Model!.ProjectId" />
             <div class="form-group">
-                <label asp-for="MeasurementType" class="control-label"></label>
-                <select asp-for="MeasurementType" class="form-control" asp-items="Html.GetEnumSelectList<MaterialMeasurement>()">
+                <label asp-for="@Model!.Material!.MeasurementType" class="control-label"></label>
+                <select asp-for="@Model!.Material!.MeasurementType" class="form-control" asp-items="Html.GetEnumSelectList<MaterialMeasurement>()">
                     <option selected="selected" value="">Please select</option>
                 </select>
-                <span asp-validation-for="MeasurementType" class="text-danger"></span>
+                <span asp-validation-for="@Model!.Material!.MeasurementType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="@Model!.Material!.Name" class="control-label"></label>
+                <input asp-for="@Model!.Material!.Name" class="form-control" />
+                <span asp-validation-for="@Model!.Material!.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Length" class="control-label"></label> (linear or area)
-                <input asp-for="Length" class="form-control" />
-                <span asp-validation-for="Length" class="text-danger"></span>
+                <label asp-for="@Model!.Material!.Length" class="control-label"></label> (linear or area)
+                <input asp-for="@Model!.Material!.Length" class="form-control" />
+                <span asp-validation-for="@Model!.Material!.Length" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Width" class="control-label"></label> (area)
-                <input asp-for="Width" class="form-control" />
-                <span asp-validation-for="Width" class="text-danger"></span>
+                <label asp-for="@Model!.Material!.Width" class="control-label"></label> (area)
+                <input asp-for="@Model!.Material!.Width" class="form-control" />
+                <span asp-validation-for="@Model!.Material!.Width" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Depth" class="control-label"></label> (volume)
-                <input asp-for="Depth" class="form-control" />
-                <span asp-validation-for="Depth" class="text-danger"></span>
+                <label asp-for="@Model!.Material!.Depth" class="control-label"></label> (volume)
+                <input asp-for="@Model!.Material!.Depth" class="form-control" />
+                <span asp-validation-for="@Model!.Material!.Depth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <br />
+                <label>Select shapes for this material:</label>
+                @foreach (var basicShape in Model!.BasicShapesData())
+                {
+                    <div style="margin-left:15px;">
+                        <input type="checkbox"
+                            name="selectedBasicShapeIds"
+                            value="@basicShape.BasicShapeId"
+                            @(Html.Raw(basicShape.Selected ? "checked=\"checked\"" : "")) />
+                        @basicShape.Description
+                    </div>
+                }
+                <p>
+                    <a asp-controller="BasicShapes" asp-action="Index" 
+                    asp-route-ProjectId="@Model!.ProjectId" >Edit list of shapes for this project</a>
+                </p>  
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -48,7 +66,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-ProjectId="@ViewData["ProjectId"]">Back to List</a>
+    <a asp-action="Index" asp-route-ProjectId="@Model!.ProjectId">Back to List</a>
 </div>
 
 @section Scripts {

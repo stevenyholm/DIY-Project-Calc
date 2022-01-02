@@ -39,6 +39,8 @@ public class BasicShape
     [Display(Name = "Side 2 / degrees")] //TODO: move view annotations to a ViewModel, make this a pure domain model object
     public double Number2 { get; set; } //TODO: handle case for a straight line that only needs one number
 
+    public string Description { get => $"{Name}, {ShapeType} ({Number1}, {Number2})"; }
+
 
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     public double Area 
