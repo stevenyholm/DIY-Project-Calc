@@ -40,6 +40,10 @@ public class Material
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     public double? Depth { get; set; }
 
+    [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
+    public double? DepthNeeded { get; set; } //TODO: this needs a migration -- but perform migration at end of writing tests
+
+    //TODO: separate commit: move TODO notes about features to Jira (and out of code)
     //TODO: implement a more sophisticated quantity needed that accounts for waste 
 
     public double QuantityNeeded() =>
@@ -48,7 +52,7 @@ public class Material
         {
             MaterialMeasurement.Linear => DistanceNeeded() / MaterialDistance(),
             MaterialMeasurement.Area => AreaNeeded() / MaterialArea(),
-            MaterialMeasurement.Volume => VolumeNeeded(),
+            MaterialMeasurement.Volume => VolumeNeeded() / MaterialVolume(),
             _ => 0
         };
 
@@ -65,8 +69,9 @@ public class Material
 
     private double MaterialDistance() => this.Length ?? 1.0;
     private double MaterialArea() => (this.Length ?? 1) * (this.Width ?? 1);
+    private double MaterialVolume() => (this.Length ?? 1) * (this.Width ?? 1) * (this.Depth ?? 1);
     public double DistanceNeeded() => this.BasicShapes.Select(a => a.Distance).Sum();
     public double AreaNeeded() => this.BasicShapes.Select(a => a.Area).Sum();
-    public double VolumeNeeded() => this.AreaNeeded() * this.Depth??1;
+    public double VolumeNeeded() => this.AreaNeeded() * this.DepthNeeded??1;
 
 }

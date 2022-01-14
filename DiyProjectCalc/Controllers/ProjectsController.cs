@@ -52,7 +52,8 @@ public class ProjectsController : Controller
         {
             _db.Projects.Add(obj);
             _db.SaveChanges();
-            TempData["success"] = "Project created successfully.";
+            //TODO: TempData didn't work with unit tests
+ //           TempData["success"] = "Project created successfully.";
             return RedirectToAction("Index");
         }
         return View(obj);
@@ -82,7 +83,7 @@ public class ProjectsController : Controller
         {
             _db.Projects.Update(obj);
             _db.SaveChanges();
-            TempData["success"] = "Project updated successfully.";
+   //         TempData["success"] = "Project updated successfully.";
             return RedirectToAction("Index");
         }
         return View(obj);
@@ -114,7 +115,7 @@ public class ProjectsController : Controller
 
         _db.Projects.Remove(projectFromDb);
         _db.SaveChanges();
-        TempData["success"] = "Project deleted successfully.";
+  //      TempData["success"] = "Project deleted successfully.";
         return RedirectToAction("Index");
         
         //return View(obj);

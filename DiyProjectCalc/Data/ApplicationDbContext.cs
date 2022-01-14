@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Data;
 
-public sealed class ApplicationDbContext : DbContext
+//TODO: manual integration test: does this still wotk after changes: remove sealed from class, add empty constructor, make dbset be virtual
+public class ApplicationDbContext : DbContext
 {
+    public ApplicationDbContext() { } //required for unit testing with Moq
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
@@ -36,7 +38,7 @@ public sealed class ApplicationDbContext : DbContext
                     .OnDelete(DeleteBehavior.NoAction));
     }
 
-    public DbSet<Project> Projects => Set<Project>();
-    public DbSet<Material> Materials => Set<Material>();
-    public DbSet<BasicShape> BasicShapes => Set<BasicShape>();
+    public virtual DbSet<Project> Projects => Set<Project>();
+    public virtual DbSet<Material> Materials => Set<Material>();
+    public virtual DbSet<BasicShape> BasicShapes => Set<BasicShape>();
 }

@@ -23,11 +23,12 @@ namespace DiyProjectCalc.Controllers
         // GET: BasicShapes
         public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
-            var applicationDbContext = _context.BasicShapes.Include(b => b.Project)
+            var basicShapes = _context.BasicShapes.Include(b => b.Project)
                 .Where(b => b.ProjectId == projectId);
             ViewData["ProjectId"] = projectId;
-            ViewData["ProjectName"] = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault().Name;
-            return View(await applicationDbContext.ToListAsync());
+            var project = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault();
+            ViewData["ProjectName"] = (project is not null) ? project.Name : default(string);
+            return View(await basicShapes.ToListAsync());
         }
 
         // GET: BasicShapes/Details/5

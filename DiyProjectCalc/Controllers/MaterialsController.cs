@@ -27,7 +27,8 @@ namespace DiyProjectCalc.Controllers
             var applicationDbContext = _context.Materials.Include(m => m.Project).Include(m => m.BasicShapes)
                 .Where(b => b.ProjectId == projectId);
             ViewData["ProjectId"] = projectId;
-            ViewData["ProjectName"] = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault().Name;
+            var project = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault();
+            ViewData["ProjectName"] = (project is not null) ? project.Name : default(string);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -218,7 +219,7 @@ namespace DiyProjectCalc.Controllers
             if (isEditView)
             {
                 var basicShapesToRemove = model.BasicShapes
-                    .Where(b => !selectedBasicShapeIds.Any(s => s == b.BasicShapeId));
+                    .Where(b => !selectedBasicShapeIds.Any(s => s == b.BasicShapeId)).ToList();
                 foreach (var basicShape in basicShapesToRemove)
                 {
                     model.BasicShapes.Remove(basicShape);
