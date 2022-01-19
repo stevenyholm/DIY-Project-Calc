@@ -31,4 +31,19 @@
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+
+	<PropertyGroup Label="FineCodeCoverage">
+		<ExcludeByFile>
+			**/Program.cs
+			**/Data/*
+			**/Migrations/*
+			**/Views/*
+			**/Views/*/*
+			**/*Tests* <!-- because one test class still appeared in the report even with IncludeTestAssembly=False -->
+		</ExcludeByFile>
+		<IncludeTestAssembly>
+			False
+		</IncludeTestAssembly>
+	</PropertyGroup>
+	
 </Project>
