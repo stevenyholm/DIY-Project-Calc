@@ -9,7 +9,8 @@ namespace DiyProjectCalc.Tests.ViewModelTests;
 public class MaterialEditViewModelTests
 {
     [Fact]
-    public void Material_ValidProjectId_ReturnsSameObject()
+    [Trait("Material.ProjectId", "")]
+    public void SameObject_Given_ValidProjectId_For_MaterialProperty()
     {
         //Arrange
         var materialEditViewModel = new MaterialEditViewModel();
@@ -30,7 +31,8 @@ public class MaterialEditViewModelTests
     }
 
     [Fact]
-    public void Material_InvalidProjectId_ReturnsCurrectProjectId()
+    [Trait("Material.ProjectId", "")]
+    public void CorrectProjectId_Given_InvalidProjectId_For_MaterialProperty()
     {
         //Arrange
         var materialEditViewModel = new MaterialEditViewModel();
@@ -52,7 +54,8 @@ public class MaterialEditViewModelTests
     }
 
     [Fact]
-    public void BasicShapesData_ValidInput_CorrectNumberSelected()
+    [Trait("BasicShapesData", "")]
+    public void CorrectNumberSelected_Given_ValidState_For_BasicShapesData()
     {
         //Arrange
         var materialEditViewModel = new MaterialEditViewModel();

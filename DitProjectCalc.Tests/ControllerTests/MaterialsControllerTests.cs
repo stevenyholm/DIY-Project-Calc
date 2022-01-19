@@ -16,7 +16,8 @@ namespace DiyProjectCalc.Tests.ControllerTests;
 public class MaterialsControllerTests : ControllerTestsBase
 {
     [Fact]
-    public async Task Index_Get_ValidProjectId_ReturnsMaterials()
+    [Trait("Index", "GET")]
+    public async Task ValidProjectId_Returns_Materials_For_Index_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -35,7 +36,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Details_Get_ValidMaterialId_ReturnsMaterial()
+    [Trait("Details", "GET")]
+    public async Task ValidMaterialId_Returns_Material_For_Details_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -52,7 +54,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async void Create_Get_ValidProjectId_ReturnsView()
+    [Trait("Create", "GET")]
+    public async Task ValidProjectId_Returns_View_For_Create_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -69,7 +72,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Create_Post_ValidMaterial_NoError()
+    [Trait("Create", "POST")]
+    public async Task ValidMaterial_Throws_NoError_For_Create_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -94,7 +98,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Edit_Get_ValidMaterialId_ReturnsMaterial()
+    [Trait("Edit", "GET")]
+    public async Task ValidMaterialId_Returns_Material_For_Edit_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -111,7 +116,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Edit_Post_ValidMaterial_NoError()
+    [Trait("Edit", "POST")]
+    public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -145,7 +151,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Delete_Get_ValidMaterialId_ReturnsMaterial()
+    [Trait("Delete", "GET")]
+    public async Task ValidMaterialId_Returns_Material_For_Delete_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -162,7 +169,8 @@ public class MaterialsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Delete_Post_ValidMaterialId_NoError()
+    [Trait("Delete", "POST")]
+    public async Task ValidMaterialId_Throws_NoError_For_Edit_Post()
     {
         using (var dbContext = base.NewDbContext())
         {

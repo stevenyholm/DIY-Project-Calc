@@ -15,7 +15,8 @@ namespace DiyProjectCalc.Tests.ControllerTests;
 public class ProjectsControllerTests : ControllerTestsBase
 {
     [Fact]
-    public void Index_Get_ReturnsAllProjects()
+    [Trait("Index", "GET")]
+    public void Returns_AllProjects_For_Index_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -31,7 +32,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Details_Get_ValidProjectId_ReturnsProject()
+    [Trait("Details", "GET")]
+    public async Task ValidProjectId_Returns_Project_For_Details_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -48,7 +50,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Create_Get_ReturnsView()
+    [Trait("Create", "GET")]
+    public void Returns_View_For_Create_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -64,7 +67,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Create_Post_ValidProject_NoError()
+    [Trait("Create", "POST")]
+    public void ValidProject_Throws_NoError_For_Create_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -81,7 +85,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Edit_Get_ValidProjectId_ReturnsProject()
+    [Trait("Edit", "GET")]
+    public void ValidProjectId_Returns_Project_For_Edit_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -98,7 +103,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Edit_Post_ValidProject_NoError()
+    [Trait("Edit", "POST")]
+    public void ValidProject_Throws_NoError_For_Edit_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -123,7 +129,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Delete_Get_ValidProjectId_ReturnsProject()
+    [Trait("Delete", "GET")]
+    public void ValidProjectId_Returns_Project_For_Delete_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -140,7 +147,8 @@ public class ProjectsControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Delete_Post_ValidProjectId_NoError() 
+    [Trait("Delete", "POST")]
+    public void ValidProjectId_Throws_NoError_For_Delete_Post()
     {
         using (var dbContext = base.NewDbContext())
         {

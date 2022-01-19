@@ -9,7 +9,8 @@ public class MaterialTests
 {
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
-    public void DistanceNeeded_ValidInput_CorrectResult(MaterialTestModel testData)
+    [Trait("DistanceNeeded", "")]
+    public void ValidInput_Returns_CorrectValue_For_DistanceNeeded(MaterialTestModel testData)
     {
         //Arrange
         var material = testData.Material;
@@ -23,7 +24,8 @@ public class MaterialTests
 
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
-    public void AreaNeeded_ValidInput_CorrectResult(MaterialTestModel testData)
+    [Trait("AreaNeeded", "")]
+    public void ValidInput_Returns_CorrectValue_For_AreaNeeded(MaterialTestModel testData)
     {
         //Arrange
         var material = testData.Material;
@@ -37,7 +39,8 @@ public class MaterialTests
 
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
-    public void VolumeNeeded_ValidInput_CorrectResult(MaterialTestModel testData)
+    [Trait("VolumeNeeded", "")]
+    public void ValidInput_Returns_CorrectValue_For_VolumeNeeded(MaterialTestModel testData)
     {
         //Arrange
         var material = testData.Material;
@@ -51,7 +54,8 @@ public class MaterialTests
 
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
-    public void QuantityNeeded_ValidInput_CorrectResult(MaterialTestModel testData)
+    [Trait("QuantityNeeded", "")]
+    public void ValidInput_Returns_CorrectValue_For_QuantityNeeded(MaterialTestModel testData)
     {
         //Arrange
         var material = testData.Material;
@@ -65,7 +69,8 @@ public class MaterialTests
 
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
-    public void CanCalculateQuantity_ValidInput_CorrectResult(MaterialTestModel testData)
+    [Trait("CanCalculateQuantity", "")]
+    public void ValidInput_Returns_CorrectValue_For_CanCalculateQuantity(MaterialTestModel testData)
     {
         //Arrange
         var material = testData.Material;

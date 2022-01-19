@@ -15,7 +15,8 @@ namespace DiyProjectCalc.Tests.ControllerTests;
 public class BasicShapesControllerTests : ControllerTestsBase
 {
     [Fact]
-    public async Task Index_Get_ValidProjectId_ReturnsBasicShapes()
+    [Trait("Index", "GET")]
+    public async Task ValidProjectId_Returns_BasicShapes_For_Index_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -34,7 +35,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Details_Get_ValidBasicShapeId_ReturnsBasicShape()
+    [Trait("Details", "GET")]
+    public async Task ValidBasicShapeId_Returns_BasicShape_For_Details_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -52,7 +54,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public void Create_Get_ValidProjectId_ReturnsView()
+    [Trait("Create", "GET")]
+    public void ValidProjectId_Returns_View_For_Create_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -70,7 +73,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Create_Post_ValidBasicShape_NoError()
+    [Trait("Create", "POST")]
+    public async Task ValidBasicShape_Throws_NoError_For_Create_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -89,7 +93,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Edit_Get_ValidBasicShapeId_ReturnsBasicShape()
+    [Trait("Edit", "GET")]
+    public async Task ValidBasicShapeId_Returns_BasicShape_For_Edit_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -106,7 +111,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Edit_Post_ValidBasicShape_NoError()
+    [Trait("Edit", "POST")]
+    public async Task ValidBasicShape_Throws_NoError_For_Edit_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -131,7 +137,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Delete_Get_ValidBasicShapeId_ReturnsBasicShape()
+    [Trait("Delete", "GET")]
+    public async Task ValidBasicShapeId_Returns_BasicShape_For_Delete_Get()
     {
         using (var dbContext = base.NewDbContext())
         {
@@ -148,7 +155,8 @@ public class BasicShapesControllerTests : ControllerTestsBase
     }
 
     [Fact]
-    public async Task Delete_Post_ValidBasicShapeId_NoError()
+    [Trait("Delete", "POST")]
+    public async Task ValidBasicShapeId_Throws_NoError_For_Delete_Post()
     {
         using (var dbContext = base.NewDbContext())
         {
