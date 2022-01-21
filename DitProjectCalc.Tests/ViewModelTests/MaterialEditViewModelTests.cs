@@ -50,7 +50,8 @@ public class MaterialEditViewModelTests
         var result = materialEditViewModel.Material.ProjectId;
 
         //Assert
-        result.Should().Be(5);
+        result.Should().Be(5,
+            because: "it should replace the Material object's ProjectId with the value directly passed to the ViewModel");
     }
 
     [Fact]
@@ -84,6 +85,7 @@ public class MaterialEditViewModelTests
         var result = materialEditViewModel.BasicShapesData();
 
         //Assert
-        result.FindAll(b => b.Selected == true).Should().HaveCount(2);
+        result.FindAll(b => b.Selected == true).Should().HaveCount(2,
+            because: $"this tested used 4 BasicShapes for the Project and 2 were also in the Material object");
     }
 }

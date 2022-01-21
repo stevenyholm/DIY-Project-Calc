@@ -42,11 +42,10 @@ public class BasicShapesControllerTests : ControllerTestsBase
         {
             //Arrange
             var controller = new BasicShapesController(dbContext);
-            var projectId = base.ValidProjectId(dbContext);
             var expectedBasicShapeId = base.ValidBasicShapeId(dbContext);
 
             //Act
-            var result = await controller.Details(projectId);
+            var result = await controller.Details(expectedBasicShapeId);
 
             //Assert
             result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);

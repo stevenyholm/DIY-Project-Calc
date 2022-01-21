@@ -18,7 +18,7 @@ public class MaterialTestModel : TestCasesAppearInTestExplorer
 
 
     //methods required for nicely displaying test names in Visual Studio Test Explorer
-    public override string ToString() => $"{base.TestCaseName} {Material.MeasurementType} ({Material.Length}, {Material.Width}, {Material.Depth})";
+    public override string ToString() => $"{base.TestCaseName}: {Material.MeasurementType} ({Material.Length}, {Material.Width}, {Material.Depth})";
 
     public override void Serialize(IXunitSerializationInfo info)
     {

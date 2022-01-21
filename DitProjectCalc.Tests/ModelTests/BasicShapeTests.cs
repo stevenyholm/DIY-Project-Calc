@@ -19,7 +19,8 @@ public class BasicShapeTests
         var result = basicShape.Area;
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedArea, BasicShapesTestData.TestPrecision);
+        result.Should().BeApproximately(testData.ExpectedArea + 55, BasicShapesTestData.TestPrecision,
+            because: "this tested a calculation with valid input (see test name for input values)");
     }
 
     [Theory]
@@ -34,7 +35,8 @@ public class BasicShapeTests
         var result = basicShape.Distance;
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedDistance, BasicShapesTestData.TestPrecision);
+        result.Should().BeApproximately(testData.ExpectedDistance, BasicShapesTestData.TestPrecision,
+            because: "this tested a calculation with valid input (see test name for input values)");
     }
 
     [Theory]

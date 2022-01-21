@@ -36,10 +36,10 @@ public abstract class ControllerTestsBase
         dbContext.Materials.FirstOrDefault(m => m.Name == MaterialsTestData.NameValid)?.MaterialId ?? 0;
 
     protected int ValidProjectId(ApplicationDbContext dbContext) =>
-        dbContext.Materials.FirstOrDefault(m => m.Name == MaterialsTestData.NameValid)?.MaterialId ?? 0;
+        dbContext.Projects.FirstOrDefault(m => m.Name == ProjectsTestData.NameValid)?.ProjectId ?? 0;
 
     protected int ValidBasicShapeId(ApplicationDbContext dbContext) =>
-    dbContext.Materials.FirstOrDefault(m => m.Name == MaterialsTestData.NameValid)?.MaterialId ?? 0;
+    dbContext.BasicShapes.FirstOrDefault(m => m.Name == BasicShapesTestData.NameValid)?.BasicShapeId ?? 0;
 
 
     private void seedInitialTestData(ApplicationDbContext dbContext)

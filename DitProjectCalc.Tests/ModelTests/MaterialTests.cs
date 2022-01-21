@@ -19,7 +19,8 @@ public class MaterialTests
         var result = material.DistanceNeeded();
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedDistanceNeeded, MaterialsTestData.TestPrecision, because: "tested happy path: valid input should give correct output");
+        result.Should().BeApproximately(testData.ExpectedDistanceNeeded, MaterialsTestData.TestPrecision, 
+            because: "(debug tip: check distance calculations of all child BasicShapes");
     }
 
     [Theory]
@@ -34,7 +35,8 @@ public class MaterialTests
         var result = material.AreaNeeded();
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedAreaNeeded, MaterialsTestData.TestPrecision, because: "tested happy path: valid input should give correct output");
+        result.Should().BeApproximately(testData.ExpectedAreaNeeded, MaterialsTestData.TestPrecision,
+            because: "(debug tip: check area calculations of all child BasicShapes");
     }
 
     [Theory]
@@ -49,7 +51,8 @@ public class MaterialTests
         var result = material.VolumeNeeded();
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedVolumeNeeded, MaterialsTestData.TestPrecision, because: "tested happy path: valid input should give correct output");
+        result.Should().BeApproximately(testData.ExpectedVolumeNeeded, MaterialsTestData.TestPrecision,
+            because: "(debug tip: check area calculations of all child BasicShapes");
     }
 
     [Theory]
@@ -64,7 +67,7 @@ public class MaterialTests
         var result = material.QuantityNeeded();
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedQuantityNeeded, MaterialsTestData.TestPrecision, because: "tested happy path: valid input should give correct output");
+        result.Should().BeApproximately(testData.ExpectedQuantityNeeded, MaterialsTestData.TestPrecision);
     }
 
     [Theory]
@@ -79,7 +82,7 @@ public class MaterialTests
         var result = material.CanCalculateQuantity();
 
         //Assert
-        result.Should().Be(testData.ExpectedCanCalculateQuantity, because: "tested happy path: valid input should give correct output");
+        result.Should().Be(testData.ExpectedCanCalculateQuantity);
     }
 
 }
