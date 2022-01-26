@@ -1,6 +1,6 @@
 ﻿using DiyProjectCalc.Controllers;
 using DiyProjectCalc.Models;
-using DiyProjectCalc.Tests.ControllerTests.Abstractions;
+using DiyProjectCalc.Tests.Controllers.Abstractions;
 using DiyProjectCalc.Tests.TestData;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DiyProjectCalc.Tests.ControllerTests;
+namespace DiyProjectCalc.Tests.Controllers;
 
 [Collection("Controllers")]
 public class ProjectsControllerTests : ControllerTestsBase

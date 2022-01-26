@@ -3,7 +3,7 @@ using FluentAssertions;
 using DiyProjectCalc.Tests.TestData;
 using DiyProjectCalc.Tests.TestModels;
 
-namespace DiyProjectCalc.Tests.ModelTests;
+namespace DiyProjectCalc.Tests.Models;
 
 public class BasicShapeTests
 {
@@ -19,7 +19,7 @@ public class BasicShapeTests
         var result = basicShape.Area;
 
         //Assert
-        result.Should().BeApproximately(testData.ExpectedArea + 55, BasicShapesTestData.TestPrecision,
+        result.Should().BeApproximately(testData.ExpectedArea, BasicShapesTestData.TestPrecision,
             because: "this tested a calculation with valid input (see test name for input values)");
     }
 
@@ -41,7 +41,7 @@ public class BasicShapeTests
 
     [Theory]
     [ClassData(typeof(BasicShapeValidClassData))]
-    [Trait("Description", "")]
+    [Trait("Description ", "")]
     public void ValidInput_Returns_CorrectValue_For_Description(BasicShapeTestModel testData)
     {
         //Arrange

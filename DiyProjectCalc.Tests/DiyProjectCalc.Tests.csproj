@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -32,14 +32,13 @@
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-	<PropertyGroup Label="FineCodeCoverage">
+	<PropertyGroup Label="FineCodeCoverage"> <!-- These excludes are used when running tests in Test Explorer -->
 		<ExcludeByFile>
 			**/Program.cs
 			**/Data/*
 			**/Migrations/*
 			**/Views/*
 			**/Views/*/*
-			**/*Tests* <!-- because one test class still appeared in the report even with IncludeTestAssembly=False -->
 		</ExcludeByFile>
 		<IncludeTestAssembly>
 			False

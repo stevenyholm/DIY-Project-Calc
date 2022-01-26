@@ -1,15 +1,16 @@
 ﻿using DiyProjectCalc.Controllers;
 using DiyProjectCalc.Models;
-using DiyProjectCalc.Tests.ControllerTests.Abstractions;
+using DiyProjectCalc.Tests.Controllers.Abstractions;
 using DiyProjectCalc.Tests.TestData;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace DiyProjectCalc.Tests.ControllerTests;
+namespace DiyProjectCalc.Tests.Controllers;
 
 [Collection("Controllers")]
 public class BasicShapesControllerTests : ControllerTestsBase
@@ -28,9 +29,12 @@ public class BasicShapesControllerTests : ControllerTestsBase
             var result = await controller.Index(expectedProjectId);
 
             //Assert
-            result.As<ViewResult>().ViewData.Model.As<IEnumerable<BasicShape>>().Should().HaveCount(ProjectsTestData.CountBasicShapesForProject);
-            result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
-            result.As<ViewResult>().ViewData["ProjectName"].Should().Be(ProjectsTestData.NameValid);
+            using (new AssertionScope())
+            {
+                result.As<ViewResult>().ViewData.Model.As<IEnumerable<BasicShape>>().Should().HaveCount(ProjectsTestData.CountBasicShapesForProject);
+                result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
+                result.As<ViewResult>().ViewData["ProjectName"].Should().Be(ProjectsTestData.NameValid);
+            }
         }
     }
 

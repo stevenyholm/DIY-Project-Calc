@@ -198,10 +198,8 @@ public class MaterialsTestData
     //=================================================================    List<Model>    ==========
     //==============================================================================================
 
-    public static List<Material> MaterialsFor(List<MaterialTestModel> testModels)
-    {
-        return testModels.Select(testModel => testModel.Material).ToList();
-    }
+    public static List<Material> MaterialsFor(List<MaterialTestModel> testModels) => 
+        testModels.Select(testModel => testModel.Material).ToList();
 
 }
 
@@ -212,12 +210,6 @@ public class MaterialsTestData
 
 public class MaterialValidClassData : ParameterizedTestClassData
 {
-    private MaterialsTestData _materialsTestData = new MaterialsTestData();
-    public override IEnumerator<object[]> GetEnumerator()
-    {
-        foreach (var testModel in _materialsTestData.TestDataForPatio) 
-        {
-            yield return ObjectTo.Test(testModel);
-        }
-    }
+    public override IEnumerator<object[]> GetEnumerator() =>
+        base.GetEnumerator<MaterialTestModel>(new MaterialsTestData().TestDataForPatio);
 }

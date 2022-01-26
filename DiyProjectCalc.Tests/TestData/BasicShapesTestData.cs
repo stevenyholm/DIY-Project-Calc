@@ -13,16 +13,16 @@ public class BasicShapesTestData
     public static readonly List<string> BasicShapeNamesForMaterialEdit = new List<string>()
     { "Patio Garage Side Area", "Patio Driveway Area",  "Patio Garage Connector Edge"};
 
-public static BasicShape NewBasicShape 
-    {
-        get => new BasicShape()
+    public static BasicShape NewBasicShape 
         {
-            Name = "New BasicShape",
-            ShapeType = BasicShapeType.Rectangle,
-            Number1 = 12.0,
-            Number2 = 12.0
-        };
-    }
+            get => new BasicShape()
+            {
+                Name = "New BasicShape",
+                ShapeType = BasicShapeType.Rectangle,
+                Number1 = 12.0,
+                Number2 = 12.0
+            };
+        }
 
 
     //==============================================================================================
@@ -231,10 +231,8 @@ public static BasicShape NewBasicShape
     //==============================================================================================
 
 
-    public static List<BasicShape> BasicShapesFor(List<BasicShapeTestModel> testModels)
-    {
-        return testModels.Select(testModel => testModel.BasicShape).ToList();
-    }
+    public static List<BasicShape> BasicShapesFor(List<BasicShapeTestModel> testModels) =>
+        testModels.Select(testModel => testModel.BasicShape).ToList();
 
 }
 
@@ -245,13 +243,6 @@ public static BasicShape NewBasicShape
 
 public class BasicShapeValidClassData : ParameterizedTestClassData
 {
-    private BasicShapesTestData _basicShapesTestData = new BasicShapesTestData();
-    public override IEnumerator<object[]> GetEnumerator()
-    {
-        foreach (var testModel in _basicShapesTestData.TestDataForPatioArea)
-        {
-            yield return ObjectTo.Test(testModel);
-        }
-
-    }
+    public override IEnumerator<object[]> GetEnumerator() => 
+        base.GetEnumerator<BasicShapeTestModel>(new BasicShapesTestData().TestDataForPatioArea);
 }

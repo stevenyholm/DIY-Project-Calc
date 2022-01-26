@@ -3,7 +3,7 @@ using FluentAssertions;
 using DiyProjectCalc.Tests.TestData;
 using DiyProjectCalc.Tests.TestModels;
 
-namespace DiyProjectCalc.Tests.ModelTests;
+namespace DiyProjectCalc.Tests.Models;
 
 public class MaterialTests
 {

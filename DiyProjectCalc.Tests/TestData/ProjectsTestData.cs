@@ -91,10 +91,8 @@ public class ProjectsTestData
     //=================================================================    List<Model>    ==========
     //==============================================================================================
 
-    public static List<Project> ProjectsFor(List<ProjectTestModel> testModels)
-    {
-        return testModels.Select(testModel => testModel.Project).ToList();
-    }
+    public static List<Project> ProjectsFor(List<ProjectTestModel> testModels) => 
+        testModels.Select(testModel => testModel.Project).ToList();
 }
 
 
@@ -105,12 +103,6 @@ public class ProjectsTestData
 
 public class ProjectValidClassData : ParameterizedTestClassData
 {
-    private ProjectsTestData _projectsTestData = new ProjectsTestData();
-    public override IEnumerator<object[]> GetEnumerator()
-    {
-        foreach(var testModel in _projectsTestData.TestDataForAllProjects)
-        {
-            yield return ObjectTo.Test(testModel);
-        }
-    }
+    public override IEnumerator<object[]> GetEnumerator() => 
+        base.GetEnumerator<ProjectTestModel>(new ProjectsTestData().TestDataForAllProjects);
 }

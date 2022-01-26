@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace DiyProjectCalc.Tests.ControllerTests.Abstractions;
+namespace DiyProjectCalc.Tests.Controllers.Abstractions;
 
 public abstract class ControllerTestsBase
 {

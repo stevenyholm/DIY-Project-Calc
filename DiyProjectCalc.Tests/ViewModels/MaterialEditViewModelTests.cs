@@ -4,7 +4,7 @@ using FluentAssertions;
 using System.Collections.Generic;
 using Xunit;
 
-namespace DiyProjectCalc.Tests.ViewModelTests;
+namespace DiyProjectCalc.Tests.ViewModels;
 
 public class MaterialEditViewModelTests
 {

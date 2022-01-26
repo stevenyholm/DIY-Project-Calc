@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Download to %userprofile%\Documents\Visual Studio [2022|vNext]\Code Snippets\Visual C#\My Code Snippets -->
+
+<CodeSnippets  xmlns="http://schemas.microsoft.com/VisualStudio/2022/CodeSnippet">
+	<!-- 
+		Template for xUnit Fact test methods
+		Press xUnitFact[tab][tab] to get it.
+	-->	
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>xUnit Fact test</Title>
+			<Shortcut>xUnitFact</Shortcut>
+			<Description>Create xUnit Fact test method</Description>
+			<Author>Steve Nyholm</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Imports>
+				<Import>
+					<Namespace>Xunit</Namespace>
+				</Import>
+				<Import>
+					<Namespace>FluentAssertions</Namespace>
+				</Import>			
+			</Imports>
+			<Declarations>
+				<Literal>
+					<ID>unitName</ID>
+					<ToolTip>Name of the unit to test (typically a method)</ToolTip>
+					<Default>MethodName</Default>
+				</Literal>
+				<Literal>
+					<ID>testCase</ID>
+					<ToolTip>Test case (Scenario to test, usually input values to a method)</ToolTip>
+					<Default>ValidInput</Default>
+				</Literal>
+				<Literal>
+					<ID>outputAction</ID>
+					<ToolTip>Action for expected output (Returns, Calls, Throws, SetState, etc.)</ToolTip>
+					<Default>Returns</Default>
+				</Literal>
+				<Literal>
+					<ID>expectedOutput</ID>
+					<ToolTip>Expected output (identify specific value, error, state, etc.)</ToolTip>
+					<Default>CorrectOutput</Default>
+				</Literal>
+				<Literal>
+					<ID>className</ID>
+					<ToolTip>Name of the class that contains the unit to test</ToolTip>
+					<Default>ClassName</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[[Fact]
+		[Trait("$unitName$", "")]				
+		public void $testCase$_$outputAction$_$expectedOutput$_For_$unitName$()
+		{
+			//Arrange
+			var sut = new $className$();
+			
+			//Act
+			var result = sut.$unitName$();
+			
+			//Assert
+			result.Should()$end$;
+		}]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+	<!-- 
+		Template for xUnit Theory test methods
+		Press xUnitTheory[tab][tab] to get it.
+	-->
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>xUnit Theory test</Title>
+			<Shortcut>xUnitTheory</Shortcut>
+			<Description>Create xUnit Theory test method</Description>
+			<Author>Steve Nyholm</Author>
+			<SnippetTypes>
+				<SnippetType>Expansion</SnippetType>
+			</SnippetTypes>
+		</Header>
+		<Snippet>
+			<Imports>
+				<Import>
+					<Namespace>Xunit</Namespace>
+				</Import>
+				<Import>
+					<Namespace>FluentAssertions</Namespace>
+				</Import>
+			</Imports>
+			<Declarations>
+				<Literal>
+					<ID>className</ID>
+					<ToolTip>Name of the class that contains the unit to test</ToolTip>
+					<Default>ClassName</Default>
+				</Literal>
+				<Literal>
+					<ID>classDataDescriptor</ID>
+					<ToolTip>Description of the test case data in this ClassData</ToolTip>
+					<Default>ClassDataDescriptor</Default>
+				</Literal>
+				<Literal>
+					<ID>unitName</ID>
+					<ToolTip>Name of the unit to test (typically a method)</ToolTip>
+					<Default>UnitName</Default>
+				</Literal>
+				<Literal>
+					<ID>testCase</ID>
+					<ToolTip>Test case (Scenario to test, usually input values to a method)</ToolTip>
+					<Default>ValidInput</Default>
+				</Literal>
+				<Literal>
+					<ID>outputAction</ID>
+					<ToolTip>Action for expected output (Returns, Calls, Throws, SetState, etc.)</ToolTip>
+					<Default>Returns</Default>
+				</Literal>
+				<Literal>
+					<ID>expectedOutput</ID>
+					<ToolTip>Expected output (identify specific value, error, state, etc.)</ToolTip>
+					<Default>CorrectOutput</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="csharp">
+				<![CDATA[[Theory]
+	    [ClassData(typeof($className$$classDataDescriptor$ClassData))]
+		[Trait("$unitName$", "")]				
+		public void $testCase$_$outputAction$_$expectedOutput$_For_$unitName$($className$TestModel testData)
+		{
+			//Arrange
+			var sut = testData.$className$;
+			
+			//Act
+			var result = sut.$unitName$();
+			
+			//Assert
+			resuld.Should().$end$
+		}]]>
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>
