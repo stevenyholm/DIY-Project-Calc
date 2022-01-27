@@ -1,19 +1,19 @@
-﻿using DiyProjectCalc.Models;
-using DiyProjectCalc.ViewModels;
+﻿using SUT = DiyProjectCalc.ViewModels;
+using DiyProjectCalc.Models;
 using FluentAssertions;
 using System.Collections.Generic;
 using Xunit;
 
 namespace DiyProjectCalc.Tests.ViewModels;
 
-public class MaterialEditViewModelTests
+public class MaterialEditViewModel
 {
     [Fact]
     [Trait("Material.ProjectId", "")]
     public void SameObject_Given_ValidProjectId_For_MaterialProperty()
     {
         //Arrange
-        var materialEditViewModel = new MaterialEditViewModel();
+        var materialEditViewModel = new SUT.MaterialEditViewModel();
         materialEditViewModel.Material = new Material()
         {
             ProjectId = 5,
@@ -35,7 +35,7 @@ public class MaterialEditViewModelTests
     public void CorrectProjectId_Given_InvalidProjectId_For_MaterialProperty()
     {
         //Arrange
-        var materialEditViewModel = new MaterialEditViewModel();
+        var materialEditViewModel = new SUT.MaterialEditViewModel();
         materialEditViewModel.ProjectId = 5;
         materialEditViewModel.Material = new Material()
         {
@@ -59,7 +59,7 @@ public class MaterialEditViewModelTests
     public void CorrectNumberSelected_Given_ValidState_For_BasicShapesData()
     {
         //Arrange
-        var materialEditViewModel = new MaterialEditViewModel();
+        var materialEditViewModel = new SUT.MaterialEditViewModel();
         materialEditViewModel.ProjectId = 5;
         materialEditViewModel.Material = new Material()
         {

@@ -5,7 +5,7 @@ using DiyProjectCalc.Tests.TestModels;
 
 namespace DiyProjectCalc.Tests.Models;
 
-public class BasicShapeTests
+public class BasicShape
 {
     [Theory]
     [ClassData(typeof(BasicShapeValidClassData))]

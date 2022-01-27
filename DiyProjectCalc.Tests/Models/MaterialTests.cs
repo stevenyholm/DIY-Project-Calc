@@ -5,7 +5,7 @@ using DiyProjectCalc.Tests.TestModels;
 
 namespace DiyProjectCalc.Tests.Models;
 
-public class MaterialTests
+public class Material
 {
     [Theory]
     [ClassData(typeof(MaterialValidClassData))]
