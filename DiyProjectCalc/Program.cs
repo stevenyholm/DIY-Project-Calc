@@ -9,9 +9,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection") ));
 
-builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
-builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
-builder.Services.AddScoped<IBasicShapeRepository, BasicShapeRepository>();
+builder.Services.AddScoped<IProjectRepository, EFProjectRepository>();
+builder.Services.AddScoped<IMaterialRepository, EFMaterialRepository>();
+builder.Services.AddScoped<IBasicShapeRepository, EFBasicShapeRepository>();
 
 var app = builder.Build();
 

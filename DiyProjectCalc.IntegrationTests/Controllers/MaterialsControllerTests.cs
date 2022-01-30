@@ -24,8 +24,8 @@ public class MaterialsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new MaterialRepository(dbContext);
-        var projectRepository = new ProjectRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
+        var projectRepository = new EFProjectRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, projectRepository, null!);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -47,7 +47,7 @@ public class MaterialsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new MaterialRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, null!);
         var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
 
@@ -64,8 +64,8 @@ public class MaterialsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new MaterialRepository(dbContext);
-        var basicShapeRepository = new BasicShapeRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
+        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -83,8 +83,8 @@ public class MaterialsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new MaterialRepository(dbContext);
-        var basicShapeRepository = new BasicShapeRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
+        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
         var newMaterialEditViewModel = new MaterialEditViewModel()
@@ -110,8 +110,8 @@ public class MaterialsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new MaterialRepository(dbContext);
-        var basicShapeRepository = new BasicShapeRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
+        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
         var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
 
@@ -129,8 +129,8 @@ public class MaterialsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new MaterialRepository(dbContext);
-        var basicShapeRepository = new BasicShapeRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
+        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
         var materialId = MaterialTestData.ValidMaterialId(dbContext);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
@@ -163,7 +163,7 @@ public class MaterialsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new MaterialRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, null!);
         var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
 
@@ -181,7 +181,7 @@ public class MaterialsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new MaterialRepository(dbContext);
+        var repository = new EFMaterialRepository(dbContext);
         var controller = new SUT.MaterialsController(repository, null!, null!);
         var materialId = MaterialTestData.ValidMaterialId(dbContext);
 

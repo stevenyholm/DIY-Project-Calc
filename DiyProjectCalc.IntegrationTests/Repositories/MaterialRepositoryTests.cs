@@ -19,7 +19,7 @@ public class MaterialRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         int expectedId = MaterialTestData.ValidMaterialId(dbContext);
 
         //Act
@@ -35,7 +35,7 @@ public class MaterialRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
 
         //Act
@@ -51,7 +51,7 @@ public class MaterialRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         int expectedId = MaterialTestData.ValidMaterialId(dbContext);
 
         //Act
@@ -68,7 +68,7 @@ public class MaterialRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
         var newObject = MaterialTestData.NewMaterial;
         newObject.ProjectId = projectId;
@@ -87,7 +87,7 @@ public class MaterialRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         var objectToUpdate = MaterialTestData.ValidMaterial(dbContext);
         if (objectToUpdate is not null)
         {
@@ -113,7 +113,7 @@ public class MaterialRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.MaterialRepository(dbContext);
+        var repository = new SUT.EFMaterialRepository(dbContext);
         var objectToDelete = MaterialTestData.ValidMaterial(dbContext);
 
         //Act

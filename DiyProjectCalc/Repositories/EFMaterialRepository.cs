@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Repositories;
 
-public class MaterialRepository : IMaterialRepository
+public class EFMaterialRepository : IMaterialRepository
 {
     private ApplicationDbContext _dbContext;
 
-    public MaterialRepository(ApplicationDbContext dbContext)
+    public EFMaterialRepository(ApplicationDbContext dbContext)
     {
         this._dbContext = dbContext;
     }
@@ -77,7 +77,7 @@ public class MaterialRepository : IMaterialRepository
 
     private async Task SetBasicShapesForMaterial(Material model, int[] selectedBasicShapeIds)
     {
-        var basicShapeRepository = new BasicShapeRepository(_dbContext);
+        var basicShapeRepository = new EFBasicShapeRepository(_dbContext);
         var allBasicShapesForProject = await basicShapeRepository.GetBasicShapesForProjectAsync(model.ProjectId);
 
         var basicShapesToAdd = allBasicShapesForProject

@@ -19,7 +19,7 @@ public class ProjectRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.ProjectRepository(dbContext);
+        var repository = new SUT.EFProjectRepository(dbContext);
         var expectedId = ProjectTestData.ValidProjectId(dbContext);
 
         //Act
@@ -35,7 +35,7 @@ public class ProjectRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.ProjectRepository(dbContext);
+        var repository = new SUT.EFProjectRepository(dbContext);
 
         //Act
         var result = await repository.GetAllProjectsAsync();
@@ -51,7 +51,7 @@ public class ProjectRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.ProjectRepository(dbContext);
+        var repository = new SUT.EFProjectRepository(dbContext);
         var newObject = ProjectTestData.NewProject;
 
         //Act
@@ -68,7 +68,7 @@ public class ProjectRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.ProjectRepository(dbContext);
+        var repository = new SUT.EFProjectRepository(dbContext);
         var objectToUpdate = ProjectTestData.ValidProject(dbContext);
         if (objectToUpdate is not null)
         {
@@ -89,7 +89,7 @@ public class ProjectRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.ProjectRepository(dbContext);
+        var repository = new SUT.EFProjectRepository(dbContext);
         var objectToDelete = ProjectTestData.ValidProject(dbContext);
 
         //Act

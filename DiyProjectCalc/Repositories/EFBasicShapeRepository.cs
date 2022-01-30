@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Repositories;
 
-public class BasicShapeRepository : IBasicShapeRepository
+public class EFBasicShapeRepository : IBasicShapeRepository
 {
     private ApplicationDbContext _dbContext;
 
-    public BasicShapeRepository(ApplicationDbContext dbContext)
+    public EFBasicShapeRepository(ApplicationDbContext dbContext)
     {
         this._dbContext = dbContext;
     }

@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Repositories;
 
-public class ProjectRepository : IProjectRepository
+public class EFProjectRepository : IProjectRepository
 {
     private ApplicationDbContext _dbContext;
 
-    public ProjectRepository(ApplicationDbContext dbContext)
+    public EFProjectRepository(ApplicationDbContext dbContext)
     {
         this._dbContext = dbContext;
     }

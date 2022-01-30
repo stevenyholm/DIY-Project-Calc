@@ -21,7 +21,7 @@ public class ProjectsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
 
         //Act
@@ -37,7 +37,7 @@ public class ProjectsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -54,7 +54,7 @@ public class ProjectsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
 
         //Act
@@ -71,7 +71,7 @@ public class ProjectsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
         var project = ProjectTestData.NewProject;
 
@@ -89,7 +89,7 @@ public class ProjectsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -107,7 +107,7 @@ public class ProjectsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
 
         var editedModel = ProjectTestData.ValidProject(dbContext);
@@ -130,7 +130,7 @@ public class ProjectsControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -148,7 +148,7 @@ public class ProjectsControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new ProjectRepository(dbContext);
+        var repository = new EFProjectRepository(dbContext);
         var controller = new SUT.ProjectsController(repository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 

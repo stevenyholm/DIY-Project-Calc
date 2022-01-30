@@ -19,7 +19,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         int expectedId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
         //Act
@@ -35,7 +35,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
 
         //Act
@@ -51,7 +51,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         int expectedId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
         //Act
@@ -69,7 +69,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
         var newObject = BasicShapeTestData.NewBasicShape;
         newObject.ProjectId = projectId;
@@ -88,7 +88,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         var objectToUpdate = BasicShapeTestData.ValidBasicShape(dbContext);
         if (objectToUpdate is not null)
         {
@@ -112,7 +112,7 @@ public class BasicShapeRepositoryTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new SUT.BasicShapeRepository(dbContext);
+        var repository = new SUT.EFBasicShapeRepository(dbContext);
         var objectToDelete = BasicShapeTestData.ValidBasicShape(dbContext);
 
         //Act

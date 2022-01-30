@@ -22,8 +22,8 @@ public class BasicShapesControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new BasicShapeRepository(dbContext);
-        var projectRepository = new ProjectRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
+        var projectRepository = new EFProjectRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, projectRepository);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -45,7 +45,7 @@ public class BasicShapesControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
@@ -62,7 +62,7 @@ public class BasicShapesControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
 
@@ -80,7 +80,7 @@ public class BasicShapesControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var projectId = ProjectTestData.ValidProjectId(dbContext);
         var newBasicShape = BasicShapeTestData.NewBasicShape;
@@ -100,7 +100,7 @@ public class BasicShapesControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
@@ -118,7 +118,7 @@ public class BasicShapesControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
 
         var editedModel = BasicShapeTestData.ValidBasicShape(dbContext);
@@ -145,7 +145,7 @@ public class BasicShapesControllerTests : BaseClassFixture
     {
         //Arrange
         using var dbContext = base.NewDbContext();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
@@ -163,7 +163,7 @@ public class BasicShapesControllerTests : BaseClassFixture
         //Arrange
         using var dbContext = base.NewDbContext();
         dbContext.Database.BeginTransaction();
-        var repository = new BasicShapeRepository(dbContext);
+        var repository = new EFBasicShapeRepository(dbContext);
         var controller = new SUT.BasicShapesController(repository, null!);
         var basicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
 
