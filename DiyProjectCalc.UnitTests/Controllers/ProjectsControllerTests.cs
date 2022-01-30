@@ -13,18 +13,23 @@ namespace DiyProjectCalc.UnitTests.Controllers;
 
 public class ProjectsControllerTests 
 {
+    private Mock<IProjectRepository> _mockRepository = new Mock<IProjectRepository>();
+    private SUT.ProjectsController _controller;
+    public ProjectsControllerTests()
+    {
+        _controller = new SUT.ProjectsController(_mockRepository.Object);
+    }
+
     [Fact]
     [Trait("Index", "GET")]
     public async Task Returns_AllProjects_For_Index_Get()
     {
         //Arrange
         var projects = ProjectTestData.ProjectsFor(new ProjectTestData().ValidProjectTestModelList);
-        var mockRepository = new Mock<IProjectRepository>();
-        mockRepository.Setup(r => r.GetAllProjectsAsync()).ReturnsAsync(projects);
-        var controller = sut(mockRepository);
+        _mockRepository.Setup(r => r.GetAllProjectsAsync()).ReturnsAsync(projects);
 
         //Act
-        var result = await controller.Index();
+        var result = await _controller.Index();
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<IEnumerable<Project>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
@@ -36,13 +41,11 @@ public class ProjectsControllerTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var mockRepository = new Mock<IProjectRepository>();
-        mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var controller = sut(mockRepository);
+        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = await controller.Details(expectedProjectId);
+        var result = await _controller.Details(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -53,10 +56,9 @@ public class ProjectsControllerTests
     public void Returns_View_For_Create_Get()
     {
         //Arrange
-        var controller = sut();
 
         //Act
-        var result = controller.Create();
+        var result = _controller.Create();
 
         //Assert
         result.Should().BeOfType<ViewResult>();
@@ -67,11 +69,10 @@ public class ProjectsControllerTests
     public async Task ValidProject_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var controller = sut();
         var project = ProjectTestData.NewProject;
 
         //Act
-        var result = await controller.Create(project);
+        var result = await _controller.Create(project);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -83,13 +84,11 @@ public class ProjectsControllerTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var mockRepository = new Mock<IProjectRepository>();
-        mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var controller = sut(mockRepository);
+        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = await controller.Edit(expectedProjectId);
+        var result = await _controller.Edit(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -100,7 +99,6 @@ public class ProjectsControllerTests
     public void ValidProject_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var controller = sut();
         var editedModel = ProjectTestData.MockSimpleProject;
         if (editedModel is not null)
         {
@@ -108,7 +106,7 @@ public class ProjectsControllerTests
         }
 
         //Act
-        var result = controller.Edit(editedModel!);
+        var result = _controller.Edit(editedModel!);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -120,13 +118,11 @@ public class ProjectsControllerTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var mockRepository = new Mock<IProjectRepository>();
-        mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var controller = sut(mockRepository);
+        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = await controller.Delete(expectedProjectId);
+        var result = await _controller.Delete(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -138,19 +134,14 @@ public class ProjectsControllerTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var mockRepository = new Mock<IProjectRepository>();
-        mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var controller = sut(mockRepository);
+        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = await controller.DeletePOST(expectedProjectId);
+        var result = await _controller.DeletePOST(expectedProjectId);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
     }
-
-    private SUT.ProjectsController sut(Mock<IProjectRepository>? repository = null) =>
-        new SUT.ProjectsController((repository is null) ? new Mock<IProjectRepository>().Object : repository.Object);
 }
 

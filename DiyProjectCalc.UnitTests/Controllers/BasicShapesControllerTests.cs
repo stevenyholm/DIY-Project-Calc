@@ -14,23 +14,26 @@ namespace DiyProjectCalc.UnitTests.Controllers;
 
 public class BasicShapesControllerTests 
 {
+    private Mock<IBasicShapeRepository> _mockRepository = new Mock<IBasicShapeRepository>();
+    private Mock<IProjectRepository> _mockProjectRepository = new Mock<IProjectRepository>();
+    private SUT.BasicShapesController _controller;
+    public BasicShapesControllerTests()
+    {
+        _controller = new SUT.BasicShapesController(_mockRepository.Object, _mockProjectRepository.Object);
+    }
+
     [Fact]
     [Trait("Index", "GET")]
     public async Task ValidProjectId_Returns_BasicShapes_For_Index_Get()
     {
         //Arrange
         var project = new ProjectTestData().ValidProjectTestModel!.Project; 
-        var mockProjectRepository = new Mock<IProjectRepository>();
-        mockProjectRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-
-        var mockRepository = new Mock<IBasicShapeRepository>();
-        mockRepository.Setup(r => r.GetBasicShapesForProjectAsync(It.IsAny<int>())).ReturnsAsync(project.BasicShapes);
-
-        var controller = sut(mockRepository, mockProjectRepository);
+        _mockProjectRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
+        _mockRepository.Setup(r => r.GetBasicShapesForProjectAsync(It.IsAny<int>())).ReturnsAsync(project.BasicShapes);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = await controller.Index(expectedProjectId);
+        var result = await _controller.Index(expectedProjectId);
 
         //Assert
         using (new AssertionScope())
@@ -47,13 +50,11 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var basicShape = BasicShapeTestData.MockSimpleBasicShape;
-        var mockRepository = new Mock<IBasicShapeRepository>();
-        mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
-        var controller = sut(repository: mockRepository);
+        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
         var expectedBasicShapeId = BasicShapeTestData.MockSimpleBasicShapeId;
 
         //Act
-        var result = await controller.Details(expectedBasicShapeId);
+        var result = await _controller.Details(expectedBasicShapeId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -64,11 +65,10 @@ public class BasicShapesControllerTests
     public void ValidProjectId_Returns_View_For_Create_Get()
     {
         //Arrange
-        var controller = sut();
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
-        var result = controller.Create(expectedProjectId);
+        var result = _controller.Create(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
@@ -79,13 +79,12 @@ public class BasicShapesControllerTests
     public async Task ValidBasicShape_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var controller = sut();
         var newBasicShape = BasicShapeTestData.NewBasicShape;
         var projectId = ProjectTestData.MockSimpleProjectId;
         newBasicShape.ProjectId = projectId;
 
         //Act
-        var result = await controller.Create(newBasicShape);
+        var result = await _controller.Create(newBasicShape);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -97,13 +96,11 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var basicShape = BasicShapeTestData.MockSimpleBasicShape;
-        var mockRepository = new Mock<IBasicShapeRepository>();
-        mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
-        var controller = sut(repository: mockRepository);
+        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
         var expectedBasicShapeId = BasicShapeTestData.MockSimpleBasicShapeId;
 
         //Act
-        var result = await controller.Edit(expectedBasicShapeId); 
+        var result = await _controller.Edit(expectedBasicShapeId); 
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -114,12 +111,11 @@ public class BasicShapesControllerTests
     public async Task ValidBasicShape_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var controller = sut();
         var editedModel = BasicShapeTestData.MockSimpleBasicShape;
         var editedModelId = BasicShapeTestData.MockSimpleBasicShapeId;
 
         //Act
-        var result = await controller.Edit(editedModelId, editedModel);
+        var result = await _controller.Edit(editedModelId, editedModel);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -131,13 +127,11 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var basicShape = BasicShapeTestData.MockSimpleBasicShape;
-        var mockRepository = new Mock<IBasicShapeRepository>();
-        mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
-        var controller = sut(repository: mockRepository);
+        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
         var expectedBasicShapeId = BasicShapeTestData.MockSimpleBasicShapeId;
 
         //Act
-        var result = await controller.Delete(expectedBasicShapeId);
+        var result = await _controller.Delete(expectedBasicShapeId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -149,22 +143,14 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var basicShape = BasicShapeTestData.MockSimpleBasicShape;
-        var mockRepository = new Mock<IBasicShapeRepository>();
-        mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
-        var controller = sut(repository: mockRepository);
+        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
         var basicShapeId = BasicShapeTestData.MockSimpleBasicShapeId;
 
         //Act
-        var result = await controller.DeleteConfirmed(basicShapeId);
+        var result = await _controller.DeleteConfirmed(basicShapeId);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
     }
-
-    private SUT.BasicShapesController sut(Mock<IBasicShapeRepository>? repository = null, 
-        Mock<IProjectRepository>? projectRepository = null) =>
-        new SUT.BasicShapesController((repository is null) ? new Mock<IBasicShapeRepository>().Object : repository.Object,
-            (projectRepository is null) ? new Mock<IProjectRepository>().Object : projectRepository.Object);
-
 }
 
