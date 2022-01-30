@@ -1,20 +1,20 @@
-﻿using DiyProjectCalc.Data;
-using DiyProjectCalc.Models;
+﻿using DiyProjectCalc.Models;
+using DiyProjectCalc.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Controllers;
 public class ProjectsController : Controller
 {
-    private readonly ApplicationDbContext _db;
-    public ProjectsController(ApplicationDbContext db)
+    private readonly IProjectRepository _repository;
+    public ProjectsController(IProjectRepository repository)
     {
-        this._db = db;
+        this._repository = repository;
     }
     //TODO: I wrote this controller along with a tutorial - upgrade it to use practices recommended by MS scaffolded code 
-    public IActionResult Index()
+
+    public async Task<IActionResult> Index()
     {
-        var projects = _db.Projects.Include(p => p.BasicShapes).ToList();
+        var projects = await _repository.GetAllProjectsAsync();
         return View(projects);
     }
 
@@ -26,7 +26,7 @@ public class ProjectsController : Controller
             return NotFound();
         }
 
-        var project = await _db.Projects.FirstOrDefaultAsync(p => p.ProjectId == id);
+        var project = await _repository.GetProjectAsync(Convert.ToInt32(id));
         if (project == null)
         {
             return NotFound();
@@ -42,7 +42,7 @@ public class ProjectsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(Project obj)
+    public async Task<IActionResult> Create(Project obj)
     {
         if (obj.Name == "42")
         {
@@ -50,8 +50,7 @@ public class ProjectsController : Controller
         }
         if (ModelState.IsValid)
         {
-            _db.Projects.Add(obj);
-            _db.SaveChanges();
+            await _repository.AddAsync(obj);
             //TODO: TempData didn't work with unit tests
  //           TempData["success"] = "Project created successfully.";
             return RedirectToAction("Index");
@@ -59,12 +58,13 @@ public class ProjectsController : Controller
         return View(obj);
     }
 
-    public IActionResult Edit(int? id)
+    public async Task<IActionResult> Edit(int? id)
     {
+        //TODO: should controller methods be async? this tutorial was really inconsistent about that
         if (id == null || id.Value == 0) 
             return NotFound();
 
-        var projectFromDb = _db.Projects.Find(id);
+        var projectFromDb = await _repository.GetProjectAsync(Convert.ToInt32(id));
         if (projectFromDb == null) 
             return NotFound();
 
@@ -81,8 +81,7 @@ public class ProjectsController : Controller
         }
         if (ModelState.IsValid) 
         {
-            _db.Projects.Update(obj);
-            _db.SaveChanges();
+            _repository.UpdateAsync(obj);
    //         TempData["success"] = "Project updated successfully.";
             return RedirectToAction("Index");
         }
@@ -90,12 +89,12 @@ public class ProjectsController : Controller
     }
 
 
-    public IActionResult Delete(int? id)
+    public async Task<IActionResult> Delete(int? id)
     {
         if (id == null || id.Value == 0)
             return NotFound();
 
-        var projectFromDb = _db.Projects.Find(id);
+        var projectFromDb = await _repository.GetProjectAsync(Convert.ToInt32(id));
         if (projectFromDb == null)
             return NotFound();
 
@@ -104,17 +103,17 @@ public class ProjectsController : Controller
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public IActionResult DeletePOST(int? id)
+    public async Task<IActionResult> DeletePOST(int? id)
     {
         if (id == null || id.Value == 0)
             return NotFound();
 
-        var projectFromDb = _db.Projects.Find(id);
+        var projectFromDb = await _repository.GetProjectAsync(Convert.ToInt32(id)); 
         if (projectFromDb == null)
             return NotFound();
 
-        _db.Projects.Remove(projectFromDb);
-        _db.SaveChanges();
+        await _repository.DeleteAsync(projectFromDb);
+
   //      TempData["success"] = "Project deleted successfully.";
         return RedirectToAction("Index");
         

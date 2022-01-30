@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="XPlat Code Coverage" >
+				<!-- NOTE: These excludes are used when running tests in the CLI with dotnet test -->
+				<!-- See the .csproj file in Test projects for excludes that are used when running tests in Test Explorer -->
+				<Configuration>
+					<ExcludeByAttribute>Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+					<Exclude>[*Test*]*,[*]*Migrations*,[*]*DbContext*,[*]*AspNetCoreGenerated*,[*]Program</Exclude>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+</RunSettings>

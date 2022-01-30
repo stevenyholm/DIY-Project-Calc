@@ -1,34 +1,29 @@
-﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DiyProjectCalc.Data;
 using DiyProjectCalc.Models;
+using DiyProjectCalc.Repositories;
 
 namespace DiyProjectCalc.Controllers
 {
     public class BasicShapesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IBasicShapeRepository _repository;
+        private readonly IProjectRepository _projectRepository;
 
-        public BasicShapesController(ApplicationDbContext context)
+        public BasicShapesController(IBasicShapeRepository repository, IProjectRepository projectRepository)
         {
-            _context = context;
+            _repository = repository;
+            _projectRepository = projectRepository;
         }
 
         // GET: BasicShapes
         public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
-            var basicShapes = _context.BasicShapes.Include(b => b.Project)
-                .Where(b => b.ProjectId == projectId);
+            var basicShapes = await _repository.GetBasicShapesForProjectAsync(projectId);
             ViewData["ProjectId"] = projectId;
-            var project = _context.Projects.Where(p => p.ProjectId == projectId).FirstOrDefault();
+            var project = await _projectRepository.GetProjectAsync(projectId);
             ViewData["ProjectName"] = (project is not null) ? project.Name : default(string);
-            return View(await basicShapes.ToListAsync());
+            return View(basicShapes);
         }
 
         // GET: BasicShapes/Details/5
@@ -39,9 +34,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _context.BasicShapes
-                .Include(b => b.Project)
-                .FirstOrDefaultAsync(m => m.BasicShapeId == id);
+            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -66,8 +59,7 @@ namespace DiyProjectCalc.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(basicShape);
-                await _context.SaveChangesAsync();
+                await _repository.AddAsync(basicShape);
                 return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
             }
             ViewData["ProjectId"] = basicShape.ProjectId;
@@ -82,7 +74,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _context.BasicShapes.FindAsync(id);
+            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -106,12 +98,11 @@ namespace DiyProjectCalc.Controllers
             {
                 try
                 {
-                    _context.Update(basicShape);
-                    await _context.SaveChangesAsync();
+                    await _repository.UpdateAsync(basicShape);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BasicShapeExists(basicShape.BasicShapeId))
+                    if (! await _repository.BasicShapeExists(basicShape.BasicShapeId)) 
                     {
                         return NotFound();
                     }
@@ -133,9 +124,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _context.BasicShapes
-                .Include(b => b.Project)
-                .FirstOrDefaultAsync(m => m.BasicShapeId == id);
+            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -149,16 +138,10 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var basicShape = await _context.BasicShapes.FindAsync(id);
-            var projectId = basicShape.ProjectId;
-            _context.BasicShapes.Remove(basicShape);
-            await _context.SaveChangesAsync();
+            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
+            var projectId = basicShape?.ProjectId;
+            await _repository.DeleteAsync(basicShape!);
             return RedirectToAction(nameof(Index), new { ProjectId = projectId });
-        }
-
-        private bool BasicShapeExists(int id)
-        {
-            return _context.BasicShapes.Any(e => e.BasicShapeId == id);
         }
     }
 }
