@@ -11,19 +11,21 @@ namespace DiyProjectCalc.IntegrationTests.Repositories;
 
 public class MaterialRepositoryTests : BaseClassFixture
 {
-    public MaterialRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.EFMaterialRepository _repository;
+    public MaterialRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
+    {
+        _repository = new SUT.EFMaterialRepository(base.DbContext);
+    }
 
     [Fact]
     [Trait("GetMaterialAsync", "")]
     public async Task ValidMaterialId_Returns_CorrectObject_For_GetMaterialAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        int expectedId = MaterialTestData.ValidMaterialId(dbContext);
+        int expectedId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await repository.GetMaterialAsync(expectedId);
+        var result = await _repository.GetMaterialAsync(expectedId);
 
         //Assert
         result.As<Material>().MaterialId.Should().Be(expectedId);
@@ -34,12 +36,10 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidProjectId_Returns_Materials_For_GetMaterialsForProjectAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await repository.GetMaterialsForProjectAsync(projectId);
+        var result = await _repository.GetMaterialsForProjectAsync(projectId);
 
         //Assert
         result.As<IEnumerable<Material>>().Should().HaveCount(ProjectTestData.ValidProjectCountMaterials);
@@ -50,12 +50,10 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidMaterialId_Returns_True_For_MaterialExists()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        int expectedId = MaterialTestData.ValidMaterialId(dbContext);
+        int expectedId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await repository.MaterialExists(expectedId);
+        var result = await _repository.MaterialExists(expectedId);
 
         //Assert
         result.Should().Be(true);
@@ -66,16 +64,14 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newObject = MaterialTestData.NewMaterial;
         newObject.ProjectId = projectId;
 
         //Act
-        await repository.AddAsync(newObject);
-        dbContext.ChangeTracker.Clear();
+        await _repository.AddAsync(newObject);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -85,10 +81,8 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        var objectToUpdate = MaterialTestData.ValidMaterial(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToUpdate = MaterialTestData.ValidMaterial(base.DbContext);
         if (objectToUpdate is not null)
         {
             objectToUpdate.Name = "edited basic shape";
@@ -97,11 +91,11 @@ public class MaterialRepositoryTests : BaseClassFixture
             objectToUpdate.Depth = 88.1;
             objectToUpdate.Width = 77.1;
         }
-        var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(dbContext);
+        var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
         //Act
-        await repository.UpdateAsync(objectToUpdate!, newSelectedBasicShapeIds);
-        dbContext.ChangeTracker.Clear();
+        await _repository.UpdateAsync(objectToUpdate!, newSelectedBasicShapeIds);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -111,14 +105,12 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFMaterialRepository(dbContext);
-        var objectToDelete = MaterialTestData.ValidMaterial(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToDelete = MaterialTestData.ValidMaterial(base.DbContext);
 
         //Act
-        await repository.DeleteAsync(objectToDelete!);
-        dbContext.ChangeTracker.Clear();
+        await _repository.DeleteAsync(objectToDelete!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }

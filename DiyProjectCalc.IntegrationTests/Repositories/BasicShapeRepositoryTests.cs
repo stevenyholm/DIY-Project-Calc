@@ -11,19 +11,21 @@ namespace DiyProjectCalc.IntegrationTests.Repositories;
 
 public class BasicShapeRepositoryTests : BaseClassFixture
 {
-    public BasicShapeRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.EFBasicShapeRepository _repository;
+    public BasicShapeRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
+    { 
+        _repository = new SUT.EFBasicShapeRepository(base.DbContext);
+    }
 
     [Fact]
     [Trait("GetBasicShapeAsync", "")]
     public async Task ValidBasicShapeId_Returns_CorrectObject_For_GetBasicShapeAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        int expectedId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        int expectedId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await repository.GetBasicShapeAsync(expectedId);
+        var result = await _repository.GetBasicShapeAsync(expectedId);
 
         //Assert
         result.As<BasicShape>().BasicShapeId.Should().Be(expectedId);
@@ -34,12 +36,10 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidProjectId_Returns_BasicShapes_For_GetBasicShapesForProjectAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await repository.GetBasicShapesForProjectAsync(projectId);
+        var result = await _repository.GetBasicShapesForProjectAsync(projectId);
 
         //Assert
         result.As<IEnumerable<BasicShape>>().Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
@@ -50,12 +50,10 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidBasicShapeId_Returns_True_For_BasicShapeExists()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        int expectedId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        int expectedId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await repository.BasicShapeExists(expectedId);
+        var result = await _repository.BasicShapeExists(expectedId);
 
         //Assert
         result.Should().Be(true);
@@ -67,16 +65,14 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newObject = BasicShapeTestData.NewBasicShape;
         newObject.ProjectId = projectId;
 
         //Act
-        await repository.AddAsync(newObject);
-        dbContext.ChangeTracker.Clear();
+        await _repository.AddAsync(newObject);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -86,10 +82,8 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        var objectToUpdate = BasicShapeTestData.ValidBasicShape(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToUpdate = BasicShapeTestData.ValidBasicShape(base.DbContext);
         if (objectToUpdate is not null)
         {
             objectToUpdate.ShapeType = BasicShapeType.Triangle;
@@ -99,8 +93,8 @@ public class BasicShapeRepositoryTests : BaseClassFixture
         }
 
         //Act
-        await repository.UpdateAsync(objectToUpdate!);
-        dbContext.ChangeTracker.Clear();
+        await _repository.UpdateAsync(objectToUpdate!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -110,14 +104,12 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFBasicShapeRepository(dbContext);
-        var objectToDelete = BasicShapeTestData.ValidBasicShape(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToDelete = BasicShapeTestData.ValidBasicShape(base.DbContext);
 
         //Act
-        await repository.DeleteAsync(objectToDelete!);
-        dbContext.ChangeTracker.Clear();
+        await _repository.DeleteAsync(objectToDelete!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }

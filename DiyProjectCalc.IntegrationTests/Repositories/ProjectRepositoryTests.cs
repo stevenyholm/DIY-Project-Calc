@@ -11,19 +11,21 @@ namespace DiyProjectCalc.IntegrationTests.Repositories;
 
 public class ProjectRepositoryTests : BaseClassFixture
 {
-    public ProjectRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.EFProjectRepository _repository;
+    public ProjectRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
+    {
+        _repository = new SUT.EFProjectRepository(base.DbContext);
+    }
 
     [Fact]
     [Trait("GetProjectAsync", "")]
     public async Task ValidProjectId_Returns_CorrectObject_For_GetProjectAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFProjectRepository(dbContext);
-        var expectedId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await repository.GetProjectAsync(expectedId);
+        var result = await _repository.GetProjectAsync(expectedId);
 
         //Assert
         result.As<Project>().ProjectId.Should().Be(expectedId);
@@ -34,11 +36,9 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task Returns_Projectss_For_GetAllProjectsAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new SUT.EFProjectRepository(dbContext);
 
         //Act
-        var result = await repository.GetAllProjectsAsync();
+        var result = await _repository.GetAllProjectsAsync();
 
         //Assert
         result.As<IEnumerable<Project>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
@@ -49,14 +49,12 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFProjectRepository(dbContext);
+        base.BeginTransaction(base.DbContext);
         var newObject = ProjectTestData.NewProject;
 
         //Act
-        await repository.AddAsync(newObject);
-        dbContext.ChangeTracker.Clear();
+        await _repository.AddAsync(newObject);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -66,18 +64,16 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFProjectRepository(dbContext);
-        var objectToUpdate = ProjectTestData.ValidProject(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToUpdate = ProjectTestData.ValidProject(base.DbContext);
         if (objectToUpdate is not null)
         {
             objectToUpdate.Name = "edited project";
         }
 
         //Act
-        await repository.UpdateAsync(objectToUpdate!);
-        dbContext.ChangeTracker.Clear();
+        await _repository.UpdateAsync(objectToUpdate!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -87,14 +83,12 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new SUT.EFProjectRepository(dbContext);
-        var objectToDelete = ProjectTestData.ValidProject(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var objectToDelete = ProjectTestData.ValidProject(base.DbContext);
 
         //Act
-        await repository.DeleteAsync(objectToDelete!);
-        dbContext.ChangeTracker.Clear();
+        await _repository.DeleteAsync(objectToDelete!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }

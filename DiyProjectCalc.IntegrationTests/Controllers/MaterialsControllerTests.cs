@@ -8,7 +8,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using DiyProjectCalc.Repositories;
 
@@ -16,21 +15,23 @@ namespace DiyProjectCalc.IntegrationTests.Controllers;
 
 public class MaterialsControllerTests : BaseClassFixture
 {
-    public MaterialsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.MaterialsController _controller;
+    public MaterialsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
+    {
+        _controller = new SUT.MaterialsController(new EFMaterialRepository(base.DbContext),
+                new EFProjectRepository(base.DbContext),
+                new EFBasicShapeRepository(base.DbContext));
+    }
 
     [Fact]
     [Trait("Index", "GET")]
     public async Task ValidProjectId_Returns_Materials_For_Index_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFMaterialRepository(dbContext);
-        var projectRepository = new EFProjectRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, projectRepository, null!);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Index(expectedProjectId);
+        var result = await _controller.Index(expectedProjectId);
 
         //Assert
         using (new AssertionScope())
@@ -46,13 +47,10 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Details_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFMaterialRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, null!);
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
+        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await controller.Details(expectedMaterialId);
+        var result = await _controller.Details(expectedMaterialId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
@@ -63,14 +61,10 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Returns_View_For_Create_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFMaterialRepository(dbContext);
-        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Create(expectedProjectId);
+        var result = await _controller.Create(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().ProjectId.Should().Be(expectedProjectId);
@@ -81,24 +75,18 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterial_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFMaterialRepository(dbContext);
-        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newMaterialEditViewModel = new MaterialEditViewModel()
         {
             ProjectId = projectId,
             Material = MaterialTestData.NewMaterial
         };
-        var newSelectedBasicShapeIds = dbContext.BasicShapes
-            .Where(b => BasicShapeTestData.BasicShapeNamesForMaterialEdit.Any(n => n == b.Name))
-            .Select(b => b.BasicShapeId).ToArray();
+        var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
         //Act
-        var result = await controller.Create(newMaterialEditViewModel, newSelectedBasicShapeIds);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.Create(newMaterialEditViewModel, newSelectedBasicShapeIds);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -109,14 +97,10 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Edit_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFMaterialRepository(dbContext);
-        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
+        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await controller.Edit(expectedMaterialId);
+        var result = await _controller.Edit(expectedMaterialId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.MaterialId.Should().Be(expectedMaterialId);
@@ -127,17 +111,13 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFMaterialRepository(dbContext);
-        var basicShapeRepository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, basicShapeRepository);
-        var materialId = MaterialTestData.ValidMaterialId(dbContext);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var editMaterialEditViewModel = new MaterialEditViewModel()
         {
             ProjectId = projectId,
-            Material = dbContext.Materials.FirstOrDefault(b => b.Name == MaterialTestData.ValidName)
+            Material = MaterialTestData.ValidMaterial(base.DbContext)
         };
         if (editMaterialEditViewModel.Material is not null)
         {
@@ -147,11 +127,11 @@ public class MaterialsControllerTests : BaseClassFixture
             editMaterialEditViewModel.Material.Width = 3.5;
             editMaterialEditViewModel.Material.Depth = 1.5;
         }
-        var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(dbContext);
+        var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
         //Act
-        var result = await controller.Edit(materialId, editMaterialEditViewModel, newSelectedBasicShapeIds);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.Edit(materialId, editMaterialEditViewModel, newSelectedBasicShapeIds);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -162,13 +142,10 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Delete_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFMaterialRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, null!);
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(dbContext);
+        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await controller.Delete(expectedMaterialId);
+        var result = await _controller.Delete(expectedMaterialId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
@@ -179,18 +156,14 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterialId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFMaterialRepository(dbContext);
-        var controller = new SUT.MaterialsController(repository, null!, null!);
-        var materialId = MaterialTestData.ValidMaterialId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
-        var result = await controller.DeleteConfirmed(materialId);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.DeleteConfirmed(materialId);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
     }
 }
-

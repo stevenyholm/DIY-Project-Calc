@@ -13,19 +13,20 @@ namespace DiyProjectCalc.IntegrationTests.Controllers;
 
 public class ProjectsControllerTests : BaseClassFixture
 {
-    public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.ProjectsController _controller;
+    public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
+    {
+        _controller = new SUT.ProjectsController(new EFProjectRepository(base.DbContext));
+    }
 
     [Fact]
     [Trait("Index", "GET")]
     public async Task Returns_AllProjects_For_Index_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
 
         //Act
-        var result = await controller.Index();
+        var result = await _controller.Index();
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<IEnumerable<Project>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
@@ -36,13 +37,10 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Returns_Project_For_Details_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Details(expectedProjectId);
+        var result = await _controller.Details(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -53,12 +51,9 @@ public class ProjectsControllerTests : BaseClassFixture
     public void Returns_View_For_Create_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
 
         //Act
-        var result = controller.Create();
+        var result = _controller.Create();
 
         //Assert
         result.Should().BeOfType<ViewResult>();
@@ -69,15 +64,12 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProject_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
+        base.BeginTransaction(base.DbContext);
         var project = ProjectTestData.NewProject;
 
         //Act
-        var result = await controller.Create(project);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.Create(project);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -88,13 +80,10 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Returns_Project_For_Edit_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Edit(expectedProjectId);
+        var result = await _controller.Edit(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -105,20 +94,17 @@ public class ProjectsControllerTests : BaseClassFixture
     public void ValidProject_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
+        base.BeginTransaction(base.DbContext);
 
-        var editedModel = ProjectTestData.ValidProject(dbContext);
+        var editedModel = ProjectTestData.ValidProject(base.DbContext);
         if (editedModel is not null)
         {
             editedModel.Name = "updated project";
         }
 
         //Act
-        var result = controller.Edit(editedModel!);
-        dbContext.ChangeTracker.Clear();
+        var result = _controller.Edit(editedModel!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -129,13 +115,10 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Returns_Project_For_Delete_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Delete(expectedProjectId);
+        var result = await _controller.Delete(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<Project>().ProjectId.Should().Be(expectedProjectId);
@@ -146,15 +129,12 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFProjectRepository(dbContext);
-        var controller = new SUT.ProjectsController(repository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.DeletePOST(expectedProjectId);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.DeletePOST(expectedProjectId);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

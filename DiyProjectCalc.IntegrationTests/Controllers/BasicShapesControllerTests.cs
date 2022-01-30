@@ -14,22 +14,23 @@ namespace DiyProjectCalc.IntegrationTests.Controllers;
 
 public class BasicShapesControllerTests : BaseClassFixture
 {
-    public BasicShapesControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
+    private SUT.BasicShapesController _controller;
+    public BasicShapesControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
+    {
+        _controller = new SUT.BasicShapesController(new EFBasicShapeRepository(base.DbContext),
+                new EFProjectRepository(base.DbContext));
+    }
 
     [Fact]
     [Trait("Index", "GET")]
     public async Task ValidProjectId_Returns_BasicShapes_For_Index_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var projectRepository = new EFProjectRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, projectRepository);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await controller.Index(expectedProjectId);
-
+        var result = await _controller.Index(expectedProjectId);
+        
         //Assert
         using (new AssertionScope())
         {
@@ -44,13 +45,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShapeId_Returns_BasicShape_For_Details_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await controller.Details(expectedBasicShapeId);
+        var result = await _controller.Details(expectedBasicShapeId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -61,13 +59,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public void ValidProjectId_Returns_View_For_Create_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var expectedProjectId = ProjectTestData.ValidProjectId(dbContext);
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = controller.Create(expectedProjectId);
+        var result = _controller.Create(expectedProjectId);
 
         //Assert
         result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
@@ -78,17 +73,14 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShape_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var projectId = ProjectTestData.ValidProjectId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newBasicShape = BasicShapeTestData.NewBasicShape;
         newBasicShape.ProjectId = projectId;
 
         //Act
-        var result = await controller.Create(newBasicShape);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.Create(newBasicShape);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -99,13 +91,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShapeId_Returns_BasicShape_For_Edit_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await controller.Edit(expectedBasicShapeId); 
+        var result = await _controller.Edit(expectedBasicShapeId); 
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -116,13 +105,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShape_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
+        base.BeginTransaction(base.DbContext);
 
-        var editedModel = BasicShapeTestData.ValidBasicShape(dbContext);
-        var editedModelId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        var editedModel = BasicShapeTestData.ValidBasicShape(base.DbContext);
+        var editedModelId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
         if (editedModel is not null)
         {
             editedModel.Number1 = 55.0;
@@ -132,8 +118,8 @@ public class BasicShapesControllerTests : BaseClassFixture
         }
 
         //Act
-        var result = await controller.Edit(editedModelId, editedModel!);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.Edit(editedModelId, editedModel!);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -144,13 +130,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShapeId_Returns_BasicShape_For_Delete_Get()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await controller.Delete(expectedBasicShapeId);
+        var result = await _controller.Delete(expectedBasicShapeId);
 
         //Assert
         result.As<ViewResult>().ViewData.Model.As<BasicShape>().BasicShapeId.Should().Be(expectedBasicShapeId);
@@ -161,18 +144,14 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShapeId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        using var dbContext = base.NewDbContext();
-        dbContext.Database.BeginTransaction();
-        var repository = new EFBasicShapeRepository(dbContext);
-        var controller = new SUT.BasicShapesController(repository, null!);
-        var basicShapeId = BasicShapeTestData.ValidBasicShapeId(dbContext);
+        base.BeginTransaction(base.DbContext);
+        var basicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
-        var result = await controller.DeleteConfirmed(basicShapeId);
-        dbContext.ChangeTracker.Clear();
+        var result = await _controller.DeleteConfirmed(basicShapeId);
+        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
     }
 }
-

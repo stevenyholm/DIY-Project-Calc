@@ -25,7 +25,7 @@ public class MaterialsControllerTests
         mockProjectRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
         var mockRepository = new Mock<IMaterialRepository>();
         mockRepository.Setup(r => r.GetMaterialsForProjectAsync(It.IsAny<int>())).ReturnsAsync(project.Materials);
-        var controller = new SUT.MaterialsController(mockRepository.Object, mockProjectRepository.Object, null!);
+        var controller = sut(repository: mockRepository, projectRepository: mockProjectRepository);
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
@@ -46,10 +46,10 @@ public class MaterialsControllerTests
     {
         //Arrange
         var material = MaterialTestData.MockSimpleMaterial;
-        var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
         var mockRepository = new Mock<IMaterialRepository>();
         mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, null!);
+        var controller = sut(repository: mockRepository);
+        var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
 
         //Act
         var result = await controller.Details(expectedMaterialId);
@@ -63,9 +63,7 @@ public class MaterialsControllerTests
     public async Task ValidProjectId_Returns_View_For_Create_Get()
     {
         //Arrange
-        var mockRepository = new Mock<IMaterialRepository>();
-        var mockBasicShapeRepository = new Mock<IBasicShapeRepository>();
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, mockBasicShapeRepository.Object);
+        var controller = sut();
         var expectedProjectId = ProjectTestData.MockSimpleProjectId;
 
         //Act
@@ -80,9 +78,7 @@ public class MaterialsControllerTests
     public async Task ValidMaterial_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var mockRepository = new Mock<IMaterialRepository>();
-        var mockBasicShapeRepository = new Mock<IBasicShapeRepository>();
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, mockBasicShapeRepository.Object);
+        var controller = sut();
         var projectId = ProjectTestData.MockSimpleProjectId;
         var newMaterialEditViewModel = new MaterialEditViewModel()
         {
@@ -107,8 +103,7 @@ public class MaterialsControllerTests
         var material = MaterialTestData.MockSimpleMaterial;
         material.ProjectId = ProjectTestData.MockSimpleProjectId;
         mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var mockBasicShapeRepository = new Mock<IBasicShapeRepository>();
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, mockBasicShapeRepository.Object);
+        var controller = sut(repository: mockRepository);
         var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
 
         //Act
@@ -123,9 +118,7 @@ public class MaterialsControllerTests
     public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var mockRepository = new Mock<IMaterialRepository>();
-        var mockBasicShapeRepository = new Mock<IBasicShapeRepository>();
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, mockBasicShapeRepository.Object);
+        var controller = sut();
         var materialId = MaterialTestData.MockSimpleMaterialId;
         var projectId = ProjectTestData.MockSimpleProjectId;
         var editMaterialEditViewModel = new MaterialEditViewModel()
@@ -159,7 +152,7 @@ public class MaterialsControllerTests
         var material = MaterialTestData.MockSimpleMaterial;
         var mockRepository = new Mock<IMaterialRepository>();
         mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, null!);
+        var controller = sut(repository: mockRepository);
         var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
 
         //Act
@@ -174,8 +167,7 @@ public class MaterialsControllerTests
     public async Task ValidMaterialId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        var mockRepository = new Mock<IMaterialRepository>();
-        var controller = new SUT.MaterialsController(mockRepository.Object, null!, null!);
+        var controller = sut();
         var materialId = MaterialTestData.MockSimpleMaterialId;
 
         //Act
@@ -184,5 +176,13 @@ public class MaterialsControllerTests
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
     }
+
+    private SUT.MaterialsController sut(Mock<IMaterialRepository>? repository = null,
+        Mock<IProjectRepository>? projectRepository = null,
+        Mock<IBasicShapeRepository>? basicShapeRepository = null) =>
+        new SUT.MaterialsController((repository is null) ? new Mock<IMaterialRepository>().Object : repository.Object,
+            (projectRepository is null) ? new Mock<IProjectRepository>().Object : projectRepository.Object,
+            (basicShapeRepository is null) ? new Mock<IBasicShapeRepository>().Object : basicShapeRepository.Object);
+
 }
 
