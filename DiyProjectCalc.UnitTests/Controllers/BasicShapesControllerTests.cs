@@ -12,7 +12,6 @@ using Xunit;
 
 namespace DiyProjectCalc.UnitTests.Controllers;
 
-[Collection("Controllers")]
 public class BasicShapesControllerTests 
 {
     [Fact]

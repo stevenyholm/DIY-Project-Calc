@@ -13,7 +13,6 @@ using DiyProjectCalc.Repositories;
 
 namespace DiyProjectCalc.UnitTests.Controllers;
 
-[Collection("Controllers")]
 public class MaterialsControllerTests 
 {
     [Fact]

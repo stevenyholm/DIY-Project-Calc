@@ -11,7 +11,6 @@ using Moq;
 
 namespace DiyProjectCalc.UnitTests.Controllers;
 
-[Collection("Controllers")]
 public class ProjectsControllerTests 
 {
     [Fact]

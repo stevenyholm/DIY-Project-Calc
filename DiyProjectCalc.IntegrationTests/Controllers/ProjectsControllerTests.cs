@@ -11,7 +11,6 @@ using DiyProjectCalc.Repositories;
 
 namespace DiyProjectCalc.IntegrationTests.Controllers;
 
-[Collection("Controllers")]
 public class ProjectsControllerTests : BaseClassFixture
 {
     public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) { }
