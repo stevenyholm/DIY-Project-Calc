@@ -55,7 +55,7 @@ public class EFMaterialRepository : IMaterialRepository
             .Include(m => m.BasicShapes)
             .FirstOrDefault(m => m.MaterialId == entity.MaterialId);
 
-        if (materialToSave is not null) //TODO: change "== null" to "is null" across the project
+        if (materialToSave is not null) 
         {
             _dbContext.Entry(materialToSave).CurrentValues.SetValues(entity);
             await SetBasicShapesForMaterial(materialToSave, selectedBasicShapeIds);

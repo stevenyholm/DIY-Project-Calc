@@ -23,7 +23,7 @@ public class BasicShape
     public string? Name { get; set; }
 
     //navigation properties 
-    [ForeignKey("Project")] //TODO: move data annotation to the context class, make this a pure domain model object
+    [ForeignKey("Project")] 
     public int ProjectId { get; set; }
     [ValidateNever]
     public virtual Project Project { get; set; } = null!;
@@ -36,8 +36,8 @@ public class BasicShape
     public double Number1 { get; set; }
 
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
-    [Display(Name = "Side 2 / degrees")] //TODO: move view annotations to a ViewModel, make this a pure domain model object
-    public double Number2 { get; set; } //TODO: handle case for a straight line that only needs one number
+    [Display(Name = "Side 2 / degrees")] 
+    public double Number2 { get; set; } 
 
     public string Description { get => $"{Name}, {ShapeType} ({Number1}, {Number2})"; }
 

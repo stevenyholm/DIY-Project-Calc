@@ -43,8 +43,6 @@ public class Material
     [DisplayFormat(DataFormatString = "{0:0.0}", ApplyFormatInEditMode = true)]
     public double? DepthNeeded { get; set; }
 
-    //TODO: separate commit: move TODO notes about features to Jira (and out of code)
-    //TODO: implement a more sophisticated quantity needed that accounts for waste 
 
     public double QuantityNeeded() =>
         (!CanCalculateQuantity()) ? 0 :

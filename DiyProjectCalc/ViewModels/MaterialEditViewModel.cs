@@ -1,9 +1,4 @@
 ﻿using DiyProjectCalc.Models;
-//TODO: change ViewModels to use simple types and not reference Model classes (domain logic)
-//      which would make for a cleaner architecture, but a more complicated project 
-//      and consider using AutoMapper https://automapper.org/ 
-//      and a flattened ViewModel allows for this Bind attribute on Create: Create([Bind("")] ), a security best practice
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DiyProjectCalc.ViewModels;
 

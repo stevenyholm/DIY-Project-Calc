@@ -102,7 +102,6 @@ namespace DiyProjectCalc.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    //TODO: handle errors more gracefully than returning page NotFound or throwing an error
                     if (! await MaterialExists(model.Material.MaterialId))
                     {
                         return NotFound(); 

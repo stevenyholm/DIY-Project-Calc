@@ -10,7 +10,7 @@ public class ProjectsController : Controller
     {
         this._repository = repository;
     }
-    //TODO: I wrote this controller along with a tutorial - upgrade it to use practices recommended by MS scaffolded code 
+    //NOTE: I wrote this controller along with a tutorial - and plan on making the style be consistent with the MS scaffolded code 
 
     public async Task<IActionResult> Index()
     {
@@ -51,8 +51,6 @@ public class ProjectsController : Controller
         if (ModelState.IsValid)
         {
             await _repository.AddAsync(obj);
-            //TODO: TempData didn't work with unit tests
- //           TempData["success"] = "Project created successfully.";
             return RedirectToAction("Index");
         }
         return View(obj);
@@ -60,7 +58,6 @@ public class ProjectsController : Controller
 
     public async Task<IActionResult> Edit(int? id)
     {
-        //TODO: should controller methods be async? this tutorial was really inconsistent about that
         if (id == null || id.Value == 0) 
             return NotFound();
 
@@ -82,7 +79,6 @@ public class ProjectsController : Controller
         if (ModelState.IsValid) 
         {
             _repository.UpdateAsync(obj);
-   //         TempData["success"] = "Project updated successfully.";
             return RedirectToAction("Index");
         }
         return View(obj);
@@ -114,10 +110,7 @@ public class ProjectsController : Controller
 
         await _repository.DeleteAsync(projectFromDb);
 
-  //      TempData["success"] = "Project deleted successfully.";
         return RedirectToAction("Index");
-        
-        //return View(obj);
     }
 
 }
