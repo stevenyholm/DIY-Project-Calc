@@ -6,6 +6,7 @@ using DiyProjectCalc.TestHelpers.TestData;
 using DiyProjectCalc.Models;
 using FluentAssertions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DiyProjectCalc.IntegrationTests.Repositories;
 
@@ -61,25 +62,29 @@ public class MaterialRepositoryTests : BaseClassFixture
 
     [Fact]
     [Trait("AddAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_AddAsync()
+    public async Task ValidObject_Adds_Item_For_AddAsync()
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newObject = MaterialTestData.NewMaterial;
         newObject.ProjectId = projectId;
+        var beforeCount = base.DbContext.Materials.Count();
 
         //Act
         await _repository.AddAsync(newObject);
 
         //Assert
+        var afterCount = base.DbContext.Materials.Count();
+        afterCount.Should().Be(beforeCount + 1);
     }
 
     [Fact]
     [Trait("UpdateAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_UpdateAsync()
+    public async Task ValidObject_Updates_Item_For_UpdateAsync()
     {
         //Arrange
         var objectToUpdate = MaterialTestData.ValidMaterial(base.DbContext);
+        var objectId = default(int);
         if (objectToUpdate is not null)
         {
             objectToUpdate.Name = "edited basic shape";
@@ -87,6 +92,7 @@ public class MaterialRepositoryTests : BaseClassFixture
             objectToUpdate.Length = 99.1;
             objectToUpdate.Depth = 88.1;
             objectToUpdate.Width = 77.1;
+            objectId = objectToUpdate.MaterialId;
         }
         var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
@@ -94,18 +100,23 @@ public class MaterialRepositoryTests : BaseClassFixture
         await _repository.UpdateAsync(objectToUpdate!, newSelectedBasicShapeIds);
 
         //Assert
+        var result = base.DbContext.Materials.First(o => o.MaterialId == objectId);
+        result.As<Material>().Name.Should().Be(objectToUpdate!.Name);
     }
 
     [Fact]
     [Trait("DeleteAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_DeleteAsync()
+    public async Task ValidObject_Removes_Item_For_DeleteAsync()
     {
         //Arrange
         var objectToDelete = MaterialTestData.ValidMaterial(base.DbContext);
+        var beforeCount = base.DbContext.Materials.Count();
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
 
         //Assert
+        var afterCount = base.DbContext.Materials.Count();
+        afterCount.Should().Be(beforeCount - 1);
     }
 }

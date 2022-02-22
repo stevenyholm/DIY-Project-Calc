@@ -63,50 +63,60 @@ public class BasicShapeRepositoryTests : BaseClassFixture
 
     [Fact]
     [Trait("AddAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_AddAsync()
+    public async Task ValidObject_Adds_Item_For_AddAsync()
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext); 
         var newObject = BasicShapeTestData.NewBasicShape;
         newObject.ProjectId = projectId;
+        var beforeCount = base.DbContext.BasicShapes.Count();
 
         //Act
         await _repository.AddAsync(newObject);
 
         //Assert
+        var afterCount = base.DbContext.BasicShapes.Count();
+        afterCount.Should().Be(beforeCount + 1);
     }
 
     [Fact]
     [Trait("UpdateAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_UpdateAsync()
+    public async Task ValidObject_Updates_Item_For_UpdateAsync()
     {
         //Arrange
         var objectToUpdate = BasicShapeTestData.ValidBasicShape(base.DbContext);
+        var objectId = default(int);
         if (objectToUpdate is not null)
         {
             objectToUpdate.ShapeType = BasicShapeType.Triangle;
             objectToUpdate.Number1 = 100.1;
             objectToUpdate.Number2 = 200.2;
             objectToUpdate.Name = "edited basic shape";
+            objectId = objectToUpdate.BasicShapeId;
         }
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
 
         //Assert
+        var result = base.DbContext.BasicShapes.First(o => o.BasicShapeId == objectId);
+        result.As<BasicShape>().Name.Should().Be(objectToUpdate!.Name);
     }
 
     [Fact]
     [Trait("DeleteAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_DeleteAsync()
+    public async Task ValidObject_Removes_Item_For_DeleteAsync()
     {
         //Arrange
         var objectToDelete = BasicShapeTestData.ValidBasicShape(base.DbContext);
+        var beforeCount = base.DbContext.BasicShapes.Count();
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
 
         //Assert
+        var afterCount = base.DbContext.BasicShapes.Count();
+        afterCount.Should().Be(beforeCount - 1);
     }
 
 }

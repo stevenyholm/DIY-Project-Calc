@@ -6,6 +6,7 @@ using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
 using DiyProjectCalc.Models;
 using FluentAssertions;
+using System.Linq;
 
 namespace DiyProjectCalc.IntegrationTests.Repositories;
 
@@ -46,44 +47,54 @@ public class ProjectRepositoryTests : BaseClassFixture
 
     [Fact]
     [Trait("AddAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_AddAsync()
+    public async Task ValidObject_Adds_Item_For_AddAsync()
     {
         //Arrange
         var newObject = ProjectTestData.NewProject;
+        var beforeCount = base.DbContext.Projects.Count();
 
         //Act
         await _repository.AddAsync(newObject);
 
         //Assert
+        var afterCount = base.DbContext.Projects.Count();
+        afterCount.Should().Be(beforeCount + 1);
     }
 
     [Fact]
     [Trait("UpdateAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_UpdateAsync()
+    public async Task ValidObject_Updates_Item_For_UpdateAsync()
     {
         //Arrange
         var objectToUpdate = ProjectTestData.ValidProject(base.DbContext);
+        var objectId = default(int);
         if (objectToUpdate is not null)
         {
             objectToUpdate.Name = "edited project";
+            objectId = objectToUpdate.ProjectId;
         }
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
 
         //Assert
+        var result = base.DbContext.Projects.First(o => o.ProjectId == objectId); 
+        result.As<Project>().Name.Should().Be(objectToUpdate!.Name);
     }
 
     [Fact]
     [Trait("DeleteAsync", "")]
-    public async Task ValidObject_Throws_NoError_For_DeleteAsync()
+    public async Task ValidObject_Removes_Item_For_DeleteAsync()
     {
         //Arrange
         var objectToDelete = ProjectTestData.ValidProject(base.DbContext);
+        var beforeCount = base.DbContext.Projects.Count();
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
 
         //Assert
+        var afterCount = base.DbContext.Projects.Count();
+        afterCount.Should().Be(beforeCount - 1);
     }
 }
