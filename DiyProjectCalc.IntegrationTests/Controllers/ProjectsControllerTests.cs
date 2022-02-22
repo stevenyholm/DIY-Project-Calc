@@ -64,12 +64,10 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProject_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var project = ProjectTestData.NewProject;
 
         //Act
         var result = await _controller.Create(project);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -94,8 +92,6 @@ public class ProjectsControllerTests : BaseClassFixture
     public void ValidProject_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
-
         var editedModel = ProjectTestData.ValidProject(base.DbContext);
         if (editedModel is not null)
         {
@@ -104,7 +100,6 @@ public class ProjectsControllerTests : BaseClassFixture
 
         //Act
         var result = _controller.Edit(editedModel!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -129,12 +124,10 @@ public class ProjectsControllerTests : BaseClassFixture
     public async Task ValidProjectId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
         var result = await _controller.DeletePOST(expectedProjectId);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

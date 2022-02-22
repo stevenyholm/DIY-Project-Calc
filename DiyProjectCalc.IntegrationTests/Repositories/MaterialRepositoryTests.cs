@@ -64,14 +64,12 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newObject = MaterialTestData.NewMaterial;
         newObject.ProjectId = projectId;
 
         //Act
         await _repository.AddAsync(newObject);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -81,7 +79,6 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToUpdate = MaterialTestData.ValidMaterial(base.DbContext);
         if (objectToUpdate is not null)
         {
@@ -95,7 +92,6 @@ public class MaterialRepositoryTests : BaseClassFixture
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!, newSelectedBasicShapeIds);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -105,12 +101,10 @@ public class MaterialRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToDelete = MaterialTestData.ValidMaterial(base.DbContext);
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }

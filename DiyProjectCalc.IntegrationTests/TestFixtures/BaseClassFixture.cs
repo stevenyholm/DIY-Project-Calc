@@ -1,4 +1,5 @@
 ﻿using DiyProjectCalc.Data;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using Xunit;
 
@@ -13,16 +14,13 @@ public abstract class BaseClassFixture : IClassFixture<DefaultTestDatabaseClassF
     {
         Fixture = fixture;
         DbContext = Fixture.CreateContext();
+        DbContext.Database.BeginTransaction();
+
     }
 
     public void Dispose()
     {
+        DbContext.Database.RollbackTransaction();
         DbContext.Dispose();
     }
-
-    protected void BeginTransaction(ApplicationDbContext dbContext) =>
-        dbContext.Database.BeginTransaction();
-
-    protected void RollbackTransaction(ApplicationDbContext dbContext) =>
-        dbContext.ChangeTracker.Clear();
 }

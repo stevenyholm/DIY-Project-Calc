@@ -75,7 +75,6 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterial_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newMaterialEditViewModel = new MaterialEditViewModel()
         {
@@ -86,7 +85,6 @@ public class MaterialsControllerTests : BaseClassFixture
 
         //Act
         var result = await _controller.Create(newMaterialEditViewModel, newSelectedBasicShapeIds);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -111,7 +109,6 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var editMaterialEditViewModel = new MaterialEditViewModel()
@@ -131,7 +128,6 @@ public class MaterialsControllerTests : BaseClassFixture
 
         //Act
         var result = await _controller.Edit(materialId, editMaterialEditViewModel, newSelectedBasicShapeIds);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -156,12 +152,10 @@ public class MaterialsControllerTests : BaseClassFixture
     public async Task ValidMaterialId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
 
         //Act
         var result = await _controller.DeleteConfirmed(materialId);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

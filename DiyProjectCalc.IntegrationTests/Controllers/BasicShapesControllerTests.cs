@@ -73,14 +73,12 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShape_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var newBasicShape = BasicShapeTestData.NewBasicShape;
         newBasicShape.ProjectId = projectId;
 
         //Act
         var result = await _controller.Create(newBasicShape);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -105,8 +103,6 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShape_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
-
         var editedModel = BasicShapeTestData.ValidBasicShape(base.DbContext);
         var editedModelId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
         if (editedModel is not null)
@@ -119,7 +115,6 @@ public class BasicShapesControllerTests : BaseClassFixture
 
         //Act
         var result = await _controller.Edit(editedModelId, editedModel!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -144,12 +139,10 @@ public class BasicShapesControllerTests : BaseClassFixture
     public async Task ValidBasicShapeId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var basicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
 
         //Act
         var result = await _controller.DeleteConfirmed(basicShapeId);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

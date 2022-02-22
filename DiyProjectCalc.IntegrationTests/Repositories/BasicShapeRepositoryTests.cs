@@ -6,6 +6,7 @@ using FluentAssertions;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DiyProjectCalc.IntegrationTests.Repositories;
 
@@ -65,14 +66,12 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext); 
         var newObject = BasicShapeTestData.NewBasicShape;
         newObject.ProjectId = projectId;
 
         //Act
         await _repository.AddAsync(newObject);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -82,7 +81,6 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToUpdate = BasicShapeTestData.ValidBasicShape(base.DbContext);
         if (objectToUpdate is not null)
         {
@@ -94,7 +92,6 @@ public class BasicShapeRepositoryTests : BaseClassFixture
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -104,12 +101,10 @@ public class BasicShapeRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToDelete = BasicShapeTestData.ValidBasicShape(base.DbContext);
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }

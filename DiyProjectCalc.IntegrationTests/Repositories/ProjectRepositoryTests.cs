@@ -49,12 +49,10 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_AddAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var newObject = ProjectTestData.NewProject;
 
         //Act
         await _repository.AddAsync(newObject);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -64,7 +62,6 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_UpdateAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToUpdate = ProjectTestData.ValidProject(base.DbContext);
         if (objectToUpdate is not null)
         {
@@ -73,7 +70,6 @@ public class ProjectRepositoryTests : BaseClassFixture
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
@@ -83,12 +79,10 @@ public class ProjectRepositoryTests : BaseClassFixture
     public async Task ValidObject_Throws_NoError_For_DeleteAsync()
     {
         //Arrange
-        base.BeginTransaction(base.DbContext);
         var objectToDelete = ProjectTestData.ValidProject(base.DbContext);
 
         //Act
         await _repository.DeleteAsync(objectToDelete!);
-        base.RollbackTransaction(base.DbContext);
 
         //Assert
     }
