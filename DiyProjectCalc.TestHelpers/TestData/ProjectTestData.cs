@@ -1,7 +1,9 @@
 ﻿using DiyProjectCalc.Data;
 using DiyProjectCalc.Models;
+using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,12 +24,36 @@ public class ProjectTestData
         };
     }
 
+    public static ProjectDTO NewProjectDTO
+    {
+        get => new ProjectDTO(
+            Name: ProjectTestData.NewProject.Name
+            );
+    }
+
     public static Project MockSimpleProject
     {
         get => new Project()
         {
             ProjectId = 99,
             Name = "New Project"
+        };
+    }
+    public static ProjectDTO MockSimpleProjectDTO
+    {
+        get => new ProjectDTO(
+            ProjectId: ProjectTestData.MockSimpleProject.ProjectId,
+            Name: ProjectTestData.MockSimpleProject.Name
+            );
+    }
+
+    public static Project MockSimpleProjectWithBasicShapes
+    {
+        get => new Project()
+        {
+            ProjectId = 99,
+            Name = "New Project",
+            BasicShapes = BasicShapeTestData.BasicShapesFor(new BasicShapeTestData().TestDataForPatioArea)
         };
     }
 
@@ -45,10 +71,16 @@ public class ProjectTestData
     }
 
     public static int ValidProjectId(ApplicationDbContext dbContext) =>
-        dbContext.Projects.FirstOrDefault(m => m.Name == ProjectTestData.ValidName)?.ProjectId ?? 0;
+        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName)?.ProjectId ?? 0;
 
     public static Project? ValidProject(ApplicationDbContext dbContext) =>
-        dbContext.Projects.FirstOrDefault(m => m.Name == ProjectTestData.ValidName);
+        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName);
+
+    public static ProjectDTO? ValidProjectDTO(ApplicationDbContext dbContext) =>
+        new ProjectDTO(
+            ProjectId: ProjectTestData.ValidProject(dbContext)?.ProjectId ?? -1,
+            Name: ProjectTestData.ValidProject(dbContext)?.Name
+            );
 
 
 

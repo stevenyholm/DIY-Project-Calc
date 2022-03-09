@@ -1,4 +1,4 @@
-﻿@model DiyProjectCalc.Models.BasicShape
+﻿@model DiyProjectCalc.Models.DTO.BasicShapeDTO
 
 @{
     ViewData["Title"] = "Details";
@@ -35,10 +35,10 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Project)
+            @Html.DisplayNameFor(model => model.ProjectName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Project.Name)
+            @Html.DisplayFor(model => model.ProjectName)
         </dd>
     </dl>
 </div>

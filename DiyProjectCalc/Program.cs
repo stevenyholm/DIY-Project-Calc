@@ -13,6 +13,8 @@ builder.Services.AddScoped<IProjectRepository, EFProjectRepository>();
 builder.Services.AddScoped<IMaterialRepository, EFMaterialRepository>();
 builder.Services.AddScoped<IBasicShapeRepository, EFBasicShapeRepository>();
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,3 +37,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+namespace DiyProjectCalc
+{
+    public partial class Program { } // needed for functional testing of API endpoints 
+}

@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=steve-dell;Database=DiyProjectCalcTests;Trusted_Connection=true;MultipleActiveResultSets=True"
+  }
+}

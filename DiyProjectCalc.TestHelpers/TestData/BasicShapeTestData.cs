@@ -1,7 +1,9 @@
 ﻿using DiyProjectCalc.Data;
 using DiyProjectCalc.Models;
+using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +16,7 @@ public class BasicShapeTestData
     public static readonly List<string> BasicShapeNamesForMaterialEdit = new List<string>()
     { "Patio Garage Side Area", "Patio Driveway Area",  "Patio Garage Connector Edge"};
 
-    public static BasicShape NewBasicShape 
+    public static BasicShape NewBasicShape
     {
         get => new BasicShape()
         {
@@ -23,6 +25,16 @@ public class BasicShapeTestData
             Number1 = 12.0,
             Number2 = 12.0
         };
+    }
+
+    public static BasicShapeDTO NewBasicShapeDTO
+    {
+        get => new BasicShapeDTO(
+            Name: BasicShapeTestData.NewBasicShape.Name,
+            ShapeType: BasicShapeTestData.NewBasicShape.ShapeType,
+            Number1: BasicShapeTestData.NewBasicShape.Number1,
+            Number2: BasicShapeTestData.NewBasicShape.Number2
+        );
     }
 
     public static BasicShape MockSimpleBasicShape
@@ -34,20 +46,45 @@ public class BasicShapeTestData
             Name = "BasicShape For Testing",
             ShapeType = BasicShapeType.Curved,
             Number1 = 33.0,
-            Number2 = 33.0
+            Number2 = 33.0,
+            Project = new Project() { ProjectId = 330, Name = "parent project" }
         };
     }
+
+    public static BasicShapeDTO MockSimpleBasicShapeDTO
+    {
+        get => new BasicShapeDTO(
+            BasicShapeId: BasicShapeTestData.MockSimpleBasicShape.BasicShapeId,
+            ProjectId: BasicShapeTestData.MockSimpleBasicShape.ProjectId,
+            Name: BasicShapeTestData.MockSimpleBasicShape.Name,
+            ShapeType: BasicShapeTestData.MockSimpleBasicShape.ShapeType,
+            Number1: BasicShapeTestData.MockSimpleBasicShape.Number1,
+            Number2: BasicShapeTestData.MockSimpleBasicShape.Number2,
+            ProjectName: BasicShapeTestData.MockSimpleBasicShape.Project.Name ?? "", //field in BasicShape.Project.Name comes from another table in the database
+            Description: "nice round shape", //in BasicShape this field is calculated 
+            Area: 12.33, //in BasicShape this field is calculated 
+            Distance: 1.2 //in BasicShape this field is calculated 
+            );
+    }
+
     public static int MockSimpleBasicShapeId
     {
         get => MockSimpleBasicShape.BasicShapeId;
     }
 
     public static int ValidBasicShapeId(ApplicationDbContext dbContext) =>
-        dbContext.BasicShapes.FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName)?.BasicShapeId ?? 0;
+        dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName)?.BasicShapeId ?? 0;
 
     public static BasicShape? ValidBasicShape(ApplicationDbContext dbContext) =>
-        dbContext.BasicShapes.FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName);
+        dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName);
 
+    public static BasicShapeDTO NewBasicShapeDTOWithProjectId(int projectId) => new BasicShapeDTO(
+        ShapeType: BasicShapeTestData.NewBasicShape.ShapeType,
+        Name: BasicShapeTestData.NewBasicShape.Name,
+        Number1: BasicShapeTestData.NewBasicShape.Number1,
+        Number2: BasicShapeTestData.NewBasicShape.Number2,
+        ProjectId: projectId
+        );
 
 
     //==============================================================================================

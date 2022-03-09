@@ -18,6 +18,11 @@ public class EFProjectRepository : IProjectRepository
         return await _dbContext.Projects.Where(p => p.ProjectId == projectId).FirstOrDefaultAsync();
     }
 
+    public async Task<Project?> GetProjectWithBasicShapesAsync(int projectId)
+    {
+        return await _dbContext.Projects.Where(p => p.ProjectId == projectId).Include(p => p.BasicShapes).FirstOrDefaultAsync();
+    }
+
     public async Task<IEnumerable<Project>> GetAllProjectsAsync()
     {
         return await _dbContext.Projects.Include(p => p.BasicShapes).ToListAsync();

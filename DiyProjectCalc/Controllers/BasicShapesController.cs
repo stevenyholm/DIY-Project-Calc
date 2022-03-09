@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using DiyProjectCalc.Models;
 using DiyProjectCalc.Repositories;
+using AutoMapper;
+using DiyProjectCalc.Models.DTO;
 
 namespace DiyProjectCalc.Controllers
 {
@@ -9,21 +9,22 @@ namespace DiyProjectCalc.Controllers
     {
         private readonly IBasicShapeRepository _repository;
         private readonly IProjectRepository _projectRepository;
+        private readonly API.BasicShapesController _api;
 
-        public BasicShapesController(IBasicShapeRepository repository, IProjectRepository projectRepository)
+        public BasicShapesController(IMapper mapper, IBasicShapeRepository repository, IProjectRepository projectRepository)
         {
             _repository = repository;
             _projectRepository = projectRepository;
+            _api = new API.BasicShapesController(mapper, _repository, _projectRepository);
         }
 
         // GET: BasicShapes
         public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
-            var basicShapes = await _repository.GetBasicShapesForProjectAsync(projectId);
-            ViewData["ProjectId"] = projectId;
-            var project = await _projectRepository.GetProjectAsync(projectId);
-            ViewData["ProjectName"] = (project is not null) ? project.Name : default(string);
-            return View(basicShapes);
+            var model = await _api.GetAllForProject(projectId);
+            ViewData["ProjectId"] = model.ProjectId;
+            ViewData["ProjectName"] = model.Name;
+            return View(model.BasicShapes);
         }
 
         // GET: BasicShapes/Details/5
@@ -34,7 +35,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
+            var basicShape = await _api.Get(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -55,12 +56,15 @@ namespace DiyProjectCalc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShape basicShape)
+        public async Task<IActionResult> Create([Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO basicShape)
         {
             if (ModelState.IsValid)
             {
-                await _repository.AddAsync(basicShape);
-                return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                var response = await _api.Post(basicShape);
+                if (response is CreatedAtActionResult)
+                {
+                    return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                }
             }
             ViewData["ProjectId"] = basicShape.ProjectId;
             return View(basicShape);
@@ -74,7 +78,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
+            var basicShape = await _api.Get(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -87,7 +91,7 @@ namespace DiyProjectCalc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShape basicShape)
+        public async Task<IActionResult> Edit(int id, [Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO basicShape)
         {
             if (id != basicShape.BasicShapeId)
             {
@@ -96,22 +100,13 @@ namespace DiyProjectCalc.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await _repository.UpdateAsync(basicShape);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (! await _repository.BasicShapeExists(basicShape.BasicShapeId)) 
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                var result = await _api.Put(id, basicShape);
+                if (result is OkResult)
+                    return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                else if (result is NotFoundResult)
+                    return NotFound();
+                else
+                    throw new Exception("Error in saving edits to basic shape.");
             }
             return View(basicShape);
         }
@@ -124,7 +119,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
-            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
+            var basicShape = await _api.Get(Convert.ToInt32(id));
             if (basicShape == null)
             {
                 return NotFound();
@@ -138,10 +133,8 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var basicShape = await _repository.GetBasicShapeAsync(Convert.ToInt32(id));
-            var projectId = basicShape?.ProjectId;
-            await _repository.DeleteAsync(basicShape!);
-            return RedirectToAction(nameof(Index), new { ProjectId = projectId });
+            var response = await _api.Delete(id);
+            return RedirectToAction(nameof(Index), new { ProjectId = response });
         }
     }
 }
