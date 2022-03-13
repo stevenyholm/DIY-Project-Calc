@@ -47,10 +47,6 @@ public class ProjectsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ProjectDTO obj)
     {
-        if (obj.Name == "42")
-        {
-            ModelState.AddModelError("Name", "Name cannot be 42. That number is reserved.");
-        }
         if (ModelState.IsValid)
         {
             await _api.Post(obj);
@@ -75,10 +71,6 @@ public class ProjectsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(ProjectDTO obj)
     {
-        if (obj.Name == "42")
-        {
-            ModelState.AddModelError("Name", "Name cannot be 42. That number is reserved.");
-        }
         if (ModelState.IsValid) 
         {
             await _api.Put(obj.ProjectId, obj);
