@@ -48,6 +48,7 @@ public class BasicShapesController : ControllerBase
         try
         {
             var basicShape = _mapper.Map<BasicShape>(model);
+            basicShape.Project = (await _projectRepository.GetProjectAsync(basicShape.ProjectId))!;
             await _repository.AddAsync(basicShape);
             return CreatedAtAction(nameof(BasicShapeDTO), new { BasicShapeId = basicShape.BasicShapeId }, 
                 _mapper.Map<BasicShapeDTO>(basicShape));
@@ -65,6 +66,7 @@ public class BasicShapesController : ControllerBase
         try
         {
             var basicShape = _mapper.Map<BasicShape>(model);
+            basicShape.Project = (await _projectRepository.GetProjectAsync(basicShape.ProjectId))!;
             await _repository.UpdateAsync(basicShape);
             return Ok();
         }
