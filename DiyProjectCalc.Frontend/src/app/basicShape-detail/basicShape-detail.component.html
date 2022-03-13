@@ -1,0 +1,28 @@
+<div *ngIf="basicShape">
+
+  <h2>{{basicShape.name | uppercase}} Details</h2>
+  <div><span>id: </span>{{basicShape.basicShapeId}}</div>
+  <div>
+    <label for="basicShape-name">Basic Shape name: </label>
+    <input id="basicShape-name" [(ngModel)]="basicShape.name" placeholder="name">
+
+    <label for="basicShape-number1">Number 1: </label>
+    <input id="basicShape-number1" [(ngModel)]="basicShape.number1" placeholder="number1" />
+
+    <label for="basicShape-number2">Number 2: </label>
+    <input id="basicShape-number2" [(ngModel)]="basicShape.number2" placeholder="number2" />
+
+    <label for="basicShape-shapeType">Shape Type: </label>
+    <input id="basicShape-shapeType" [(ngModel)]="basicShape.shapeType" placeholder="shapeType" />
+
+    <div><span>proejct id: </span>{{basicShape.projectId}}</div>
+    <div><span>description: </span>{{basicShape.description}}</div>
+    <div><span>area: </span>{{basicShape.area}}</div>
+    <div><span>distance: </span>{{basicShape.distance}}</div>
+
+  </div>
+
+</div>
+
+<button type="button" (click)="goBack()">go back</button>
+<button type="button" (click)="save()">save</button>

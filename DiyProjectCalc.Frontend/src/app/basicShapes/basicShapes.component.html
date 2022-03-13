@@ -1,0 +1,34 @@
+<h2>Basic Shapes for {{projectWithBasicShapes.name}}</h2>
+
+<div>
+  <label for="new-basicShape">Basic Shape name: </label>
+  <input id="new-basicShape" #basicShapeName />
+
+  <label for="new-basicShapeNumber1">Number 1: </label>
+  <input id="new-basicShapeNumber1" #basicShapeNumber1 />
+
+  <label for="new-basicShapeNumber2">Number 2: </label>
+  <input id="new-basicShapeNumber2" #basicShapeNumber2 />
+
+  <label for="new-basicShapeShapeType">Shape Type: </label>
+  <input id="new-basicShapeShapeType" #basicShapeShapeType />
+
+  <button type="button" class="add-button"
+          (click)="add(basicShapeName.value, basicShapeNumber1.value, basicShapeNumber2.value, basicShapeShapeType.value, projectWithBasicShapes.projectId );
+          basicShapeName.value='';basicShapeNumber1.value='';basicShapeNumber2.value='';basicShapeShapeType.value=''">
+    Add basic shape
+  </button>
+
+</div>
+
+<ul class="basicShapes">
+  <li *ngFor="let basicShape of projectWithBasicShapes.basicShapes">
+    <a routerLink="/basicShapes/{{basicShape.basicShapeId}}">
+      <span class="badge">{{basicShape.basicShapeId}}</span> {{basicShape.name}}
+    </a>
+    <button type="button" class="delete" title="delete basic shape"
+            (click)="delete(basicShape)">
+      x
+    </button>
+  </li>
+</ul>
