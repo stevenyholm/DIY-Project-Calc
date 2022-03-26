@@ -1,12 +1,12 @@
 ﻿using SUT = DiyProjectCalc.Repositories;
 using Xunit;
-using DiyProjectCalc.Models;
 using FluentAssertions;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestData;
 using System.Collections.Generic;
 using System.Linq;
 using DiyProjectCalc.TestHelpers.TestFixtures;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Integration.Repositories;
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Models.DTO;
 
 namespace DiyProjectCalc.Models.Mappings;

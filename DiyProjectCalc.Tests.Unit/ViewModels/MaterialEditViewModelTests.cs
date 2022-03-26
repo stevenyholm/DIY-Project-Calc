@@ -1,8 +1,8 @@
 ﻿using SUT = DiyProjectCalc.ViewModels;
-using DiyProjectCalc.Models;
 using FluentAssertions;
 using System.Collections.Generic;
 using Xunit;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Unit.ViewModels;
 

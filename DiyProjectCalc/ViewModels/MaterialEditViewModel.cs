@@ -1,4 +1,4 @@
-﻿using DiyProjectCalc.Models;
+﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.ViewModels;
 

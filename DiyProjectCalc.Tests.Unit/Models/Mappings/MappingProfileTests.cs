@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.Models.Mappings;
 using DiyProjectCalc.TestHelpers.Helpers;

@@ -1,4 +1,4 @@
-﻿using DiyProjectCalc.Models;
+﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.TestHelpers.TestModels.Abstractions;
 using System.Text.Json;
 using Xunit.Abstractions;

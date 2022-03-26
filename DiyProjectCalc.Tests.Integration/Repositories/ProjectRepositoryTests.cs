@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
-using DiyProjectCalc.Models;
 using FluentAssertions;
 using System.Linq;
 using DiyProjectCalc.TestHelpers.TestFixtures;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Integration.Repositories;
 

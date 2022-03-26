@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.ViewModels;
 using DiyProjectCalc.Repositories;
 

@@ -9,7 +9,7 @@ using DiyProjectCalc.TestHelpers.TestFixtures;
 using System.Net;
 using DiyProjectCalc.TestHelpers.Helpers;
 using FluentAssertions.Execution;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Functional.APIEndpoints;
 
@@ -68,7 +68,8 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
     public async Task POST_BasicShapes_with_BasicShape()
     {
         //Arrange
-        var newBasicShape = BasicShapeTestData.NewBasicShapeDTO;
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var newBasicShape = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
 
         //Act
         var response = await base.PostAsync($"basicshapes", newBasicShape);

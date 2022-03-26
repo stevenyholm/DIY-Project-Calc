@@ -9,7 +9,7 @@ using DiyProjectCalc.Repositories;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers.API;
 

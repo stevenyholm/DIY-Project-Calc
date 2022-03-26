@@ -1,5 +1,4 @@
 ﻿using SUT = DiyProjectCalc.Controllers;
-using DiyProjectCalc.Models;
 using DiyProjectCalc.TestHelpers.TestData;
 using Xunit;
 using FluentAssertions;
@@ -11,6 +10,7 @@ using DiyProjectCalc.Repositories;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers;
 

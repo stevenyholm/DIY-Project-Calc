@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.Repositories;
 using Microsoft.AspNetCore.Mvc;

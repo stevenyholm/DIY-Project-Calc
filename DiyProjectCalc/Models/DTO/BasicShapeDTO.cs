@@ -1,4 +1,6 @@
-﻿namespace DiyProjectCalc.Models.DTO;
+﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
+
+namespace DiyProjectCalc.Models.DTO;
 
 public record BasicShapeDTO(
     BasicShapeType ShapeType,

@@ -1,5 +1,5 @@
 ﻿using DiyProjectCalc.Data;
-using DiyProjectCalc.Models;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace DiyProjectCalc.Repositories;

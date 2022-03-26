@@ -1,5 +1,4 @@
-﻿using DiyProjectCalc.Models;
-
+﻿
 namespace DiyProjectCalc.Models.DTO;
 
 public record ProjectDTOWithBasicShapes(
