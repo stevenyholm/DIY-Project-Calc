@@ -7,7 +7,9 @@
     <JavaScriptTestFramework>Jasmine</JavaScriptTestFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Script Include="**" Exclude="*.esproj;**\node_modules\**" />
+    <Script Include="**"/>
+    <Script Remove="**.d.ts"/> <!--this fixes a bug where auto-generated TypeScript code in the node_module folder was producing hundreds of IntelliSense compiler errors -->
+  <!--<Script Include="**" Exclude="*.esproj;**\node_modules\**" />--> 
   </ItemGroup>
   <!-- This target is copied from the ASP.NET SPA template in order to ensure node_modules are in place. -->
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
