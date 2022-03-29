@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.TestHelpers.TestData;
 using FluentAssertions;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
 public class ProjectsControllerTests

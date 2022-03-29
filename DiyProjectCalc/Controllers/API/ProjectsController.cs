@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

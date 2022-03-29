@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiyProjectCalc.Controllers;

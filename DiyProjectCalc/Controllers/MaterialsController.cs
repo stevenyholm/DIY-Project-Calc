@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.ViewModels;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 
 namespace DiyProjectCalc.Controllers
 {

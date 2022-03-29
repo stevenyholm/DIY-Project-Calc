@@ -1,6 +1,6 @@
 using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.Infrastructure.Repositories;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; 

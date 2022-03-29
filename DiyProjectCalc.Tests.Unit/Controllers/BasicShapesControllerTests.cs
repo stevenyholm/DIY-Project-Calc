@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers;
 

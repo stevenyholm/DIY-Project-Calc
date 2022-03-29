@@ -1,7 +1,7 @@
 ﻿using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using Microsoft.EntityFrameworkCore;
-using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Interfaces;
 
 namespace DiyProjectCalc.Infrastructure.Repositories;
 
