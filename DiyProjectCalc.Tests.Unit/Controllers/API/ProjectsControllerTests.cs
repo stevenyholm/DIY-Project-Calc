@@ -1,5 +1,4 @@
-﻿using DiyProjectCalc.Repositories;
-using DiyProjectCalc.TestHelpers.Helpers;
+﻿using DiyProjectCalc.TestHelpers.Helpers;
 using Moq;
 using SUT = DiyProjectCalc.Controllers.API;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.TestHelpers.TestData;
 using FluentAssertions;
 using DiyProjectCalc.Models.DTO;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
 public class ProjectsControllerTests

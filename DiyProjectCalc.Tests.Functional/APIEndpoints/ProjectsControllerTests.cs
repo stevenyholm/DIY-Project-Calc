@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
-using DiyProjectCalc.Repositories;
 using DiyProjectCalc.Models.DTO;
 using FluentAssertions.Execution;
 using FluentAssertions;
 using System.Net;
 using DiyProjectCalc.TestHelpers.TestData;
 using Xunit;
+using DiyProjectCalc.Infrastructure.Repositories;
 
 namespace DiyProjectCalc.Tests.Functional.APIEndpoints;
 

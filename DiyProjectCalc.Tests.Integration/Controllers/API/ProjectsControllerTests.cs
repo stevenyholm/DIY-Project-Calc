@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestFixtures;
-using DiyProjectCalc.Repositories;
 using DiyProjectCalc.TestHelpers.Helpers;
 using Xunit;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestData;
+using DiyProjectCalc.Infrastructure.Repositories;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers.API;
 public class ProjectsControllerTests : BaseDatabaseClassFixture

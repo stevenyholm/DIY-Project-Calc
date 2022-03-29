@@ -1,7 +1,6 @@
 ﻿using Moq;
 using SUT = DiyProjectCalc.Controllers.API;
 using System.Threading.Tasks;
-using DiyProjectCalc.Repositories;
 using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
 using FluentAssertions.Execution;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.Models.DTO;
 using FluentAssertions;
 using DiyProjectCalc.TestHelpers.Helpers;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
 public class BasicShapesControllerTests

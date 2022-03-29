@@ -1,6 +1,6 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
-namespace DiyProjectCalc.Repositories;
+namespace DiyProjectCalc.SharedKernel.Interfaces;
 
 public interface IProjectRepository
 {

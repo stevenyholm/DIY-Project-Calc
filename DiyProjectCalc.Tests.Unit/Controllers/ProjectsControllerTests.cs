@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
-using DiyProjectCalc.Repositories;
 using Moq;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers;
 

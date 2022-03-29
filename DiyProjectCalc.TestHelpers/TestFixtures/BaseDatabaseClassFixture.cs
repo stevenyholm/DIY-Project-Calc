@@ -1,4 +1,4 @@
-﻿using DiyProjectCalc.Data;
+﻿using DiyProjectCalc.Infrastructure.Data;
 using System;
 using Xunit;
 

@@ -1,8 +1,9 @@
-﻿using DiyProjectCalc.Data;
+﻿using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using Microsoft.EntityFrameworkCore;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
-namespace DiyProjectCalc.Repositories;
+namespace DiyProjectCalc.Infrastructure.Repositories;
 
 public class EFMaterialRepository : IMaterialRepository
 {

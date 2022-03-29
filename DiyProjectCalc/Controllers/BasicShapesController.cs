@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DiyProjectCalc.Repositories;
 using AutoMapper;
 using DiyProjectCalc.Models.DTO;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 namespace DiyProjectCalc.Controllers
 {

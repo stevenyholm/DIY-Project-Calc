@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
-using DiyProjectCalc.Repositories;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers;
 

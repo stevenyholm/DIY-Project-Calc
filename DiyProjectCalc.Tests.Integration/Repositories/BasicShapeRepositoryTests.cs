@@ -1,4 +1,4 @@
-﻿using SUT = DiyProjectCalc.Repositories;
+﻿using SUT = DiyProjectCalc.Infrastructure.Repositories;
 using Xunit;
 using FluentAssertions;
 using System.Threading.Tasks;

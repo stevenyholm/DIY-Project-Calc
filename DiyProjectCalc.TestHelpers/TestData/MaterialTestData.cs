@@ -1,5 +1,5 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
-using DiyProjectCalc.Data;
+using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
 using System.Collections.Generic;

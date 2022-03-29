@@ -7,9 +7,9 @@ using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DiyProjectCalc.Repositories;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.Infrastructure.Repositories;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers;
 

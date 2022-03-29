@@ -5,11 +5,11 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using DiyProjectCalc.Repositories;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.Infrastructure.Repositories;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers.API;
 
