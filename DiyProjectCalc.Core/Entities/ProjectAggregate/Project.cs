@@ -1,5 +1,5 @@
 ﻿
-//using DiyProjectCalc.SharedKernel;
+using DiyProjectCalc.SharedKernel;
 //using DiyProjectCalc.SharedKernel.Interfaces;
 
 //namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
@@ -21,10 +21,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
-public class Project
+public class Project : BaseEntity
 {
-    [Key]
-    public int ProjectId { get; set; }
 
     [Required]
     [Display(Name = "Project Name")]

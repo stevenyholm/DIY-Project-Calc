@@ -46,7 +46,7 @@ public class ProjectsController : ControllerBase
         {
             var project = _mapper.Map<Project>(model);
             await _repository.AddAsync(project);
-            return CreatedAtAction(nameof(ProjectDTO), new { ProjectId = project.ProjectId },
+            return CreatedAtAction(nameof(ProjectDTO), new { ProjectId = project.Id },
                 _mapper.Map<ProjectDTO>(project));
         }
         catch

@@ -14,12 +14,12 @@ public class EFMaterialRepository : IMaterialRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<Material?> GetMaterialAsync(int expectedId)
+    public async Task<Material?> GetMaterialAsync(int id)
     {
         return await _dbContext.Materials
             .Include(m => m.Project)
             .Include(m => m.BasicShapes)
-            .FirstOrDefaultAsync(m => m.MaterialId == expectedId);
+            .FirstOrDefaultAsync(m => m.Id == id);
 
         //Material - Edit - GET needed this: 
     //    model.Material = await _context.Materials
@@ -39,9 +39,9 @@ public class EFMaterialRepository : IMaterialRepository
     }
 
 
-    public async Task<bool> MaterialExists(int materialId)
+    public async Task<bool> MaterialExists(int id)
     {
-        return await _dbContext.Materials.AnyAsync(e => e.MaterialId == materialId);
+        return await _dbContext.Materials.AnyAsync(e => e.Id == id);
     }
 
     public async Task AddAsync(Material entity)
@@ -54,7 +54,7 @@ public class EFMaterialRepository : IMaterialRepository
     {
         var materialToSave = _dbContext.Materials
             .Include(m => m.BasicShapes)
-            .FirstOrDefault(m => m.MaterialId == entity.MaterialId);
+            .FirstOrDefault(m => m.Id == entity.Id);
 
         if (materialToSave is not null) 
         {
@@ -82,18 +82,18 @@ public class EFMaterialRepository : IMaterialRepository
         var allBasicShapesForProject = await basicShapeRepository.GetBasicShapesForProjectAsync(model.ProjectId);
 
         var basicShapesToAdd = allBasicShapesForProject
-            .Where(b => selectedBasicShapeIds.Any(s => s == b.BasicShapeId))
-            .Where(b => !model.BasicShapes.Any(m => m.BasicShapeId == b.BasicShapeId));
+            .Where(b => selectedBasicShapeIds.Any(s => s == b.Id))
+            .Where(b => !model.BasicShapes.Any(m => m.Id == b.Id));
         foreach (var basicShape in basicShapesToAdd)
         {
             model.BasicShapes.Add(basicShape);
         }
 
-        bool isEditView = (model.MaterialId != default(int));
+        bool isEditView = (model.Id != default(int));
         if (isEditView)
         {
             var basicShapesToRemove = model.BasicShapes
-                .Where(b => !selectedBasicShapeIds.Any(s => s == b.BasicShapeId)).ToList();
+                .Where(b => !selectedBasicShapeIds.Any(s => s == b.Id)).ToList();
             foreach (var basicShape in basicShapesToRemove)
             {
                 model.BasicShapes.Remove(basicShape);

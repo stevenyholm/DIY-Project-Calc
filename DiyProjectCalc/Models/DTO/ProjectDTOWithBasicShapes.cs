@@ -2,7 +2,7 @@
 namespace DiyProjectCalc.Models.DTO;
 
 public record ProjectDTOWithBasicShapes(
-    int ProjectId, 
+    int Id, 
     string? Name
     )
 {

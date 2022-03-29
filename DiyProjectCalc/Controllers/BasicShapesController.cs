@@ -22,7 +22,7 @@ namespace DiyProjectCalc.Controllers
         public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
         {
             var model = await _api.GetAllForProject(projectId);
-            ViewData["ProjectId"] = model.ProjectId;
+            ViewData["ProjectId"] = model.Id;
             ViewData["ProjectName"] = model.Name;
             return View(model.BasicShapes);
         }
@@ -93,7 +93,7 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO basicShape)
         {
-            if (id != basicShape.BasicShapeId)
+            if (id != basicShape.Id)
             {
                 return NotFound();
             }

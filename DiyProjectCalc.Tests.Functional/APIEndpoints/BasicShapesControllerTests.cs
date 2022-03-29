@@ -39,7 +39,7 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
         {
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             result?.BasicShapes.Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
-            result?.ProjectId.Should().Be(expectedProjectId);
+            result?.Id.Should().Be(expectedProjectId);
             result?.Name.Should().Be(ProjectTestData.ValidName);
         }
     }
@@ -59,7 +59,7 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
         using (new AssertionScope())
         {
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result?.BasicShapeId.Should().Be(expectedBasicShapeId);
+            result?.Id.Should().Be(expectedBasicShapeId);
         }
     }
 
@@ -90,12 +90,12 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            BasicShapeId: newBasicShape.BasicShapeId,
+            Id: newBasicShape.Id,
             ProjectId: projectId
             );
 
         //Act
-        var response = await base.PutAsync($"basicshapes/{newBasicShape.BasicShapeId}", editedModelDTO);
+        var response = await base.PutAsync($"basicshapes/{newBasicShape.Id}", editedModelDTO);
 
         //Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

@@ -55,7 +55,7 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
         using (new AssertionScope())
         {
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.As<ProjectDTO>().ProjectId.Should().Be(expectedProjectId);
+            result.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
         }
     }
 
@@ -81,7 +81,7 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
         var editedModelDTO = new ProjectDTO(
-            ProjectId: projectId,
+            Id: projectId,
             Name: "roundy roundy"
             );
 

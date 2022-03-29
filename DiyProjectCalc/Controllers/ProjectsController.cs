@@ -73,7 +73,7 @@ public class ProjectsController : Controller
     {
         if (ModelState.IsValid) 
         {
-            await _api.Put(obj.ProjectId, obj);
+            await _api.Put(obj.Id, obj);
             return RedirectToAction("Index");
         }
         return View(obj);

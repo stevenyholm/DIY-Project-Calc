@@ -35,14 +35,14 @@ public class ProjectTestData
     {
         get => new Project()
         {
-            ProjectId = 99,
+            Id = 99,
             Name = "New Project"
         };
     }
     public static ProjectDTO MockSimpleProjectDTO
     {
         get => new ProjectDTO(
-            ProjectId: ProjectTestData.MockSimpleProject.ProjectId,
+            Id: ProjectTestData.MockSimpleProject.Id,
             Name: ProjectTestData.MockSimpleProject.Name
             );
     }
@@ -51,7 +51,7 @@ public class ProjectTestData
     {
         get => new Project()
         {
-            ProjectId = 99,
+            Id = 99,
             Name = "New Project",
             BasicShapes = BasicShapeTestData.BasicShapesFor(new BasicShapeTestData().TestDataForPatioArea)
         };
@@ -59,7 +59,7 @@ public class ProjectTestData
 
     public static int MockSimpleProjectId
     {
-        get => MockSimpleProject.ProjectId;
+        get => MockSimpleProject.Id;
     }
 
     public ProjectTestData()
@@ -71,14 +71,14 @@ public class ProjectTestData
     }
 
     public static int ValidProjectId(ApplicationDbContext dbContext) =>
-        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName)?.ProjectId ?? 0;
+        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName)?.Id ?? 0;
 
     public static Project? ValidProject(ApplicationDbContext dbContext) =>
         dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName);
 
     public static ProjectDTO? ValidProjectDTO(ApplicationDbContext dbContext) =>
         new ProjectDTO(
-            ProjectId: ProjectTestData.ValidProject(dbContext)?.ProjectId ?? -1,
+            Id: ProjectTestData.ValidProject(dbContext)?.Id ?? -1,
             Name: ProjectTestData.ValidProject(dbContext)?.Name
             );
 

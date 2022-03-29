@@ -29,7 +29,7 @@ public class ProjectRepositoryTests : BaseDatabaseClassFixture
         var result = await _repository.GetProjectAsync(expectedId);
 
         //Assert
-        result.As<Project>().ProjectId.Should().Be(expectedId);
+        result.As<Project>().Id.Should().Be(expectedId);
     }
 
     [Fact]
@@ -71,14 +71,14 @@ public class ProjectRepositoryTests : BaseDatabaseClassFixture
         if (objectToUpdate is not null)
         {
             objectToUpdate.Name = "edited project";
-            objectId = objectToUpdate.ProjectId;
+            objectId = objectToUpdate.Id;
         }
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
 
         //Assert
-        var result = base.DbContext.Projects.First(o => o.ProjectId == objectId); 
+        var result = base.DbContext.Projects.First(o => o.Id == objectId); 
         result.As<Project>().Name.Should().Be(objectToUpdate!.Name);
     }
 

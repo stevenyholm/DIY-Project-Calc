@@ -69,16 +69,16 @@ public class MaterialEditViewModelTests
             Name = "gravel",
             BasicShapes = new HashSet<BasicShape>()
             {
-                new BasicShape() { BasicShapeId = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 }, 
-                new BasicShape() { BasicShapeId = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 }
+                new BasicShape() { Id = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 }, 
+                new BasicShape() { Id = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 }
             }
         };
         materialEditViewModel.BasicShapesForProject = new List<BasicShape>()
         {
-                new BasicShape() { BasicShapeId = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 },
-                new BasicShape() { BasicShapeId = 2, ShapeType = BasicShapeType.Curved, Number1 = 5.0, Number2 = 2.0 },
-                new BasicShape() { BasicShapeId = 3, ShapeType = BasicShapeType.Rectangle, Number1 = 50.0, Number2 = 20.0 },
-                new BasicShape() { BasicShapeId = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 }
+                new BasicShape() { Id = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 },
+                new BasicShape() { Id = 2, ShapeType = BasicShapeType.Curved, Number1 = 5.0, Number2 = 2.0 },
+                new BasicShape() { Id = 3, ShapeType = BasicShapeType.Rectangle, Number1 = 50.0, Number2 = 20.0 },
+                new BasicShape() { Id = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 }
         };
 
         //Act

@@ -2,7 +2,7 @@
 
 public record ProjectDTO(
     string? Name,
-    int ProjectId = default
+    int Id = default
     )
 {
 }

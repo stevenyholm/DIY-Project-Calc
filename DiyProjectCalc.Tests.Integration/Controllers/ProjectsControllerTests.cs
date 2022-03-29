@@ -44,7 +44,7 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Details(expectedProjectId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().ProjectId.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Edit(expectedProjectId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().ProjectId.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Delete(expectedProjectId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().ProjectId.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
     }
 
     [Fact]

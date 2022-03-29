@@ -59,7 +59,7 @@ public class MaterialsControllerTests
         var result = await _controller.Details(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class MaterialsControllerTests
         var result = await _controller.Edit(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class MaterialsControllerTests
         };
         if (editMaterialEditViewModel.Material is not null)
         {
-            editMaterialEditViewModel.Material.MaterialId = materialId;
+            editMaterialEditViewModel.Material.Id = materialId;
             editMaterialEditViewModel.Material.Name = "2x4 redwood";
             editMaterialEditViewModel.Material.MeasurementType = MaterialMeasurement.Linear;
             editMaterialEditViewModel.Material.Length = 8.0;
@@ -156,7 +156,7 @@ public class MaterialsControllerTests
         var result = await _controller.Delete(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]

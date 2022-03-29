@@ -89,7 +89,7 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MaterialEditViewModel model, int[] selectedBasicShapeIds)
         {
-            if (id != model.Material?.MaterialId) 
+            if (id != model.Material?.Id) 
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace DiyProjectCalc.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await MaterialExists(model.Material.MaterialId))
+                    if (! await MaterialExists(model.Material.Id))
                     {
                         return NotFound(); 
                     }
@@ -180,18 +180,18 @@ namespace DiyProjectCalc.Controllers
             var allBasicShapesForProject = await AllBasicShapesForProject(model.ProjectId);
 
             var basicShapesToAdd = allBasicShapesForProject
-                .Where(b => selectedBasicShapeIds.Any(s => s == b.BasicShapeId))
-                .Where(b => !model.BasicShapes.Any(m => m.BasicShapeId == b.BasicShapeId));
+                .Where(b => selectedBasicShapeIds.Any(s => s == b.Id))
+                .Where(b => !model.BasicShapes.Any(m => m.Id == b.Id));
             foreach(var basicShape in basicShapesToAdd)
             {
                 model.BasicShapes.Add(basicShape);
             }
 
-            bool isEditView = (model.MaterialId != default(int));
+            bool isEditView = (model.Id != default(int));
             if (isEditView)
             {
                 var basicShapesToRemove = model.BasicShapes
-                    .Where(b => !selectedBasicShapeIds.Any(s => s == b.BasicShapeId)).ToList();
+                    .Where(b => !selectedBasicShapeIds.Any(s => s == b.Id)).ToList();
                 foreach (var basicShape in basicShapesToRemove)
                 {
                     model.BasicShapes.Remove(basicShape);

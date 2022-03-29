@@ -1,4 +1,4 @@
-﻿//using DiyProjectCalc.SharedKernel;
+﻿using DiyProjectCalc.SharedKernel;
 
 //namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
@@ -72,9 +72,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
-public class Material
+public class Material : BaseEntity
 {
-    public int MaterialId { get; set; }
 
     [Display(Name = "Type of Measurement")]
     [EnumDataType(typeof(MaterialMeasurement))]

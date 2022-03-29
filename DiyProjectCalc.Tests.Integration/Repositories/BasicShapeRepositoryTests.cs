@@ -29,7 +29,7 @@ public class BasicShapeRepositoryTests : BaseDatabaseClassFixture
         var result = await _repository.GetBasicShapeAsync(expectedId);
 
         //Assert
-        result.As<BasicShape>().BasicShapeId.Should().Be(expectedId);
+        result.As<BasicShape>().Id.Should().Be(expectedId);
     }
 
     [Fact]
@@ -92,14 +92,14 @@ public class BasicShapeRepositoryTests : BaseDatabaseClassFixture
             objectToUpdate.Number1 = 100.1;
             objectToUpdate.Number2 = 200.2;
             objectToUpdate.Name = "edited basic shape";
-            objectId = objectToUpdate.BasicShapeId;
+            objectId = objectToUpdate.Id;
         }
 
         //Act
         await _repository.UpdateAsync(objectToUpdate!);
 
         //Assert
-        var result = base.DbContext.BasicShapes.First(o => o.BasicShapeId == objectId);
+        var result = base.DbContext.BasicShapes.First(o => o.Id == objectId);
         result.As<BasicShape>().Name.Should().Be(objectToUpdate!.Name);
     }
 

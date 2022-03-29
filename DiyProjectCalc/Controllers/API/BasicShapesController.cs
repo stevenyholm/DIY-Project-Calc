@@ -50,7 +50,7 @@ public class BasicShapesController : ControllerBase
             var basicShape = _mapper.Map<BasicShape>(model);
             basicShape.Project = (await _projectRepository.GetProjectAsync(basicShape.ProjectId))!;
             await _repository.AddAsync(basicShape);
-            return CreatedAtAction(nameof(BasicShapeDTO), new { BasicShapeId = basicShape.BasicShapeId }, 
+            return CreatedAtAction(nameof(BasicShapeDTO), new { BasicShapeId = basicShape.Id }, 
                 _mapper.Map<BasicShapeDTO>(basicShape));
         }
         catch 
@@ -72,7 +72,7 @@ public class BasicShapesController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!await _repository.BasicShapeExists(model.BasicShapeId))
+            if (!await _repository.BasicShapeExists(model.Id))
             {
                 return NotFound();
             }

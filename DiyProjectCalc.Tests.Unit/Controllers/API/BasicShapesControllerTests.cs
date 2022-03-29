@@ -32,13 +32,13 @@ public class BasicShapesControllerTests
         _mockProjectRepository.Setup(r => r.GetProjectWithBasicShapesAsync(It.IsAny<int>())).ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.GetAllForProject(expectedProject.ProjectId);
+        var result = await _controller.GetAllForProject(expectedProject.Id);
 
         //Assert
         using (new AssertionScope())
         {
             result.As<ProjectDTOWithBasicShapes>().BasicShapes.Should().HaveCount(expectedProject.BasicShapes.Count);
-            result.As<ProjectDTOWithBasicShapes>().ProjectId.Should().Be(expectedProject.ProjectId);
+            result.As<ProjectDTOWithBasicShapes>().Id.Should().Be(expectedProject.Id);
             result.As<ProjectDTOWithBasicShapes>().Name.Should().Be(expectedProject.Name);
         }
     }
@@ -52,10 +52,10 @@ public class BasicShapesControllerTests
         _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(expectedBasicShape);
 
         //Act
-        var result = await _controller.Get(expectedBasicShape.BasicShapeId);
+        var result = await _controller.Get(expectedBasicShape.Id);
 
         //Assert
-        result.As<BasicShapeDTO>().BasicShapeId.Should().Be(expectedBasicShape.BasicShapeId);
+        result.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShape.Id);
     }
 
     [Fact]
@@ -81,7 +81,7 @@ public class BasicShapesControllerTests
         var editedModel = BasicShapeTestData.MockSimpleBasicShapeDTO;
 
         //Act
-        var result = await _controller.Put(editedModel.BasicShapeId, editedModel);
+        var result = await _controller.Put(editedModel.Id, editedModel);
 
         //Assert
         result.Should().BeOfType<OkResult>();

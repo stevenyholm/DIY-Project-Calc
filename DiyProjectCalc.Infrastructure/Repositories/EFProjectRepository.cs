@@ -14,14 +14,14 @@ public class EFProjectRepository : IProjectRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<Project?> GetProjectAsync(int projectId)
+    public async Task<Project?> GetProjectAsync(int id)
     {
-        return await _dbContext.Projects.Where(p => p.ProjectId == projectId).FirstOrDefaultAsync();
+        return await _dbContext.Projects.Where(p => p.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<Project?> GetProjectWithBasicShapesAsync(int projectId)
+    public async Task<Project?> GetProjectWithBasicShapesAsync(int id)
     {
-        return await _dbContext.Projects.Where(p => p.ProjectId == projectId).Include(p => p.BasicShapes).FirstOrDefaultAsync();
+        return await _dbContext.Projects.Where(p => p.Id == id).Include(p => p.BasicShapes).FirstOrDefaultAsync();
     }
 
     public async Task<IEnumerable<Project>> GetAllProjectsAsync()

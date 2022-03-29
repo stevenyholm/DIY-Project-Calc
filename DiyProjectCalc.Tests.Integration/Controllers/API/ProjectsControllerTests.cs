@@ -44,7 +44,7 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Get(expectedProjectId);
 
         //Assert
-        result.As<ProjectDTO>().ProjectId.Should().Be(expectedProjectId);
+        result.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
         var editedModel = ProjectTestData.ValidProjectDTO(base.DbContext);
 
         //Act
-        var result = await _controller.Put(editedModel?.ProjectId ?? -1, editedModel!);
+        var result = await _controller.Put(editedModel?.Id ?? -1, editedModel!);
 
         //Assert
         result.Should().BeOfType<OkResult>();

@@ -1,4 +1,4 @@
-﻿//using DiyProjectCalc.SharedKernel;
+﻿using DiyProjectCalc.SharedKernel;
 
 //namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
@@ -77,10 +77,9 @@ namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 
 
-public class BasicShape
+public class BasicShape : BaseEntity
 {
 
-    public int BasicShapeId { get; set; }
 
     [Display(Name = "Type of Shape")]
     [EnumDataType(typeof(BasicShapeType))]

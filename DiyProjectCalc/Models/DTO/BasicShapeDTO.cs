@@ -7,7 +7,7 @@ public record BasicShapeDTO(
     string? Name,
     double Number1,
     double Number2,
-    int BasicShapeId = default,
+    int Id = default,
     string Description = "",
     double Area = default,
     double Distance = default,

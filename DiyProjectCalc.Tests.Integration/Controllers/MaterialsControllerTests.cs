@@ -53,7 +53,7 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Details(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Edit(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]
@@ -144,7 +144,7 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Delete(expectedMaterialId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().MaterialId.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
     }
 
     [Fact]

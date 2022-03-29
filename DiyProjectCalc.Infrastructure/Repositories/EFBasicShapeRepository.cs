@@ -14,11 +14,11 @@ public class EFBasicShapeRepository : IBasicShapeRepository
         this._dbContext = dbContext;
     }
 
-    public async Task<BasicShape?> GetBasicShapeAsync(int basicShapeId)
+    public async Task<BasicShape?> GetBasicShapeAsync(int id)
     {
         return await _dbContext.BasicShapes
             .Include(b => b.Project)
-            .FirstOrDefaultAsync(m => m.BasicShapeId == basicShapeId);
+            .FirstOrDefaultAsync(m => m.Id == id);
     }
 
     public async Task<IEnumerable<BasicShape>> GetBasicShapesForProjectAsync(int projectId)
@@ -28,9 +28,9 @@ public class EFBasicShapeRepository : IBasicShapeRepository
             .ToListAsync();
     }
 
-    public async Task<bool> BasicShapeExists(int basicShapeId)
+    public async Task<bool> BasicShapeExists(int id)
     {
-        return await _dbContext.BasicShapes.AnyAsync(e => e.BasicShapeId == basicShapeId);
+        return await _dbContext.BasicShapes.AnyAsync(e => e.Id == id);
     }
 
     public async Task AddAsync(BasicShape entity)

@@ -44,10 +44,10 @@ public class ProjectsControllerTests
         _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Get(expectedProject.ProjectId);
+        var result = await _controller.Get(expectedProject.Id);
 
         //Assert
-        result.As<ProjectDTO>().ProjectId.Should().Be(expectedProject.ProjectId);
+        result.As<ProjectDTO>().Id.Should().Be(expectedProject.Id);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class ProjectsControllerTests
         var editedModel = ProjectTestData.MockSimpleProjectDTO;
 
         //Act
-        var result = await _controller.Put(editedModel.ProjectId, editedModel);
+        var result = await _controller.Put(editedModel.Id, editedModel);
 
         //Assert
         result.Should().BeOfType<OkResult>();

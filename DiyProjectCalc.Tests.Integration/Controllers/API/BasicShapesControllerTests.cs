@@ -37,7 +37,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
         using (new AssertionScope())
         {
             result.As<ProjectDTOWithBasicShapes>().BasicShapes.Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
-            result.As<ProjectDTOWithBasicShapes>().ProjectId.Should().Be(expectedProjectId);
+            result.As<ProjectDTOWithBasicShapes>().Id.Should().Be(expectedProjectId);
             result.As<ProjectDTOWithBasicShapes>().Name.Should().Be(ProjectTestData.ValidName);
         }
     }
@@ -53,7 +53,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Get(expectedBasicShapeId);
 
         //Assert
-        result.As<BasicShapeDTO>().BasicShapeId.Should().Be(expectedBasicShapeId);
+        result.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShapeId);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            BasicShapeId: editedModelId,
+            Id: editedModelId,
             ProjectId: editedModel?.ProjectId ?? -1
             );
 

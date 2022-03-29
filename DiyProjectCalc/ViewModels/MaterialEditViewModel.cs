@@ -25,10 +25,10 @@ public class MaterialEditViewModel
    
     public List<(int BasicShapeId, string Description, bool Selected)> BasicShapesData() =>
         BasicShapesForProject.ToList()
-            .Select(b => (b.BasicShapeId, b.Description, MaterialHasBasicShape(this.Material, b)) ) 
+            .Select(b => (b.Id, b.Description, MaterialHasBasicShape(this.Material, b)) ) 
             .ToList();
 
     private bool MaterialHasBasicShape(Material? material, BasicShape basicShape) => 
-        (material is not null) && (material.BasicShapes.Any(b => b.BasicShapeId == basicShape.BasicShapeId)) 
+        (material is not null) && (material.BasicShapes.Any(b => b.Id == basicShape.Id)) 
         ? true : false;
 }

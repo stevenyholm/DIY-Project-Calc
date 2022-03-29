@@ -7,17 +7,17 @@
             <hr />
         </div>
         <div asp-validation-summary="All" class="text-danger"></div>
-        <input type="hidden" asp-for="ProjectId" />
+        <input type="hidden" asp-for="Id" />
         <div class="mb-2">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control"/>
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
         <div class="text-info">
-            <a asp-controller="Materials" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Materials for this project</a>
+            <a asp-controller="Materials" asp-action="Index" asp-route-ProjectId="@Model?.Id" >Materials for this project</a>
             <br />
             <br />
-            <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Shapes for this project</a>
+            <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.Id" >Shapes for this project</a>
             <br />
             <br />
         </div>

@@ -54,7 +54,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Details(expectedBasicShapeId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().BasicShapeId.Should().Be(expectedBasicShapeId);
+        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShapeId);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Edit(expectedBasicShapeId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().BasicShapeId.Should().Be(expectedBasicShapeId);
+        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShapeId);
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            BasicShapeId: editedModelId,
+            Id: editedModelId,
             ProjectId: editedModel?.ProjectId ?? -1
             );
 
@@ -134,7 +134,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
         var result = await _controller.Delete(expectedBasicShapeId);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().BasicShapeId.Should().Be(expectedBasicShapeId);
+        result.As<ViewResult>().ViewData.Model.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShapeId);
     }
 
     [Fact]

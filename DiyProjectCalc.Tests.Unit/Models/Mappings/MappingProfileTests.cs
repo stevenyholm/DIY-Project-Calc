@@ -35,7 +35,7 @@ public class MappingProfileTests
         using (new AssertionScope())
         {
             result.Should().BeOfType<BasicShapeDTO>();
-            result.BasicShapeId.Should().Be(source.BasicShapeId);
+            result.Id.Should().Be(source.Id);
             result.ShapeType.Should().Be(source.ShapeType);
             result.Name.Should().Be(source.Name);
             result.Number1.Should().Be(source.Number1);
@@ -44,7 +44,7 @@ public class MappingProfileTests
             result.Area.Should().Be(source.Area);
             result.Distance.Should().Be(source.Distance);
             result.ProjectName.Should().Be(source.Project.Name);
-            result.ProjectId.Should().Be(source.Project.ProjectId);
+            result.ProjectId.Should().Be(source.Project.Id);
         }
     }
 
@@ -55,7 +55,7 @@ public class MappingProfileTests
         //Arrange
         var mapper = MapperHelper.CreateMapper();
         var source = new BasicShapeDTO(
-            BasicShapeId: 55,
+            Id: 55,
             ShapeType: BasicShapeType.Curved,
             Name: "arc",
             Number1: 11.44,
@@ -74,7 +74,7 @@ public class MappingProfileTests
         using (new AssertionScope())
         {
             result.Should().BeOfType<BasicShape>();
-            result.BasicShapeId.Should().Be(source.BasicShapeId);
+            result.Id.Should().Be(source.Id);
             result.ShapeType.Should().Be(source.ShapeType);
             result.Name.Should().Be(source.Name);
             result.Number1.Should().Be(source.Number1);
@@ -102,7 +102,7 @@ public class MappingProfileTests
         using (new AssertionScope())
         {
             result.Should().BeOfType<ProjectDTO>();
-            result.ProjectId.Should().Be(source?.ProjectId);
+            result.Id.Should().Be(source?.Id);
             result.Name.Should().Be(source?.Name);
         }
     }
@@ -122,7 +122,7 @@ public class MappingProfileTests
         using (new AssertionScope())
         {
             result.Should().BeOfType<Project>();
-            result.ProjectId.Should().Be(source?.ProjectId);
+            result.Id.Should().Be(source?.Id);
             result.Name.Should().Be(source?.Name);
         }
     }
@@ -142,7 +142,7 @@ public class MappingProfileTests
         using (new AssertionScope())
         {
             result.Should().BeOfType<ProjectDTOWithBasicShapes>();
-            result.ProjectId.Should().Be(source?.ProjectId);
+            result.Id.Should().Be(source?.Id);
             result.Name.Should().Be(source?.Name);
             result.BasicShapes.Count().Should().Be(source?.BasicShapes.Count);
         }

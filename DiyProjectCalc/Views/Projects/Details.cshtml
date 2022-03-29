@@ -19,14 +19,14 @@
     </dl>
 </div>
 <div class="text-info">
-    <a asp-controller="Materials" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Materials for this project</a>
+    <a asp-controller="Materials" asp-action="Index" asp-route-ProjectId="@Model?.Id" >Materials for this project</a>
     <br />
     <br />
-    <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.ProjectId" >Shapes for this project</a>
+    <a asp-controller="BasicShapes" asp-action="Index" asp-route-ProjectId="@Model?.Id" >Shapes for this project</a>
     <br />
     <br />
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProjectId">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

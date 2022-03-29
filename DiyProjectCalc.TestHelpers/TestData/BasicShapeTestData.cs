@@ -41,20 +41,20 @@ public class BasicShapeTestData
     {
         get => new BasicShape()
         {
-            BasicShapeId = 3333,
+            Id = 3333,
             ProjectId = 330,
             Name = "BasicShape For Testing",
             ShapeType = BasicShapeType.Curved,
             Number1 = 33.0,
             Number2 = 33.0,
-            Project = new Project() { ProjectId = 330, Name = "parent project" }
+            Project = new Project() { Id = 330, Name = "parent project" }
         };
     }
 
     public static BasicShapeDTO MockSimpleBasicShapeDTO
     {
         get => new BasicShapeDTO(
-            BasicShapeId: BasicShapeTestData.MockSimpleBasicShape.BasicShapeId,
+            Id: BasicShapeTestData.MockSimpleBasicShape.Id,
             ProjectId: BasicShapeTestData.MockSimpleBasicShape.ProjectId,
             Name: BasicShapeTestData.MockSimpleBasicShape.Name,
             ShapeType: BasicShapeTestData.MockSimpleBasicShape.ShapeType,
@@ -69,11 +69,11 @@ public class BasicShapeTestData
 
     public static int MockSimpleBasicShapeId
     {
-        get => MockSimpleBasicShape.BasicShapeId;
+        get => MockSimpleBasicShape.Id;
     }
 
     public static int ValidBasicShapeId(ApplicationDbContext dbContext) =>
-        dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName)?.BasicShapeId ?? 0;
+        dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName)?.Id ?? 0;
 
     public static BasicShape? ValidBasicShape(ApplicationDbContext dbContext) =>
         dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName);

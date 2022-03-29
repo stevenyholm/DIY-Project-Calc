@@ -29,7 +29,7 @@ public class MaterialRepositoryTests : BaseDatabaseClassFixture
         var result = await _repository.GetMaterialAsync(expectedId);
 
         //Assert
-        result.As<Material>().MaterialId.Should().Be(expectedId);
+        result.As<Material>().Id.Should().Be(expectedId);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class MaterialRepositoryTests : BaseDatabaseClassFixture
             objectToUpdate.Length = 99.1;
             objectToUpdate.Depth = 88.1;
             objectToUpdate.Width = 77.1;
-            objectId = objectToUpdate.MaterialId;
+            objectId = objectToUpdate.Id;
         }
         var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
@@ -100,7 +100,7 @@ public class MaterialRepositoryTests : BaseDatabaseClassFixture
         await _repository.UpdateAsync(objectToUpdate!, newSelectedBasicShapeIds);
 
         //Assert
-        var result = base.DbContext.Materials.First(o => o.MaterialId == objectId);
+        var result = base.DbContext.Materials.First(o => o.Id == objectId);
         result.As<Material>().Name.Should().Be(objectToUpdate!.Name);
     }
 

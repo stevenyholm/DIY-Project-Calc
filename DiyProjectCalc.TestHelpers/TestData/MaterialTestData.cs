@@ -28,7 +28,7 @@ public class MaterialTestData
     {
         get => new Material()
         {
-            MaterialId = 67,
+            Id = 67,
             Name = "Material For Testing",
             MeasurementType = MaterialMeasurement.Area,
             Length = 9.9,
@@ -39,14 +39,14 @@ public class MaterialTestData
 
     public static int MockSimpleMaterialId
     {
-        get => MockSimpleMaterial.MaterialId;
+        get => MockSimpleMaterial.Id;
     }
 
     public static Material MockMaterialWithBasicShapes
     {
         get => new Material()
         {
-            MaterialId = 67,
+            Id = 67,
             Name = "Material For Testing",
             MeasurementType = MaterialMeasurement.Area,
             Length = 9.9,
@@ -56,7 +56,7 @@ public class MaterialTestData
             {
                 new BasicShape() 
                 { 
-                    BasicShapeId = 12,
+                    Id = 12,
                     Name = "twelve",
                     ShapeType = BasicShapeType.Rectangle,
                     Number1 = 1.1,
@@ -64,7 +64,7 @@ public class MaterialTestData
                 },
                 new BasicShape()
                 {
-                    BasicShapeId = 13,
+                    Id = 13,
                     Name = "thirteen",
                     ShapeType = BasicShapeType.Curved,
                     Number1 = 3.3,
@@ -85,7 +85,7 @@ public class MaterialTestData
     }
 
     public static int ValidMaterialId(ApplicationDbContext dbContext) =>
-        dbContext.Materials.FirstOrDefault(m => m.Name == MaterialTestData.ValidName)?.MaterialId ?? 0;
+        dbContext.Materials.FirstOrDefault(m => m.Name == MaterialTestData.ValidName)?.Id ?? 0;
 
     public static Material? ValidMaterial(ApplicationDbContext dbContext) =>
         dbContext.Materials.FirstOrDefault(m => m.Name == MaterialTestData.ValidName);
@@ -93,7 +93,7 @@ public class MaterialTestData
     public static int[] ValidNewSelectedBasicShapeIds(ApplicationDbContext dbContext) =>
         dbContext.BasicShapes
         .Where(b => BasicShapeTestData.BasicShapeNamesForMaterialEdit.Any(n => n == b.Name))
-        .Select(b => b.BasicShapeId).ToArray();
+        .Select(b => b.Id).ToArray();
 
 
     //==============================================================================================
