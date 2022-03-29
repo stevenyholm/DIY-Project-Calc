@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiyProjectCalc.Migrations
+namespace DiyProjectCalc.Data.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211229232536_double_type_for_calculations")]
-    partial class double_type_for_calculations
+    [Migration("20211229005347_BasicShapes")]
+    partial class BasicShapes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,11 +34,11 @@ namespace DiyProjectCalc.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Number1")
-                        .HasColumnType("float");
+                    b.Property<int>("Number1")
+                        .HasColumnType("int");
 
-                    b.Property<double>("Number2")
-                        .HasColumnType("float");
+                    b.Property<int>("Number2")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("int");

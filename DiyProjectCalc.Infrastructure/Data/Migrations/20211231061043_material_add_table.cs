@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DiyProjectCalc.Migrations
+namespace DiyProjectCalc.Data.Infrastructure.Migrations
 {
     public partial class material_add_table : Migration
     {

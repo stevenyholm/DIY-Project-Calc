@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiyProjectCalc.Migrations
+namespace DiyProjectCalc.Data.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220114010141_added_unit_tests")]
-    partial class added_unit_tests
+    [Migration("20211231061043_material_add_table")]
+    partial class material_add_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,7 @@ namespace DiyProjectCalc.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("BasicShape", (string)null);
+                    b.ToTable("BasicShapes");
                 });
 
             modelBuilder.Entity("DiyProjectCalc.Models.Material", b =>
@@ -63,9 +63,6 @@ namespace DiyProjectCalc.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialId"), 1L, 1);
 
                     b.Property<double?>("Depth")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("DepthNeeded")
                         .HasColumnType("float");
 
                     b.Property<double?>("Length")
@@ -104,7 +101,7 @@ namespace DiyProjectCalc.Migrations
 
                     b.HasKey("ProjectId");
 
-                    b.ToTable("Project", (string)null);
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("MaterialBasicShape", b =>

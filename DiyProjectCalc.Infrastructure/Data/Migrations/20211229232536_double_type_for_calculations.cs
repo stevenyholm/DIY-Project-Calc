@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DiyProjectCalc.Migrations
+namespace DiyProjectCalc.Data.Infrastructure.Migrations
 {
     public partial class double_type_for_calculations : Migration
     {
