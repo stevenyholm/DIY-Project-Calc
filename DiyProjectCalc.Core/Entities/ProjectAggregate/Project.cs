@@ -1,6 +1,6 @@
 ﻿
 using DiyProjectCalc.SharedKernel;
-//using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 //namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
@@ -21,7 +21,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DiyProjectCalc.Core.Entities.ProjectAggregate;
 
-public class Project : BaseEntity
+public class Project : BaseEntity, IAggregateRoot
 {
 
     [Required]
