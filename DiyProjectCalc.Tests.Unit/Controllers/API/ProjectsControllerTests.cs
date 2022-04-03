@@ -8,16 +8,17 @@ using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.TestHelpers.TestData;
 using FluentAssertions;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.Core.Interfaces;
+using DiyProjectCalc.TestHelpers.UnitTestBase;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
-public class ProjectsControllerTests
+public class ProjectsControllerTests : BaseControllerTests
 {
-    private Mock<IProjectRepository> _mockRepository = new Mock<IProjectRepository>();
     private SUT.ProjectsController _controller;
     public ProjectsControllerTests()
     {
-        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(), _mockRepository.Object);
+        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(), 
+            base._mockProjectRepository.Object);
     }
 
     [Fact]
@@ -26,7 +27,7 @@ public class ProjectsControllerTests
     {
         //Arrange
         var projects = ProjectTestData.ProjectsFor(new ProjectTestData().ValidProjectTestModelList);
-        _mockRepository.Setup(r => r.GetAllProjectsAsync()).ReturnsAsync(projects);
+        base._mockProjectRepository.Setup(r => r.ListAsync(TestCancellationToken())).ReturnsAsync(projects);
 
         //Act
         var result = await _controller.Get();
@@ -41,7 +42,8 @@ public class ProjectsControllerTests
     {
         //Arrange
         var expectedProject = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(expectedProject);
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
         var result = await _controller.Get(expectedProject.Id);
@@ -55,10 +57,12 @@ public class ProjectsControllerTests
     public async Task ValidProject_Returns_CreatedAtActionResult_For_Post()
     {       
         //Arrange
-        var newModel = ProjectTestData.NewProjectDTO;
+        var newProjectDTO = ProjectTestData.NewProjectDTO;
+        base._mockProjectRepository.Setup(r => r.AddAsync(It.IsAny<Project>(), TestCancellationToken()))
+            .ReturnsAsync(new Project());
 
         //Act
-        var result = await _controller.Post(newModel);
+        var result = await _controller.Post(newProjectDTO);
 
         //Assert
         result.Should().BeOfType<CreatedAtActionResult>();
@@ -69,10 +73,10 @@ public class ProjectsControllerTests
     public async Task ValidProject_Returns_Ok_For_Put()
     {
         //Arrange
-        var editedModel = ProjectTestData.MockSimpleProjectDTO;
+        var editedProjectDTO = ProjectTestData.MockSimpleProjectDTO;
 
         //Act
-        var result = await _controller.Put(editedModel.Id, editedModel);
+        var result = await _controller.Put(editedProjectDTO.Id, editedProjectDTO);
 
         //Assert
         result.Should().BeOfType<OkResult>();
@@ -83,12 +87,12 @@ public class ProjectsControllerTests
     public async Task ValidProjectId_Returns_Ok_For_Delete()
     {
         //Arrange
-        var project = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var projectId = ProjectTestData.MockSimpleProjectId;
+        var deletedProject = ProjectTestData.MockSimpleProject;
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(deletedProject);
 
         //Act
-        var result = await _controller.Delete(projectId);
+        var result = await _controller.Delete(deletedProject.Id);
 
         //Assert
         result.Should().BeOfType<OkResult>();

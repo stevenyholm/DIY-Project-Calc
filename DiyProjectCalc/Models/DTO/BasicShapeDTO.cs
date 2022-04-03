@@ -1,4 +1,5 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.SharedKernel;
 
 namespace DiyProjectCalc.Models.DTO;
 
@@ -13,6 +14,6 @@ public record BasicShapeDTO(
     double Distance = default,
     string ProjectName = "",
     int ProjectId = default
-    )
+    ) : BaseDTO(Id)
 {
 }

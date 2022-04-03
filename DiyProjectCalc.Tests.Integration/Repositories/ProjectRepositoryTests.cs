@@ -1,4 +1,5 @@
-﻿using SUT = DiyProjectCalc.Infrastructure.Repositories;
+﻿using SUT = DiyProjectCalc.Infrastructure;
+using DiyProjectCalc.SharedKernel.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -12,37 +13,38 @@ namespace DiyProjectCalc.Tests.Integration.Repositories;
 
 public class ProjectRepositoryTests : BaseDatabaseClassFixture
 {
-    private SUT.EFProjectRepository _repository;
+    private IRepository<Project> _projectRepository;
     public ProjectRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
     {
-        _repository = new SUT.EFProjectRepository(base.DbContext);
+        _projectRepository = new SUT.Data.EfRepository<Project>(base.DbContext);
     }
 
     [Fact]
-    [Trait("GetProjectAsync", "")]
-    public async Task ValidProjectId_Returns_CorrectObject_For_GetProjectAsync()
+    [Trait("ListAsync", "")]
+    public async Task Returns_Projects_For_ListAsync()
     {
         //Arrange
-        var expectedId = ProjectTestData.ValidProjectId(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext);
 
         //Act
-        var result = await _repository.GetProjectAsync(expectedId);
+        var result = await _projectRepository.ListAsync();
 
         //Assert
-        result.As<Project>().Id.Should().Be(expectedId);
+        result.As<IEnumerable<Project>>().Should().HaveCount(expectedCount);
     }
 
     [Fact]
-    [Trait("GetAllProjectsAsync", "")]
-    public async Task Returns_Projectss_For_GetAllProjectsAsync()
+    [Trait("GetByIdAsync", "")]
+    public async Task ValidProjectId_Returns_CorrectObject_For_GetByIdAsync()
     {
         //Arrange
+        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await _repository.GetAllProjectsAsync();
+        var result = await _projectRepository.GetByIdAsync<int>(expectedProjectId);
 
         //Assert
-        result.As<IEnumerable<Project>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
+        result.As<Project>().Id.Should().Be(expectedProjectId);
     }
 
     [Fact]
@@ -50,15 +52,15 @@ public class ProjectRepositoryTests : BaseDatabaseClassFixture
     public async Task ValidObject_Adds_Item_For_AddAsync()
     {
         //Arrange
-        var newObject = ProjectTestData.NewProject;
-        var beforeCount = base.DbContext.Projects.Count();
+        var newProject = ProjectTestData.NewProject;
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext) + 1;
 
         //Act
-        await _repository.AddAsync(newObject);
+        await _projectRepository.AddAsync(newProject);
 
         //Assert
-        var afterCount = base.DbContext.Projects.Count();
-        afterCount.Should().Be(beforeCount + 1);
+        var afterCount = ProjectTestData.ProjectsCount(base.DbContext);
+        afterCount.Should().Be(expectedCount);
     }
 
     [Fact]
@@ -66,20 +68,19 @@ public class ProjectRepositoryTests : BaseDatabaseClassFixture
     public async Task ValidObject_Updates_Item_For_UpdateAsync()
     {
         //Arrange
-        var objectToUpdate = ProjectTestData.ValidProject(base.DbContext);
-        var objectId = default(int);
-        if (objectToUpdate is not null)
+        var editedProject = ProjectTestData.ValidProject(base.DbContext);
+        var expectedProjectName = "edited project";
+        if (editedProject is not null)
         {
-            objectToUpdate.Name = "edited project";
-            objectId = objectToUpdate.Id;
+            editedProject.Name = expectedProjectName;
         }
 
         //Act
-        await _repository.UpdateAsync(objectToUpdate!);
+        await _projectRepository.UpdateAsync(editedProject!);
 
         //Assert
-        var result = base.DbContext.Projects.First(o => o.Id == objectId); 
-        result.As<Project>().Name.Should().Be(objectToUpdate!.Name);
+        var result = ProjectTestData.ValidProject(base.DbContext, editedProject!.Id); 
+        result.As<Project>().Name.Should().Be(expectedProjectName);
     }
 
     [Fact]
@@ -87,14 +88,14 @@ public class ProjectRepositoryTests : BaseDatabaseClassFixture
     public async Task ValidObject_Removes_Item_For_DeleteAsync()
     {
         //Arrange
-        var objectToDelete = ProjectTestData.ValidProject(base.DbContext);
-        var beforeCount = base.DbContext.Projects.Count();
+        var deletedProject = ProjectTestData.ValidProject(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext) - 1;
 
         //Act
-        await _repository.DeleteAsync(objectToDelete!);
+        await _projectRepository.DeleteAsync(deletedProject!);
 
         //Assert
-        var afterCount = base.DbContext.Projects.Count();
-        afterCount.Should().Be(beforeCount - 1);
+        var afterCount = ProjectTestData.ProjectsCount(base.DbContext);
+        afterCount.Should().Be(expectedCount);
     }
 }

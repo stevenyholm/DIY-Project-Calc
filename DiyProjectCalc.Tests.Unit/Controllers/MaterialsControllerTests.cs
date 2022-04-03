@@ -9,19 +9,22 @@ using System.Threading.Tasks;
 using Xunit;
 using Moq;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
-using DiyProjectCalc.Core.Interfaces;
+using DiyProjectCalc.TestHelpers.UnitTestBase;
+using DiyProjectCalc.TestHelpers.Helpers;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers;
 
-public class MaterialsControllerTests 
+public class MaterialsControllerTests : BaseControllerTests
 {
-    private Mock<IMaterialRepository> _mockRepository = new Mock<IMaterialRepository>();
-    private Mock<IBasicShapeRepository> _mockBasicShapeRepository = new Mock<IBasicShapeRepository>();
-    private Mock<IProjectRepository> _mockProjectRepository = new Mock<IProjectRepository>();
     private SUT.MaterialsController _controller;
     public MaterialsControllerTests()
     {
-        _controller = new SUT.MaterialsController(_mockRepository.Object, _mockProjectRepository.Object, _mockBasicShapeRepository.Object);
+        _controller = new SUT.MaterialsController(
+            MapperHelper.CreateMapper(),
+            base._mockProjectRepository.Object
+            );
     }
 
     [Fact]
@@ -29,20 +32,20 @@ public class MaterialsControllerTests
     public async Task ValidProjectId_Returns_Materials_For_Index_Get()
     {
         //Arrange
-        var project = new ProjectTestData().ValidProjectTestModel.Project;
-        _mockProjectRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        _mockRepository.Setup(r => r.GetMaterialsForProjectAsync(It.IsAny<int>())).ReturnsAsync(project.Materials);
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var expectedProject = ProjectTestData.MockSimpleProjectWithMaterials;
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Index(expectedProjectId);
+        var result = await _controller.Index(expectedProject.Id);
 
         //Assert
         using (new AssertionScope())
         {
-            result.As<ViewResult>().ViewData.Model.As<IEnumerable<Material>>().Should().HaveCount(ProjectTestData.ValidProjectCountMaterials);
-            result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
-            result.As<ViewResult>().ViewData["ProjectName"].Should().Be(ProjectTestData.ValidName);
+            result.As<ViewResult>().ViewData.Model.As<IEnumerable<Material>>()
+                .Should().HaveCount(expectedProject.Materials.Count);
+            result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProject.Id);
+            result.As<ViewResult>().ViewData["ProjectName"].Should().Be(expectedProject.Name);
         }
     }
 
@@ -51,15 +54,16 @@ public class MaterialsControllerTests
     public async Task ValidMaterialId_Returns_Material_For_Details_Get()
     {
         //Arrange
-        var material = MaterialTestData.MockSimpleMaterial;
-        _mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        var expectedMaterial = project.Materials.First();
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
 
         //Act
-        var result = await _controller.Details(expectedMaterialId);
+        var result = await _controller.Details(project.Id, expectedMaterial.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -67,13 +71,15 @@ public class MaterialsControllerTests
     public async Task ValidProjectId_Returns_View_For_Create_Get()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var expectedProject = ProjectTestData.MockSimpleProjectWithMaterials;
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Create(expectedProjectId);
+        var result = await _controller.Create(expectedProject.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().ProjectId.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().ProjectId.Should().Be(expectedProject.Id);
     }
 
     [Fact]
@@ -81,16 +87,19 @@ public class MaterialsControllerTests
     public async Task ValidMaterial_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var projectId = ProjectTestData.MockSimpleProjectId;
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
         var newMaterialEditViewModel = new MaterialEditViewModel()
         {
-            ProjectId = projectId,
+            ProjectId = project.Id,
             Material = MaterialTestData.NewMaterial
         };
         var newSelectedBasicShapeIds = MaterialTestData.MockBasicShapeIdsForMaterialEdit;
 
+
         //Act
-        var result = await _controller.Create(newMaterialEditViewModel, newSelectedBasicShapeIds); 
+        var result = await _controller.Create(project.Id, newMaterialEditViewModel, newSelectedBasicShapeIds); 
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -101,16 +110,17 @@ public class MaterialsControllerTests
     public async Task ValidMaterialId_Returns_Material_For_Edit_Get()
     {
         //Arrange
-        var material = MaterialTestData.MockSimpleMaterial;
-        material.ProjectId = ProjectTestData.MockSimpleProjectId;
-        _mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
+        var expectedMaterial = project.Materials.First();
+        expectedMaterial.ProjectId = project.Id;
 
         //Act
-        var result = await _controller.Edit(expectedMaterialId);
+        var result = await _controller.Edit(project.Id, expectedMaterial.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -118,26 +128,28 @@ public class MaterialsControllerTests
     public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var materialId = MaterialTestData.MockSimpleMaterialId;
-        var projectId = ProjectTestData.MockSimpleProjectId;
-        var editMaterialEditViewModel = new MaterialEditViewModel()
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        var materialToUpdate = project.Materials.First();
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
+        var editedMaterialEditViewModel = new MaterialEditViewModel()
         {
-            ProjectId = projectId,
+            ProjectId = project.Id,
             Material = MaterialTestData.MockMaterialWithBasicShapes 
         };
-        if (editMaterialEditViewModel.Material is not null)
+        if (editedMaterialEditViewModel.Material is not null)
         {
-            editMaterialEditViewModel.Material.Id = materialId;
-            editMaterialEditViewModel.Material.Name = "2x4 redwood";
-            editMaterialEditViewModel.Material.MeasurementType = MaterialMeasurement.Linear;
-            editMaterialEditViewModel.Material.Length = 8.0;
-            editMaterialEditViewModel.Material.Width = 3.5;
-            editMaterialEditViewModel.Material.Depth = 1.5;
+            editedMaterialEditViewModel.Material.Id = materialToUpdate.Id;
+            editedMaterialEditViewModel.Material.Name = "2x4 redwood";
+            editedMaterialEditViewModel.Material.MeasurementType = MaterialMeasurement.Linear;
+            editedMaterialEditViewModel.Material.Length = 8.0;
+            editedMaterialEditViewModel.Material.Width = 3.5;
+            editedMaterialEditViewModel.Material.Depth = 1.5;
         }
-        var newSelectedBasicShapeIds = MaterialTestData.MockBasicShapeIdsForMaterialEdit;
+        var selectedBasicShapeIds = MaterialTestData.MockBasicShapeIdsForMaterialEdit;
 
         //Act
-        var result = await _controller.Edit(materialId, editMaterialEditViewModel, newSelectedBasicShapeIds);
+        var result = await _controller.Edit(project.Id, materialToUpdate.Id, editedMaterialEditViewModel, selectedBasicShapeIds);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -148,15 +160,16 @@ public class MaterialsControllerTests
     public async Task ValidMaterialId_Returns_Material_For_Delete_Get()
     {
         //Arrange
-        var material = MaterialTestData.MockSimpleMaterial;
-        _mockRepository.Setup(r => r.GetMaterialAsync(It.IsAny<int>())).ReturnsAsync(material);
-        var expectedMaterialId = MaterialTestData.MockSimpleMaterialId;
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        var expectedMaterial = project.Materials.First();
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
 
         //Act
-        var result = await _controller.Delete(expectedMaterialId);
+        var result = await _controller.Delete(project.Id, expectedMaterial.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -164,10 +177,13 @@ public class MaterialsControllerTests
     public async Task ValidMaterialId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        var materialId = MaterialTestData.MockSimpleMaterialId;
+        var project = ProjectTestData.MockSimpleProjectWithMaterials;
+        var deletedMaterial = project.Materials.First();
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
 
         //Act
-        var result = await _controller.DeleteConfirmed(materialId);
+        var result = await _controller.DeleteConfirmed(project.Id, deletedMaterial.Id);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

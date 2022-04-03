@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.Infrastructure.Repositories;
+using DiyProjectCalc.Infrastructure.Data;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers;
 
@@ -17,7 +19,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     private SUT.ProjectsController _controller;
     public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
     {
-        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(), new EFProjectRepository(base.DbContext));
+        _controller = new SUT.ProjectsController(
+            MapperHelper.CreateMapper(), 
+            new EfRepository<Project>(base.DbContext)
+            );
     }
 
     [Fact]
@@ -25,12 +30,13 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task Returns_AllProjects_For_Index_Get()
     {
         //Arrange
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext);
 
         //Act
         var result = await _controller.Index();
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<IEnumerable<ProjectDTO>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
+        result.As<ViewResult>().ViewData.Model.As<IEnumerable<ProjectDTO>>().Should().HaveCount(expectedCount!);
     }
 
     [Fact]
@@ -65,10 +71,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProject_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var project = ProjectTestData.NewProjectDTO;
+        var newProjectDTO = ProjectTestData.NewProjectDTO;
 
         //Act
-        var result = await _controller.Create(project);
+        var result = await _controller.Create(newProjectDTO);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -93,10 +99,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProject_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var editedModel = ProjectTestData.ValidProjectDTO(base.DbContext);
+        var editedProjectDTO = ProjectTestData.ValidProjectDTO(base.DbContext);
 
         //Act
-        var result = await _controller.Edit(editedModel!);
+        var result = await _controller.Edit(editedProjectDTO!);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -121,10 +127,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProjectId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var deletedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await _controller.DeletePOST(expectedProjectId);
+        var result = await _controller.DeletePOST(deletedProjectId);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

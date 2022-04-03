@@ -1,4 +1,5 @@
-﻿using SUT = DiyProjectCalc.Infrastructure.Repositories;
+﻿using SUT = DiyProjectCalc.Infrastructure;
+using DiyProjectCalc.SharedKernel.Interfaces;
 using Xunit;
 using FluentAssertions;
 using System.Threading.Tasks;
@@ -7,115 +8,120 @@ using System.Collections.Generic;
 using System.Linq;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
+using DiyProjectCalc.TestHelpers.Helpers;
 
 namespace DiyProjectCalc.Tests.Integration.Repositories;
 
 public class BasicShapeRepositoryTests : BaseDatabaseClassFixture
 {
-    private SUT.EFBasicShapeRepository _repository;
+    private IRepository<Project> _projectRepository;
+
     public BasicShapeRepositoryTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
     { 
-        _repository = new SUT.EFBasicShapeRepository(base.DbContext);
+        _projectRepository = new SUT.Data.EfRepository<Project>(base.DbContext);
+
     }
 
     [Fact]
-    [Trait("GetBasicShapeAsync", "")]
-    public async Task ValidBasicShapeId_Returns_CorrectObject_For_GetBasicShapeAsync()
-    {
-        //Arrange
-        int expectedId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
-
-        //Act
-        var result = await _repository.GetBasicShapeAsync(expectedId);
-
-        //Assert
-        result.As<BasicShape>().Id.Should().Be(expectedId);
-    }
-
-    [Fact]
-    [Trait("GetBasicShapesForProjectAsync", "")]
-    public async Task ValidProjectId_Returns_BasicShapes_For_GetBasicShapesForProjectAsync()
+    [Trait("GetBySpecAsync", "")]
+    public async Task ValidProjectId_Returns_BasicShapes_For_GetBySpecAsync()
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
 
         //Act
-        var result = await _repository.GetBasicShapesForProjectAsync(projectId);
+        var projectSpec = new ProjectWithBasicShapesSpec(projectId);
+        var project = await _projectRepository.GetBySpecAsync(projectSpec);
+        var result = project?.BasicShapes;
 
         //Assert
-        result.As<IEnumerable<BasicShape>>().Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
+        result.As<IEnumerable<BasicShape>>().Should().HaveCount(expectedCount);
     }
 
     [Fact]
-    [Trait("BasicShapeExists", "")]
-    public async Task ValidBasicShapeId_Returns_True_For_BasicShapeExists()
+    [Trait("GetBasicShape", "")]
+    public async Task ValidBasicShapeId_Returns_CorrectObject_For_GetBasicShape()
     {
         //Arrange
-        int expectedId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var projectSpec = new ProjectWithBasicShapesSpec(projectId);
+        var project = await _projectRepository.GetBySpecAsync(projectSpec);
+        var expectedBasicShape = project?.BasicShapes.First();
 
         //Act
-        var result = await _repository.BasicShapeExists(expectedId);
+        var result = project?.GetBasicShape(expectedBasicShape!.Id);
 
         //Assert
-        result.Should().Be(true);
+        result.As<BasicShape>().Id.Should().Be(expectedBasicShape!.Id);
     }
 
-
     [Fact]
-    [Trait("AddAsync", "")]
-    public async Task ValidObject_Adds_Item_For_AddAsync()
+    [Trait("AddBasicShape", "")]
+    public async Task ValidObject_Adds_Item_For_AddBasicShape()
     {
         //Arrange
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext); 
-        var newObject = BasicShapeTestData.NewBasicShape;
-        newObject.ProjectId = projectId;
-        var beforeCount = base.DbContext.BasicShapes.Count();
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var projectSpec = new ProjectWithBasicShapesSpec(projectId);
+        var project = await _projectRepository.GetBySpecAsync(projectSpec);
+        var newBasicShape = BasicShapeTestData.NewBasicShape;
+        newBasicShape.ProjectId = project!.Id;
+        var beforeCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
 
         //Act
-        await _repository.AddAsync(newObject);
+        project?.AddBasicShape(newBasicShape);
+        await _projectRepository.SaveChangesAsync();
 
         //Assert
-        var afterCount = base.DbContext.BasicShapes.Count();
+        var afterCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
         afterCount.Should().Be(beforeCount + 1);
     }
 
     [Fact]
-    [Trait("UpdateAsync", "")]
-    public async Task ValidObject_Updates_Item_For_UpdateAsync()
+    [Trait("UpdateBasicShape", "")]
+    public async Task ValidObject_Updates_Item_For_UpdateBasicShape()
     {
         //Arrange
-        var objectToUpdate = BasicShapeTestData.ValidBasicShape(base.DbContext);
-        var objectId = default(int);
-        if (objectToUpdate is not null)
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var projectSpec = new ProjectWithBasicShapesSpec(projectId);
+        var project = await _projectRepository.GetBySpecAsync(projectSpec);
+        var editedBasicShape = project?.BasicShapes.First();
+        var expectedName = "edited basic shape";
+        if (editedBasicShape is not null)
         {
-            objectToUpdate.ShapeType = BasicShapeType.Triangle;
-            objectToUpdate.Number1 = 100.1;
-            objectToUpdate.Number2 = 200.2;
-            objectToUpdate.Name = "edited basic shape";
-            objectId = objectToUpdate.Id;
+            editedBasicShape.ShapeType = BasicShapeType.Triangle;
+            editedBasicShape.Number1 = 100.1;
+            editedBasicShape.Number2 = 200.2;
+            editedBasicShape.Name = expectedName;
         }
 
         //Act
-        await _repository.UpdateAsync(objectToUpdate!);
+        project?.UpdateBasicShape(editedBasicShape!, MapperHelper.CreateMapper());
+        await _projectRepository.SaveChangesAsync();
 
         //Assert
-        var result = base.DbContext.BasicShapes.First(o => o.Id == objectId);
-        result.As<BasicShape>().Name.Should().Be(objectToUpdate!.Name);
+        var result = BasicShapeTestData.ValidBasicShape(base.DbContext, editedBasicShape!.Id);
+        result.As<BasicShape>().Name.Should().Be(expectedName);
     }
 
     [Fact]
-    [Trait("DeleteAsync", "")]
-    public async Task ValidObject_Removes_Item_For_DeleteAsync()
+    [Trait("RemoveBasicShape", "")]
+    public async Task ValidObject_Removes_Item_For_RemoveBasicShape()
     {
         //Arrange
-        var objectToDelete = BasicShapeTestData.ValidBasicShape(base.DbContext);
-        var beforeCount = base.DbContext.BasicShapes.Count();
+        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var projectSpec = new ProjectWithBasicShapesSpec(projectId);
+        var project = await _projectRepository.GetBySpecAsync(projectSpec);
+        var deletedBasicShape = project?.BasicShapes.First();
+        var beforeCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
 
         //Act
-        await _repository.DeleteAsync(objectToDelete!);
+        project?.RemoveBasicShape(deletedBasicShape!.Id);
+        await _projectRepository.SaveChangesAsync();
 
         //Assert
-        var afterCount = base.DbContext.BasicShapes.Count();
+        var afterCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
         afterCount.Should().Be(beforeCount - 1);
     }
 

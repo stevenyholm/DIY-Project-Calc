@@ -2,6 +2,7 @@
 using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -85,10 +86,13 @@ public class MaterialTestData
     }
 
     public static int ValidMaterialId(ApplicationDbContext dbContext) =>
-        dbContext.Materials.FirstOrDefault(m => m.Name == MaterialTestData.ValidName)?.Id ?? 0;
+        dbContext.Materials.AsNoTracking().FirstOrDefault(m => m.Name == MaterialTestData.ValidName)?.Id ?? 0;
 
     public static Material? ValidMaterial(ApplicationDbContext dbContext) =>
-        dbContext.Materials.FirstOrDefault(m => m.Name == MaterialTestData.ValidName);
+        dbContext.Materials.AsNoTracking().FirstOrDefault(m => m.Name == MaterialTestData.ValidName);
+
+    public static Material? ValidMaterial(ApplicationDbContext dbContext, int materialId) =>
+        dbContext.Materials.AsNoTracking().FirstOrDefault(m => m.Id == materialId);
 
     public static int[] ValidNewSelectedBasicShapeIds(ApplicationDbContext dbContext) =>
         dbContext.BasicShapes

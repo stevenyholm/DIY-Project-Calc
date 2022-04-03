@@ -8,8 +8,12 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<BasicShape, BasicShape>();
+
         CreateMap<BasicShape, BasicShapeDTO>()
             .ReverseMap();
+
+        CreateMap<Material, Material>();
 
         CreateMap<Project, ProjectDTOWithBasicShapes>();
 

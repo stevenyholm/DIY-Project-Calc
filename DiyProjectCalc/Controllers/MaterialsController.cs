@@ -2,42 +2,45 @@
 using Microsoft.EntityFrameworkCore;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.ViewModels;
-using DiyProjectCalc.Core.Interfaces;
+using AutoMapper;
+using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
 
 namespace DiyProjectCalc.Controllers
 {
+    [Route("/Projects/{projectId:int}/[controller]/[action]")]
     public class MaterialsController : Controller
     {
-        private readonly IMaterialRepository _repository;
-        private readonly IProjectRepository _projectRepository;
-        private readonly IBasicShapeRepository _basicShapeRepository;
+        private readonly IMapper _mapper;
+        private readonly IRepository<Project> _projectRepository;
 
-        public MaterialsController(IMaterialRepository repository, IProjectRepository projectRepository, IBasicShapeRepository basicShapeRepository)
+        public MaterialsController(IMapper mapper,
+            IRepository<Project> projectRepository)
         {
-            this._repository = repository;
+            this._mapper = mapper;
             this._projectRepository = projectRepository;
-            this._basicShapeRepository = basicShapeRepository;
+
         }
 
-        // GET: Materials
-        public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
+        // GET: ~/projects/5/materials
+        public async Task<IActionResult> Index([FromRoute(Name = "ProjectId")] int projectId)
         {
-            var materials = await _repository.GetMaterialsForProjectAsync(projectId);
+            var project = await LoadProjectDataWithMaterials(projectId);
             ViewData["ProjectId"] = projectId;
-            var project = await _projectRepository.GetProjectAsync(projectId);
             ViewData["ProjectName"] = (project is not null) ? project.Name : default(string);
-            return View(materials);
+            return View(project?.Materials);
         }
 
-        // GET: Materials/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: ~/projects/5/materials/details/5
+        public async Task<IActionResult> Details([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var material = await _repository.GetMaterialAsync(Convert.ToInt32(id));
+            var project = await LoadProjectDataWithMaterials(projectId);
+            var material = project?.GetMaterial(id ?? default(int));
             if (material == null)
             {
                 return NotFound();
@@ -46,63 +49,81 @@ namespace DiyProjectCalc.Controllers
             return View(material);
         }
 
-        // GET: Materials/Create
-        public async Task<IActionResult> Create([FromQuery(Name = "ProjectId")] int projectId)
+        // GET: ~/projects/5/materials/create
+        public async Task<IActionResult> Create([FromRoute(Name = "ProjectId")] int projectId)
         {
-            return View(await GetModelAsync(projectId));
+            var project = await LoadAllProjectData(projectId);
+
+            return View(MapToViewModel(project));
         }
 
-        // POST: Materials/Create
+        // POST: ~/projects/5/materials/create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MaterialEditViewModel model, int[] selectedBasicShapeIds)
+        public async Task<IActionResult> Create(
+            [FromRoute(Name = "ProjectId")] int projectId, 
+            MaterialEditViewModel viewModel, 
+            int[] selectedBasicShapeIds
+            )
         {
-            if (ModelState.IsValid)
+            var project = await LoadAllProjectData(projectId);
+            SetBasicShapesForMaterial(viewModel.Material!, selectedBasicShapeIds, project);
+
+            if (ModelState.IsValid) 
             {
-                await SetBasicShapesForMaterial(model.Material!, selectedBasicShapeIds);
-                await _repository.AddAsync(model.Material!);
-                return RedirectToAction(nameof(Index), new { ProjectId = model.ProjectId });
+                project.AddMaterial(viewModel.Material!);
+                await _projectRepository.SaveChangesAsync();
+                return RedirectToAction(nameof(Index), new { ProjectId = projectId });
             }
-            await SetBasicShapesForMaterial(model.Material!, selectedBasicShapeIds);
-            model.BasicShapesForProject = await AllBasicShapesForProject(model.ProjectId);
-            return View(model);
+            viewModel.BasicShapesForProject = project.BasicShapes;
+            return View(viewModel);
         }
 
-        // GET: Materials/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: ~/projects/5/materials/edit/5
+        public async Task<IActionResult> Edit([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var model = await GetModelAsync(id ?? default(int), true);
-            if (model == null)
+            var project = await LoadProjectDataWithMaterials(projectId);
+            var viewModel = MapToViewModel(project, id ?? default(int));
+            if (viewModel == null)
             {
                 return NotFound();
             }
-            return View(model);
+            return View(viewModel);
         }
 
-        // POST: Materials/Edit/5
+        // POST: ~/projects/5/materials/edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MaterialEditViewModel model, int[] selectedBasicShapeIds)
+        public async Task<IActionResult> Edit(
+            [FromRoute(Name = "ProjectId")] int projectId, 
+            int id, 
+            MaterialEditViewModel viewModel, 
+            int[] selectedBasicShapeIds
+            )
         {
-            if (id != model.Material?.Id) 
+            if (id != viewModel.Material?.Id) 
             {
                 return NotFound();
             }
+
+            var project = await LoadAllProjectData(projectId);
+            SetBasicShapesForMaterial(viewModel.Material!, selectedBasicShapeIds, project);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _repository.UpdateAsync(model.Material, selectedBasicShapeIds);
+                    project.UpdateMaterial(viewModel.Material!, _mapper);
+                    await _projectRepository.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await MaterialExists(model.Material.Id))
+                    if (! project.MaterialExists(viewModel.Material.Id))
                     {
                         return NotFound(); 
                     }
@@ -111,23 +132,24 @@ namespace DiyProjectCalc.Controllers
                         throw;  
                     }
                 }
-                return RedirectToAction(nameof(Index), new { ProjectId = model.ProjectId });
+                return RedirectToAction(nameof(Index), new { ProjectId = projectId });
             }
 
-            await SetBasicShapesForMaterial(model.Material, selectedBasicShapeIds);
-            model.BasicShapesForProject = await AllBasicShapesForProject(model.ProjectId);
-            return View(model);
+            viewModel.BasicShapesForProject = project.BasicShapes;
+
+            return View(viewModel);
         }
 
-        // GET: Materials/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: ~/projects/5/materials/delete/5
+        public async Task<IActionResult> Delete([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var material = await _repository.GetMaterialAsync(Convert.ToInt32(id));
+            var project = await LoadProjectDataWithMaterials(projectId);
+            var material = project?.GetMaterial(id ?? default(int));
             if (material == null)
             {
                 return NotFound();
@@ -136,65 +158,64 @@ namespace DiyProjectCalc.Controllers
             return View(material);
         }
 
-        // POST: Materials/Delete/5
+        // POST: ~/projects/5/materials/delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([FromRoute(Name = "ProjectId")] int projectId, int id)
         {
-            var material = await _repository.GetMaterialAsync(id);
-            var projectId = material?.ProjectId;
-            await _repository.DeleteAsync(material!);
+            var project = await LoadProjectDataWithMaterials(projectId);
+            project?.RemoveMaterial(id);
+            await _projectRepository.SaveChangesAsync();
             return RedirectToAction(nameof(Index), new { ProjectId = projectId });
         }
 
         //================== Helper functions ========================================================
-        private async Task<bool> MaterialExists(int id)
+
+
+        private async Task<Project> LoadProjectDataWithMaterials(int projectId)
         {
-            return await _repository.MaterialExists(id);
+            var projectSpec = new ProjectWithMaterialsSpec(projectId);
+            var project = await _projectRepository.GetBySpecAsync(projectSpec);
+            return project!;
         }
 
-        private async Task<MaterialEditViewModel> GetModelAsync(int id) => await GetModelAsync(id, false);
-        private async Task<MaterialEditViewModel> GetModelAsync(int id, bool includeMaterial)
+        private async Task<Project> LoadAllProjectData(int projectId)
+        {
+            var projectSpec = new ProjectWithMaterialsSpec(projectId);
+            var project = await _projectRepository.GetBySpecAsync(projectSpec);
+            return project!;
+        }
+
+        private MaterialEditViewModel MapToViewModel(Project project, int materialId = -1)
         {
             var model = new MaterialEditViewModel();
-            if (includeMaterial)
+            if (materialId > 0)
             {
-                model.Material = await _repository.GetMaterialAsync(id);
-                if (model.Material == null)
-                    return null!;
-                model.ProjectId = model.Material.ProjectId;
+                model.Material = project.Materials.FirstOrDefault(m => m.Id == materialId);
             }
-            else
-            {
-                model.ProjectId = id;
-            }
-            model.BasicShapesForProject = await AllBasicShapesForProject(model.ProjectId);
+            model.ProjectId = project.Id;
+            model.BasicShapesForProject = project.BasicShapes;
             return model;
         }
 
-        private async Task<ICollection<BasicShape>> AllBasicShapesForProject(int projectId) =>
-            (ICollection<BasicShape>)await _basicShapeRepository.GetBasicShapesForProjectAsync(projectId);
-
-        private async Task SetBasicShapesForMaterial(Material model, int[] selectedBasicShapeIds)
+        private void SetBasicShapesForMaterial(Material material, int[] selectedBasicShapeIds, Project project)
         {
-            var allBasicShapesForProject = await AllBasicShapesForProject(model.ProjectId);
-
-            var basicShapesToAdd = allBasicShapesForProject
-                .Where(b => selectedBasicShapeIds.Any(s => s == b.Id))
-                .Where(b => !model.BasicShapes.Any(m => m.Id == b.Id));
-            foreach(var basicShape in basicShapesToAdd)
+            var basicShapesToAdd = project.BasicShapes
+                .Where(basicShape => selectedBasicShapeIds.Any(selectedId => selectedId == basicShape.Id))
+                .Where(basicShapeFromProject => !material.BasicShapes.Any(basicShapeFromMaterial => basicShapeFromMaterial.Id == basicShapeFromProject.Id));
+            foreach (var basicShape in basicShapesToAdd)
             {
-                model.BasicShapes.Add(basicShape);
+                material.AddBasicShape(basicShape);
             }
 
-            bool isEditView = (model.Id != default(int));
+            bool isEditView = (material.Id != default(int));
             if (isEditView)
             {
-                var basicShapesToRemove = model.BasicShapes
+                var basicShapesToRemove = material.BasicShapes
                     .Where(b => !selectedBasicShapeIds.Any(s => s == b.Id)).ToList();
                 foreach (var basicShape in basicShapesToRemove)
                 {
-                    model.BasicShapes.Remove(basicShape);
+                    material.RemoveBasicShape(basicShape);
                 }
             }
         }

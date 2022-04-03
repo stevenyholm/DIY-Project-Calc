@@ -1,26 +1,20 @@
-﻿using SUT = DiyProjectCalc.Controllers.API;
-using DiyProjectCalc.TestHelpers.TestData;
+﻿using DiyProjectCalc.TestHelpers.TestData;
 using Xunit;
 using FluentAssertions;
 using System.Threading.Tasks;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using System.Net;
-using DiyProjectCalc.TestHelpers.Helpers;
 using FluentAssertions.Execution;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
-using DiyProjectCalc.Infrastructure.Repositories;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Functional.APIEndpoints;
 
 public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
 {
-    private SUT.BasicShapesController _controller;
     public BasicShapesControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
     {
-        _controller = new SUT.BasicShapesController(MapperHelper.CreateMapper(), 
-            new EFBasicShapeRepository(base.DbContext),
-            new EFProjectRepository(base.DbContext));
     }
 
     [Fact]
@@ -28,96 +22,93 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
     public async Task GET_Projects_ProjectId_BasicShapes()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var expectedProject = ProjectTestData.ValidProject(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, expectedProject!.Id);
 
         //Act
-        var response = await base.GetAsync($"projects/{expectedProjectId}/basicshapes");
-        var result = await base.Deserialize<ProjectDTOWithBasicShapes>(response);
+        var httpResponseMessage = await base.GetAsync($"projects/{expectedProject.Id}/basicshapes");
+        var result = await base.Deserialize<ProjectDTOWithBasicShapes>(httpResponseMessage);
 
         //Assert
         using (new AssertionScope())
         {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result?.BasicShapes.Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
-            result?.Id.Should().Be(expectedProjectId);
-            result?.Name.Should().Be(ProjectTestData.ValidName);
+            httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            result?.BasicShapes.Should().HaveCount(expectedCount);
+            result?.Id.Should().Be(expectedProject.Id);
+            result?.Name.Should().Be(expectedProject.Name);
         }
     }
 
     [Fact]
-    [Trait("BasicShapes_BasicShapeId", "Route-GET")]
-    public async Task GET_BasicShapes_BasicShapeId()
+    [Trait("Projects_ProjectId_BasicShapes_BasicShapeId", "Route-GET")]
+    public async Task GET_Projects_ProjectId_BasicShapes_BasicShapeId()
     {
         //Arrange
-        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var expectedBasicShape = project?.BasicShapes.First();
 
         //Act
-        var response = await base.GetAsync($"basicshapes/{expectedBasicShapeId}");
-        var result = await base.Deserialize<BasicShapeDTO>(response);
+        var httpResponseMessage = await base.GetAsync($"projects/{project!.Id}/basicshapes/{expectedBasicShape!.Id}");
+        var result = await base.Deserialize<BasicShapeDTO>(httpResponseMessage);
 
         //Assert
         using (new AssertionScope())
         {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result?.Id.Should().Be(expectedBasicShapeId);
+            httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            result?.Id.Should().Be(expectedBasicShape.Id);
         }
     }
 
     [Fact]
-    [Trait("BasicShapes_with_BasicShape", "Route-POST")]
-    public async Task POST_BasicShapes_with_BasicShape()
+    [Trait("Projects_ProjectId_BasicShapes_with_BasicShape", "Route-POST")]
+    public async Task POST_Projects_ProjectId_BasicShapes_with_BasicShape()
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var newBasicShape = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
+        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTO;
 
         //Act
-        var response = await base.PostAsync($"basicshapes", newBasicShape);
+        var httpResponseMessage = await base.PostAsync($"projects/{projectId}/basicshapes", newBasicShapeDTO);
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     [Fact]
-    [Trait("BasicShapes_with_BasicShape", "Route-PUT")]
-    public async Task PUT_BasicShapes_with_BasicShape()
+    [Trait("Projects_ProjectId_BasicShapes_with_BasicShape", "Route-PUT")]
+    public async Task PUT_Projects_ProjectId_BasicShapes_with_BasicShape()
     {
         //Arrange
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var newBasicShape = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
-        var editedModelDTO = new BasicShapeDTO(
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var basicShapeToUpdate = project?.BasicShapes.First();
+        var editedBasicShapeDTO = new BasicShapeDTO(
             ShapeType: BasicShapeType.Curved,
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            Id: newBasicShape.Id,
-            ProjectId: projectId
+            Id: basicShapeToUpdate!.Id,
+            ProjectId: project!.Id
             );
 
         //Act
-        var response = await base.PutAsync($"basicshapes/{newBasicShape.Id}", editedModelDTO);
+        var httpResponseMessage = await base.PutAsync($"projects/{project.Id}/basicshapes/{editedBasicShapeDTO.Id}", editedBasicShapeDTO);
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
-    [Trait("BasicShapes_BasicShapeId", "Route-DELETE")]
-    public async Task DELETE_BasicShapes_BasicShapeId()
+    [Trait("Projects_ProjectId_BasicShapes_BasicShapeId", "Route-DELETE")]
+    public async Task DELETE_Projects_ProjectId_BasicShapes_BasicShapeId()
     {
         //Arrange
-        var basicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var deletedBasicShape = project?.BasicShapes.First();
 
         //Act
-        var response = await base.DeleteAsync($"basicshapes/{basicShapeId}");
-        var result = await base.Deserialize<int>(response);
+        var httpResponseMessage = await base.DeleteAsync($"projects/{project!.Id}/basicshapes/{deletedBasicShape!.Id}");
 
         //Assert
-        using (new AssertionScope())
-        {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Should().Be(projectId);
-        }
+        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }

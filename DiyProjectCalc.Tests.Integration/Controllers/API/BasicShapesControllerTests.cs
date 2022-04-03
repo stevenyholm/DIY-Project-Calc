@@ -9,7 +9,8 @@ using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
-using DiyProjectCalc.Infrastructure.Repositories;
+using DiyProjectCalc.Infrastructure.Data;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers.API;
 
@@ -18,9 +19,10 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     private SUT.BasicShapesController _controller;
     public BasicShapesControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
     {
-        _controller = new SUT.BasicShapesController(MapperHelper.CreateMapper(), 
-            new EFBasicShapeRepository(base.DbContext),
-            new EFProjectRepository(base.DbContext));
+        _controller = new SUT.BasicShapesController(
+            MapperHelper.CreateMapper(), 
+            new EfRepository<Project>(base.DbContext)
+            );
     }
 
     [Fact]
@@ -28,17 +30,18 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     public async Task ValidProjectId_Returns_BasicShapes_For_GetAllForProject()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var expectedProject = ProjectTestData.ValidProject(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, expectedProject!.Id);
 
         //Act
-        var result = await _controller.GetAllForProject(expectedProjectId);
+        var result = await _controller.GetAllForProject(expectedProject!.Id);
 
         //Assert
         using (new AssertionScope())
         {
-            result.As<ProjectDTOWithBasicShapes>().BasicShapes.Should().HaveCount(ProjectTestData.ValidProjectCountBasicShapes);
-            result.As<ProjectDTOWithBasicShapes>().Id.Should().Be(expectedProjectId);
-            result.As<ProjectDTOWithBasicShapes>().Name.Should().Be(ProjectTestData.ValidName);
+            result.As<ProjectDTOWithBasicShapes>().BasicShapes.Should().HaveCount(expectedCount);
+            result.As<ProjectDTOWithBasicShapes>().Id.Should().Be(expectedProject.Id);
+            result.As<ProjectDTOWithBasicShapes>().Name.Should().Be(expectedProject.Name);
         }
     }
 
@@ -47,13 +50,14 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     public async Task ValidBasicShapeId_Returns_BasicShape_For_Get()
     {
         //Arrange
-        var expectedBasicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var expectedBasicShape = project?.BasicShapes.First();
 
         //Act
-        var result = await _controller.Get(expectedBasicShapeId);
+        var result = await _controller.Get(project!.Id, expectedBasicShape!.Id);
 
         //Assert
-        result.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShapeId);
+        result.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShape.Id);
     }
 
     [Fact]
@@ -62,10 +66,10 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var newBasicShape = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
+        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
 
         //Act
-        var result = await _controller.Post(newBasicShape);
+        var result = await _controller.Post(projectId, newBasicShapeDTO);
 
         //Assert
         result.Should().BeOfType<CreatedAtActionResult>();
@@ -76,19 +80,19 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     public async Task ValidBasicShape_Returns_Ok_For_Put()
     {
         //Arrange
-        var editedModel = BasicShapeTestData.ValidBasicShape(base.DbContext);
-        var editedModelId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
-        var editedModelDTO = new BasicShapeDTO(
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var basicShapeToEdit = project?.BasicShapes.First();
+        var editedBasicShapeDTO = new BasicShapeDTO(
             ShapeType: BasicShapeType.Curved,
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            Id: editedModelId,
-            ProjectId: editedModel?.ProjectId ?? -1
+            Id: basicShapeToEdit!.Id,
+            ProjectId: project!.Id
             );
 
         //Act
-        var result = await _controller.Put(editedModelId, editedModelDTO);
+        var result = await _controller.Put(project.Id, editedBasicShapeDTO.Id, editedBasicShapeDTO);
 
         //Assert
         result.Should().BeOfType<OkResult>();
@@ -99,14 +103,14 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     public async Task ValidBasicShapeId_Returns_ProjectId_For_Delete()
     {
         //Arrange
-        var basicShapeId = BasicShapeTestData.ValidBasicShapeId(base.DbContext);
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var deletedBasicShape = project?.BasicShapes.First();
 
         //Act
-        var result = await _controller.Delete(basicShapeId);
+        var result = await _controller.Delete(project!.Id, deletedBasicShape!.Id);
 
         //Assert
-        result.As<ActionResult<int>>().Value.Should().Be(projectId);
+        result.Should().BeOfType<OkResult>();
     }
 
 

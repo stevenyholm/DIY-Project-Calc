@@ -1,41 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.Core.Interfaces;
+using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Controllers
 {
+    [Route("/Projects/{projectId:int}/[controller]/[action]")]
     public class BasicShapesController : Controller
     {
-        private readonly IBasicShapeRepository _repository;
-        private readonly IProjectRepository _projectRepository;
         private readonly API.BasicShapesController _api;
 
-        public BasicShapesController(IMapper mapper, IBasicShapeRepository repository, IProjectRepository projectRepository)
+        public BasicShapesController(IMapper mapper,
+            IRepository<Project> projectRepository)
         {
-            _repository = repository;
-            _projectRepository = projectRepository;
-            _api = new API.BasicShapesController(mapper, _repository, _projectRepository);
+            this._api = new API.BasicShapesController(mapper, projectRepository);
         }
 
-        // GET: BasicShapes
-        public async Task<IActionResult> Index([FromQuery(Name = "ProjectId")] int projectId)
+        // GET: ~/projects/5/basicshapes
+        public async Task<IActionResult> Index([FromRoute(Name = "ProjectId")] int projectId)
         {
-            var model = await _api.GetAllForProject(projectId);
-            ViewData["ProjectId"] = model.Id;
-            ViewData["ProjectName"] = model.Name;
-            return View(model.BasicShapes);
+            var projectDTO = await _api.GetAllForProject(projectId);
+            ViewData["ProjectId"] = projectDTO.Id;
+            ViewData["ProjectName"] = projectDTO.Name;
+            return View(projectDTO.BasicShapes);
         }
 
-        // GET: BasicShapes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: ~/projects/5/basicshapes/details/5
+        public async Task<IActionResult> Details([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var basicShape = await _api.Get(Convert.ToInt32(id));
+            var basicShape = await _api.Get(projectId, id ??default(int));
             if (basicShape == null)
             {
                 return NotFound();
@@ -44,82 +43,89 @@ namespace DiyProjectCalc.Controllers
             return View(basicShape);
         }
 
-        // GET: BasicShapes/Create
-        public IActionResult Create([FromQuery(Name = "ProjectId")] int projectId)
+        // GET: ~/projects/5/basicshapes/create
+        public IActionResult Create([FromRoute(Name = "ProjectId")] int projectId)
         {
             ViewData["ProjectId"] = projectId;
             return View();
         }
 
-        // POST: BasicShapes/Create
+        // POST: ~/projects/5/basicshapes/create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO basicShape)
+        public async Task<IActionResult> Create(
+            [FromRoute(Name = "ProjectId")] int projectId, 
+            [Bind("ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO newBasicShapeDTO
+            )
         {
             if (ModelState.IsValid)
             {
-                var response = await _api.Post(basicShape);
+                var response = await _api.Post(projectId, newBasicShapeDTO);
                 if (response is CreatedAtActionResult)
                 {
-                    return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                    return RedirectToAction(nameof(Index), new { ProjectId = projectId });
                 }
             }
-            ViewData["ProjectId"] = basicShape.ProjectId;
-            return View(basicShape);
+            ViewData["ProjectId"] = projectId;
+            return View(newBasicShapeDTO);
         }
 
-        // GET: BasicShapes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: ~/projects/5/basicshapes/edit/5
+        public async Task<IActionResult> Edit([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var basicShape = await _api.Get(Convert.ToInt32(id));
-            if (basicShape == null)
+            var basicShapeToUpdate = await _api.Get(projectId, id ?? default(int));
+            if (basicShapeToUpdate == null)
             {
                 return NotFound();
             }
-            return View(basicShape);
+            return View(basicShapeToUpdate);
         }
 
-        // POST: BasicShapes/Edit/5
+        // POST: ~/projects/5/basicshapes/edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BasicShapeId,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO basicShape)
+        public async Task<IActionResult> Edit(
+            [FromRoute(Name = "ProjectId")] int projectId, 
+            int id, 
+            [Bind("Id,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO updatedBasicShapeDTO
+            )
         {
-            if (id != basicShape.Id)
+            if (id != updatedBasicShapeDTO.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var result = await _api.Put(id, basicShape);
+                var result = await _api.Put(projectId, id, updatedBasicShapeDTO);
                 if (result is OkResult)
-                    return RedirectToAction(nameof(Index), new { ProjectId = basicShape.ProjectId });
+                    return RedirectToAction(nameof(Index), new { ProjectId = projectId });
                 else if (result is NotFoundResult)
                     return NotFound();
                 else
                     throw new Exception("Error in saving edits to basic shape.");
             }
-            return View(basicShape);
+            return View(updatedBasicShapeDTO);
         }
 
-        // GET: BasicShapes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: ~/projects/5/basicshapes/delete/5
+        public async Task<IActionResult> Delete([FromRoute(Name = "ProjectId")] int projectId, int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var basicShape = await _api.Get(Convert.ToInt32(id));
+            var basicShape = await _api.Get(projectId, id ?? default(int));
             if (basicShape == null)
             {
                 return NotFound();
@@ -128,13 +134,13 @@ namespace DiyProjectCalc.Controllers
             return View(basicShape);
         }
 
-        // POST: BasicShapes/Delete/5
+        // POST: ~/projects/5/basicshapes/delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed([FromRoute(Name = "ProjectId")] int projectId, int id)
         {
-            var response = await _api.Delete(id);
-            return RedirectToAction(nameof(Index), new { ProjectId = response });
+            var response = await _api.Delete(projectId, id);
+            return RedirectToAction(nameof(Index), new { ProjectId = projectId });
         }
     }
 }

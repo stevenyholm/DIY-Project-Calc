@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestFixtures;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
-using DiyProjectCalc.Infrastructure.Repositories;
+using DiyProjectCalc.TestHelpers.Helpers;
+using DiyProjectCalc.Infrastructure.Data;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers;
 
@@ -18,9 +20,10 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     private SUT.MaterialsController _controller;
     public MaterialsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture) 
     {
-        _controller = new SUT.MaterialsController(new EFMaterialRepository(base.DbContext),
-                new EFProjectRepository(base.DbContext),
-                new EFBasicShapeRepository(base.DbContext));
+        _controller = new SUT.MaterialsController(
+            MapperHelper.CreateMapper(),
+            new EfRepository<Project>(base.DbContext)
+            );
     }
 
     [Fact]
@@ -28,17 +31,18 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProjectId_Returns_Materials_For_Index_Get()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var expectedProject = ProjectTestData.ValidProject(base.DbContext);
+        var expectedCount = ProjectTestData.ProjectMaterialsCount(base.DbContext, expectedProject!.Id);
 
         //Act
-        var result = await _controller.Index(expectedProjectId);
+        var result = await _controller.Index(expectedProject.Id);
 
         //Assert
         using (new AssertionScope())
         {
-            result.As<ViewResult>().ViewData.Model.As<IEnumerable<Material>>().Should().HaveCount(ProjectTestData.ValidProjectCountMaterials);
-            result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProjectId);
-            result.As<ViewResult>().ViewData["ProjectName"].Should().Be(ProjectTestData.ValidName);
+            result.As<ViewResult>().ViewData.Model.As<IEnumerable<Material>>().Should().HaveCount(expectedCount);
+            result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProject.Id);
+            result.As<ViewResult>().ViewData["ProjectName"].Should().Be(expectedProject.Name);
         }
     }
 
@@ -47,13 +51,14 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Details_Get()
     {
         //Arrange
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var expectedMaterial = project?.Materials.First();
 
         //Act
-        var result = await _controller.Details(expectedMaterialId);
+        var result = await _controller.Details(project!.Id, expectedMaterial!.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -84,7 +89,7 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
         var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
         //Act
-        var result = await _controller.Create(newMaterialEditViewModel, newSelectedBasicShapeIds);
+        var result = await _controller.Create(projectId, newMaterialEditViewModel, newSelectedBasicShapeIds);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -95,13 +100,14 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Edit_Get()
     {
         //Arrange
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var expectedMaterial = project?.Materials.First();
 
         //Act
-        var result = await _controller.Edit(expectedMaterialId);
+        var result = await _controller.Edit(project!.Id, expectedMaterial!.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<MaterialEditViewModel>().Material?.Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -109,25 +115,29 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidMaterial_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
-        var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var editMaterialEditViewModel = new MaterialEditViewModel()
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var editedMaterialEditViewModel = new MaterialEditViewModel()
         {
-            ProjectId = projectId,
-            Material = MaterialTestData.ValidMaterial(base.DbContext)
+            ProjectId = project!.Id,
+            Material = project!.Materials.First()
         };
-        if (editMaterialEditViewModel.Material is not null)
+        if (editedMaterialEditViewModel.Material is not null)
         {
-            editMaterialEditViewModel.Material.Name = "2x4 redwood";
-            editMaterialEditViewModel.Material.MeasurementType = MaterialMeasurement.Linear;
-            editMaterialEditViewModel.Material.Length = 8.0;
-            editMaterialEditViewModel.Material.Width = 3.5;
-            editMaterialEditViewModel.Material.Depth = 1.5;
+            editedMaterialEditViewModel.Material.Name = "2x4 redwood";
+            editedMaterialEditViewModel.Material.MeasurementType = MaterialMeasurement.Linear;
+            editedMaterialEditViewModel.Material.Length = 8.0;
+            editedMaterialEditViewModel.Material.Width = 3.5;
+            editedMaterialEditViewModel.Material.Depth = 1.5;
         }
         var newSelectedBasicShapeIds = MaterialTestData.ValidNewSelectedBasicShapeIds(base.DbContext);
 
         //Act
-        var result = await _controller.Edit(materialId, editMaterialEditViewModel, newSelectedBasicShapeIds);
+        var result = await _controller.Edit(
+            project!.Id, 
+            editedMaterialEditViewModel!.Material!.Id, 
+            editedMaterialEditViewModel, 
+            newSelectedBasicShapeIds
+            );
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -138,13 +148,14 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidMaterialId_Returns_Material_For_Delete_Get()
     {
         //Arrange
-        var expectedMaterialId = MaterialTestData.ValidMaterialId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var expectedMaterial = project?.Materials.First();
 
         //Act
-        var result = await _controller.Delete(expectedMaterialId);
+        var result = await _controller.Delete(project!.Id, expectedMaterial!.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterialId);
+        result.As<ViewResult>().ViewData.Model.As<Material>().Id.Should().Be(expectedMaterial.Id);
     }
 
     [Fact]
@@ -152,10 +163,11 @@ public class MaterialsControllerTests : BaseDatabaseClassFixture
     public async Task ValidMaterialId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        var materialId = MaterialTestData.ValidMaterialId(base.DbContext);
+        var project = ProjectTestData.ValidProject(base.DbContext);
+        var deletedMaterial = project?.Materials.First();
 
         //Act
-        var result = await _controller.DeleteConfirmed(materialId);
+        var result = await _controller.DeleteConfirmed(project!.Id, deletedMaterial!.Id);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

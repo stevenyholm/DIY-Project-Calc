@@ -12,7 +12,10 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(p => p.Name)
         .IsRequired();
 
-        ////TODO: how should this be set up? 
+        //TODO: [Key]
+        //public int ProjectId { get; set; }
+
+        ////TODO: move DbSet configuration to these classes (from attributes) 
         //var navigationBasicShapes = builder.Metadata.FindNavigation(nameof(Project.BasicShapes));
         //navigationBasicShapes?.SetPropertyAccessMode(PropertyAccessMode.Field);
 

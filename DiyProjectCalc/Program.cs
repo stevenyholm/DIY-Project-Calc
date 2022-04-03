@@ -1,7 +1,6 @@
 using DiyProjectCalc.Infrastructure.Data;
-using DiyProjectCalc.Infrastructure.Repositories;
-using DiyProjectCalc.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using DiyProjectCalc.SharedKernel.Interfaces;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,9 +21,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection") ));
 
-builder.Services.AddScoped<IProjectRepository, EFProjectRepository>();
-builder.Services.AddScoped<IMaterialRepository, EFMaterialRepository>();
-builder.Services.AddScoped<IBasicShapeRepository, EFBasicShapeRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

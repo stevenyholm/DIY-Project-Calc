@@ -8,7 +8,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.TestData;
-using DiyProjectCalc.Infrastructure.Repositories;
+using DiyProjectCalc.Infrastructure.Data;
+using DiyProjectCalc.Core.Entities.ProjectAggregate;
 
 namespace DiyProjectCalc.Tests.Integration.Controllers.API;
 public class ProjectsControllerTests : BaseDatabaseClassFixture
@@ -16,8 +17,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     private SUT.ProjectsController _controller;
     public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
     {
-        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(),
-            new EFProjectRepository(base.DbContext));
+        _controller = new SUT.ProjectsController(
+            MapperHelper.CreateMapper(),
+            new EfRepository<Project>(base.DbContext) 
+            );
     }
 
     [Fact]
@@ -25,12 +28,13 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task Returns_AllProjects_For_Get()
     {
         //Arrange
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext);
 
         //Act
         var result = await _controller.Get();
 
         //Assert
-        result.As<IEnumerable<ProjectDTO>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
+        result.As<IEnumerable<ProjectDTO>>().Should().HaveCount(expectedCount);
     }
 
     [Fact]
@@ -52,10 +56,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProject_Returns_CreatedAtActionResult_For_Post()
     {
         //Arrange
-        var newModel = ProjectTestData.NewProjectDTO;
+        var newProjectDTO = ProjectTestData.NewProjectDTO;
 
         //Act
-        var result = await _controller.Post(newModel);
+        var result = await _controller.Post(newProjectDTO);
 
         //Assert
         result.Should().BeOfType<CreatedAtActionResult>();
@@ -66,10 +70,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProject_Returns_Ok_For_Put()
     {
         //Arrange
-        var editedModel = ProjectTestData.ValidProjectDTO(base.DbContext);
+        var editedProjectDTO = ProjectTestData.ValidProjectDTO(base.DbContext);
 
         //Act
-        var result = await _controller.Put(editedModel?.Id ?? -1, editedModel!);
+        var result = await _controller.Put(editedProjectDTO?.Id ?? -1, editedProjectDTO!);
 
         //Assert
         result.Should().BeOfType<OkResult>();
@@ -80,10 +84,10 @@ public class ProjectsControllerTests : BaseDatabaseClassFixture
     public async Task ValidProjectId_Returns_Ok_For_Delete()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var deletedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var result = await _controller.Delete(expectedProjectId);
+        var result = await _controller.Delete(deletedProjectId);
 
         //Assert
         result.Should().BeOfType<OkResult>();

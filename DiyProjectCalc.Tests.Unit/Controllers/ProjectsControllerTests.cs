@@ -8,17 +8,19 @@ using Xunit;
 using Moq;
 using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.Core.Interfaces;
+using DiyProjectCalc.TestHelpers.UnitTestBase;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers;
 
-public class ProjectsControllerTests 
+public class ProjectsControllerTests : BaseControllerTests
 {
-    private Mock<IProjectRepository> _mockRepository = new Mock<IProjectRepository>();
     private SUT.ProjectsController _controller;
     public ProjectsControllerTests()
     {
-        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(), _mockRepository.Object);
+        _controller = new SUT.ProjectsController(
+            MapperHelper.CreateMapper(), 
+            base._mockProjectRepository.Object
+            );
     }
 
     [Fact]
@@ -27,13 +29,14 @@ public class ProjectsControllerTests
     {
         //Arrange
         var projects = ProjectTestData.ProjectsFor(new ProjectTestData().ValidProjectTestModelList);
-        _mockRepository.Setup(r => r.GetAllProjectsAsync()).ReturnsAsync(projects);
+        base._mockProjectRepository.Setup(r => r.ListAsync(TestCancellationToken())).ReturnsAsync(projects);
 
         //Act
         var result = await _controller.Index();
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<List<ProjectDTO>>().Should().HaveCount(ProjectTestData.ValidProjectListCount);
+        result.As<ViewResult>().ViewData.Model.As<List<ProjectDTO>>()
+            .Should().HaveCount(ProjectTestData.ValidProjectListCount);
     }
 
     [Fact]
@@ -41,15 +44,15 @@ public class ProjectsControllerTests
     public async Task ValidProjectId_Returns_Project_For_Details_Get()
     {
         //Arrange
-        var project = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var expectedProject = ProjectTestData.MockSimpleProject;
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Details(expectedProjectId);
+        var result = await _controller.Details(expectedProject.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProject.Id);
     }
 
     [Fact]
@@ -70,10 +73,10 @@ public class ProjectsControllerTests
     public async Task ValidProject_Throws_NoError_For_Create_Post()
     {
         //Arrange
-        var project = ProjectTestData.NewProjectDTO;
+        var newProjectDTO = ProjectTestData.NewProjectDTO;
 
         //Act
-        var result = await _controller.Create(project);
+        var result = await _controller.Create(newProjectDTO);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -84,15 +87,15 @@ public class ProjectsControllerTests
     public async Task ValidProjectId_Returns_Project_For_Edit_Get()
     {
         //Arrange
-        var project = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var expectedProject = ProjectTestData.MockSimpleProject;
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Edit(expectedProjectId);
+        var result = await _controller.Edit(expectedProject.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProject.Id);
     }
 
     [Fact]
@@ -100,10 +103,10 @@ public class ProjectsControllerTests
     public async Task ValidProject_Throws_NoError_For_Edit_Post()
     {
         //Arrange
-        var editedModel = ProjectTestData.MockSimpleProjectDTO;
+        var editedProjectDTO = ProjectTestData.MockSimpleProjectDTO;
 
         //Act
-        var result = await _controller.Edit(editedModel!);
+        var result = await _controller.Edit(editedProjectDTO!);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();
@@ -114,15 +117,15 @@ public class ProjectsControllerTests
     public async Task ValidProjectId_Returns_Project_For_Delete_Get()
     {
         //Arrange
-        var project = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var expectedProject = ProjectTestData.MockSimpleProject;
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
-        var result = await _controller.Delete(expectedProjectId);
+        var result = await _controller.Delete(expectedProject.Id);
 
         //Assert
-        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
+        result.As<ViewResult>().ViewData.Model.As<ProjectDTO>().Id.Should().Be(expectedProject.Id);
     }
 
     [Fact]
@@ -130,12 +133,12 @@ public class ProjectsControllerTests
     public async Task ValidProjectId_Throws_NoError_For_Delete_Post()
     {
         //Arrange
-        var project = ProjectTestData.MockSimpleProject;
-        _mockRepository.Setup(r => r.GetProjectAsync(It.IsAny<int>())).ReturnsAsync(project);
-        var expectedProjectId = ProjectTestData.MockSimpleProjectId;
+        var deletedProject = ProjectTestData.MockSimpleProject;
+        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+            .ReturnsAsync(deletedProject);
 
         //Act
-        var result = await _controller.DeletePOST(expectedProjectId);
+        var result = await _controller.DeletePOST(deletedProject.Id);
 
         //Assert
         result.Should().BeOfType<RedirectToActionResult>();

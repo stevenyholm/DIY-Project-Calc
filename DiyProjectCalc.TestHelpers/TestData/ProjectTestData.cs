@@ -51,15 +51,57 @@ public class ProjectTestData
     {
         get => new Project()
         {
-            Id = 99,
-            Name = "New Project",
-            BasicShapes = BasicShapeTestData.BasicShapesFor(new BasicShapeTestData().TestDataForPatioArea)
+            Id = ProjectTestData.MockSimpleProject.Id,
+            Name = ProjectTestData.MockSimpleProject.Name,
+            BasicShapes = MockBasicShapesCollection
         };
+    }
+
+    public static Project MockSimpleProjectWithMaterials
+    {
+        get => new Project()
+        {
+            Id = ProjectTestData.MockSimpleProject.Id,
+            Name = ProjectTestData.MockSimpleProject.Name,
+            Materials = MockMaterialsCollection
+        };
+    }
+
+    private static ICollection<BasicShape> MockBasicShapesCollection
+    {
+        get
+        {
+            var collection = new List<BasicShape>();
+            collection.Add(BasicShapeTestData.MockSimpleBasicShape);
+            collection.AddRange(BasicShapeTestData.BasicShapesFor(new BasicShapeTestData().TestDataForPatioArea));
+            return collection;
+        }
+    }
+
+    private static ICollection<Material> MockMaterialsCollection
+    {
+        get
+        {
+            var collection = new List<Material>(); 
+            collection.Add(MaterialTestData.MockSimpleMaterial);
+            collection.AddRange(MaterialTestData.MaterialsFor(new MaterialTestData().TestDataForPatio));
+            return collection;
+        }
     }
 
     public static int MockSimpleProjectId
     {
         get => MockSimpleProject.Id;
+    }
+
+    public static int MockSimpleProjectCountBasicShapes
+    {
+        get => MockSimpleProject.BasicShapes.Count;
+    }
+
+    public static int MockSimpleProjectCountMaterials
+    {
+        get => MockSimpleProject.Materials.Count;
     }
 
     public ProjectTestData()
@@ -71,11 +113,31 @@ public class ProjectTestData
     }
 
     public static int ValidProjectId(ApplicationDbContext dbContext) =>
-        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName)?.Id ?? 0;
+        dbContext.Projects.AsNoTracking().FirstOrDefault(p => p.Name == ProjectTestData.ValidName)?.Id ?? 0;
 
     public static Project? ValidProject(ApplicationDbContext dbContext) =>
-        dbContext.Projects.AsNoTracking().FirstOrDefault(m => m.Name == ProjectTestData.ValidName);
+        dbContext.Projects.AsNoTracking()
+        .Include(project => project.BasicShapes)
+        .Include(project => project.Materials)
+        .FirstOrDefault(p => p.Name == ProjectTestData.ValidName);
 
+    public static Project? ValidProject(ApplicationDbContext dbContext, int projectId) =>
+        dbContext.Projects.AsNoTracking().FirstOrDefault(p => p.Id == projectId);
+
+    public static int ProjectsCount(ApplicationDbContext dbContext) =>
+        dbContext.Projects.AsNoTracking().Count();
+    public static int ProjectMaterialsCount(ApplicationDbContext dbContext, int projectId) 
+    {
+        var projects = dbContext.Projects.AsNoTracking().Include(project => project.Materials)
+            .FirstOrDefault(p => p.Id == projectId);
+        return projects!.Materials.Count();
+    }
+    public static int ProjectBasicShapesCount(ApplicationDbContext dbContext, int projectId)
+    {
+        var projects = dbContext.Projects.AsNoTracking().Include(project => project.BasicShapes)
+            .FirstOrDefault(p => p.Id == projectId);
+        return projects!.BasicShapes.Count();
+    }
     public static ProjectDTO? ValidProjectDTO(ApplicationDbContext dbContext) =>
         new ProjectDTO(
             Id: ProjectTestData.ValidProject(dbContext)?.Id ?? -1,

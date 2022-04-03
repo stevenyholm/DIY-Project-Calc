@@ -8,19 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 using DiyProjectCalc.Models.DTO;
 using FluentAssertions;
 using DiyProjectCalc.TestHelpers.Helpers;
-using DiyProjectCalc.Core.Interfaces;
+using DiyProjectCalc.TestHelpers.UnitTestBase;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
+using System.Linq;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
-public class BasicShapesControllerTests
+public class BasicShapesControllerTests : BaseControllerTests
 {
-    private Mock<IBasicShapeRepository> _mockRepository = new Mock<IBasicShapeRepository>();
-    private Mock<IProjectRepository> _mockProjectRepository = new Mock<IProjectRepository>();
     private SUT.BasicShapesController _controller;
     public BasicShapesControllerTests()
     {
-        _controller = new SUT.BasicShapesController(MapperHelper.CreateMapper(), 
-            _mockRepository.Object, 
-            _mockProjectRepository.Object);
+        _controller = new SUT.BasicShapesController(
+            MapperHelper.CreateMapper(), 
+            base._mockProjectRepository.Object
+            );
     }
 
     [Fact]
@@ -29,7 +30,8 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var expectedProject = ProjectTestData.MockSimpleProjectWithBasicShapes;
-        _mockProjectRepository.Setup(r => r.GetProjectWithBasicShapesAsync(It.IsAny<int>())).ReturnsAsync(expectedProject);
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithBasicShapesSpec>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
 
         //Act
         var result = await _controller.GetAllForProject(expectedProject.Id);
@@ -48,11 +50,13 @@ public class BasicShapesControllerTests
     public async Task ValidBasicShapeId_Returns_BasicShape_For_Get()
     {
         //Arrange
-        var expectedBasicShape = new BasicShapeTestData().ValidBasicShapeTestModel!.BasicShape;
-        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(expectedBasicShape);
+        var project = ProjectTestData.MockSimpleProjectWithBasicShapes;
+        var expectedBasicShape = project.BasicShapes.First();
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithBasicShapesSpec>(), TestCancellationToken()))
+            .ReturnsAsync(project);
 
         //Act
-        var result = await _controller.Get(expectedBasicShape.Id);
+        var result = await _controller.Get(project.Id, expectedBasicShape.Id);
 
         //Assert
         result.As<BasicShapeDTO>().Id.Should().Be(expectedBasicShape.Id);
@@ -64,10 +68,10 @@ public class BasicShapesControllerTests
     {
         //Arrange
         var projectId = ProjectTestData.MockSimpleProjectId;
-        var newBasicShape = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
+        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
 
         //Act
-        var result = await _controller.Post(newBasicShape);
+        var result = await _controller.Post(projectId, newBasicShapeDTO);
 
         //Assert
         result.Should().BeOfType<CreatedAtActionResult>();
@@ -78,10 +82,11 @@ public class BasicShapesControllerTests
     public async Task ValidBasicShape_Returns_Ok_For_Put()
     {
         //Arrange
-        var editedModel = BasicShapeTestData.MockSimpleBasicShapeDTO;
+        var projectId = ProjectTestData.MockSimpleProjectId;
+        var editedBasicShapeDTO = BasicShapeTestData.MockSimpleBasicShapeDTO;
 
         //Act
-        var result = await _controller.Put(editedModel.Id, editedModel);
+        var result = await _controller.Put(projectId, editedBasicShapeDTO.Id, editedBasicShapeDTO);
 
         //Assert
         result.Should().BeOfType<OkResult>();
@@ -92,15 +97,16 @@ public class BasicShapesControllerTests
     public async Task ValidBasicShapeId_Returns_ProjectId_For_Delete()
     {
         //Arrange
-        var basicShape = BasicShapeTestData.MockSimpleBasicShape;
-        _mockRepository.Setup(r => r.GetBasicShapeAsync(It.IsAny<int>())).ReturnsAsync(basicShape);
-        var basicShapeId = BasicShapeTestData.MockSimpleBasicShapeId;
+        var expectedProject = ProjectTestData.MockSimpleProjectWithBasicShapes;
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithBasicShapesSpec>(), TestCancellationToken()))
+            .ReturnsAsync(expectedProject);
+        var deletedBasicShape = expectedProject.BasicShapes.First();
 
         //Act
-        var result = await _controller.Delete(basicShapeId);
+        var result = await _controller.Delete(expectedProject.Id, deletedBasicShape.Id);
 
         //Assert
-        result.As<ActionResult<int>>().Value.Should().Be(basicShape.ProjectId);
+        result.Should().BeOfType<OkResult>();
     }
 
 }

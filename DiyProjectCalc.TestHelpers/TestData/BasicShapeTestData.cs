@@ -42,12 +42,12 @@ public class BasicShapeTestData
         get => new BasicShape()
         {
             Id = 3333,
-            ProjectId = 330,
+            ProjectId = ProjectTestData.MockSimpleProjectId,
             Name = "BasicShape For Testing",
             ShapeType = BasicShapeType.Curved,
             Number1 = 33.0,
             Number2 = 33.0,
-            Project = new Project() { Id = 330, Name = "parent project" }
+            Project = new Project() { Id = ProjectTestData.MockSimpleProjectId, Name = "parent project" }
         };
     }
 
@@ -77,6 +77,9 @@ public class BasicShapeTestData
 
     public static BasicShape? ValidBasicShape(ApplicationDbContext dbContext) =>
         dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Name == BasicShapeTestData.ValidName);
+
+    public static BasicShape? ValidBasicShape(ApplicationDbContext dbContext, int basicShapeId) =>
+        dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Id == basicShapeId);
 
     public static BasicShapeDTO NewBasicShapeDTOWithProjectId(int projectId) => new BasicShapeDTO(
         ShapeType: BasicShapeTestData.NewBasicShape.ShapeType,

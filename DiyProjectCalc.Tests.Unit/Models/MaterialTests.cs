@@ -1,5 +1,6 @@
-﻿using Xunit;
+﻿using System.Linq;
 using FluentAssertions;
+using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
 using DiyProjectCalc.TestHelpers.TestModels;
 
@@ -85,4 +86,37 @@ public class MaterialTests
         result.Should().Be(testData.ExpectedCanCalculateQuantity);
     }
 
+    [Fact]
+    [Trait("AddBasicShape", "")]
+    public void ValidInput_Adds_Item_For_AddBasicShape()
+    {
+        //Arrange
+        var material = MaterialTestData.MockSimpleMaterial;
+        var expectedCount = material.BasicShapes.Count + 1;
+        var basicShapeToAdd = BasicShapeTestData.NewBasicShape;
+
+        //Act
+        material.AddBasicShape(basicShapeToAdd);
+
+        //Assert
+        var afterCount = material.BasicShapes.Count;
+        afterCount.Should().Be(expectedCount);
+    }
+
+    [Fact]
+    [Trait("RemoveBasicShape", "")]
+    public void ValidInput_Removes_Item_For_RemoveBasicShape()
+    {
+        //Arrange
+        var material = MaterialTestData.MockMaterialWithBasicShapes;
+        var expectedCount = material.BasicShapes.Count - 1;
+        var basicShapeToRemove = material.BasicShapes.First();
+
+        //Act
+        material.RemoveBasicShape(basicShapeToRemove);
+
+        //Assert
+        var afterCount = material.BasicShapes.Count;
+        afterCount.Should().Be(expectedCount);
+    }
 }

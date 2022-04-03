@@ -123,7 +123,17 @@ public class Material : BaseEntity
             _ => false
         };
 
-    private bool IsMeasurementValid(double? measurement) => measurement != null && measurement.HasValue && measurement > 0;
+    public void AddBasicShape(BasicShape newBasicShape)
+    {
+        BasicShapes.Add(newBasicShape);
+    }
+    public void RemoveBasicShape(BasicShape basicShapeToDelete)
+    {
+        BasicShapes.Remove(basicShapeToDelete!);
+    }
+
+    private bool IsMeasurementValid(double? measurement) 
+        => measurement != null && measurement.HasValue && measurement > 0;
 
     private double MaterialDistance() => this.Length ?? 1.0;
     private double MaterialArea() => (this.Length ?? 1) * (this.Width ?? 1);

@@ -1,25 +1,19 @@
-﻿using SUT = DiyProjectCalc.Controllers.API;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using DiyProjectCalc.TestHelpers.TestFixtures;
-using DiyProjectCalc.TestHelpers.Helpers;
 using DiyProjectCalc.Models.DTO;
 using FluentAssertions.Execution;
 using FluentAssertions;
 using System.Net;
 using DiyProjectCalc.TestHelpers.TestData;
 using Xunit;
-using DiyProjectCalc.Infrastructure.Repositories;
 
 namespace DiyProjectCalc.Tests.Functional.APIEndpoints;
 
 public class ProjectsControllerTests : BaseAPIEndpointClassFixture
 {
-    private SUT.ProjectsController _controller;
     public ProjectsControllerTests(DefaultTestDatabaseClassFixture fixture) : base(fixture)
     {
-        _controller = new SUT.ProjectsController(MapperHelper.CreateMapper(),
-            new EFProjectRepository(base.DbContext));
     }
 
     [Fact]
@@ -27,16 +21,17 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
     public async Task GET_Projects()
     {
         //Arrange
+        var expectedCount = ProjectTestData.ProjectsCount(base.DbContext);
 
         //Act
-        var response = await base.GetAsync($"projects");
-        var result = await base.Deserialize<IEnumerable<ProjectDTO>>(response);
+        var httpResponseMessage = await base.GetAsync($"projects");
+        var result = await base.Deserialize<IEnumerable<ProjectDTO>>(httpResponseMessage);
 
         //Assert
         using (new AssertionScope())
         {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result?.Should().HaveCount(ProjectTestData.ValidProjectListCount);
+            httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+            result?.Should().HaveCount(expectedCount);
         }
     }
 
@@ -48,13 +43,13 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
         var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var response = await base.GetAsync($"projects/{expectedProjectId}");
-        var result = await base.Deserialize<ProjectDTO>(response);
+        var httpResponseMessage = await base.GetAsync($"projects/{expectedProjectId}");
+        var result = await base.Deserialize<ProjectDTO>(httpResponseMessage);
 
         //Assert
         using (new AssertionScope())
         {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
             result.As<ProjectDTO>().Id.Should().Be(expectedProjectId);
         }
     }
@@ -64,13 +59,13 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
     public async Task POST_Projects_with_Project()
     {
         //Arrange
-        var newModel = ProjectTestData.NewProjectDTO;
+        var newProjectDTO = ProjectTestData.NewProjectDTO;
 
         //Act
-        var response = await base.PostAsync($"projects", newModel);
+        var httpResponseMessage = await base.PostAsync($"projects", newProjectDTO);
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Created);
 
     }
 
@@ -80,16 +75,16 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var editedModelDTO = new ProjectDTO(
+        var editedProjectDTO = new ProjectDTO(
             Id: projectId,
             Name: "roundy roundy"
             );
 
         //Act
-        var response = await base.PutAsync($"projects/{projectId}", editedModelDTO);
+        var httpResponseMessage = await base.PutAsync($"projects/{projectId}", editedProjectDTO);
 
         //Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
     [Fact]
@@ -97,15 +92,15 @@ public class ProjectsControllerTests : BaseAPIEndpointClassFixture
     public async Task DELETE_Projects_ProjectId()
     {
         //Arrange
-        var expectedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
+        var deletedProjectId = ProjectTestData.ValidProjectId(base.DbContext);
 
         //Act
-        var response = await base.DeleteAsync($"projects/{expectedProjectId}");
+        var httpResponseMessage = await base.DeleteAsync($"projects/{deletedProjectId}");
 
         //Assert
         using (new AssertionScope())
         {
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }

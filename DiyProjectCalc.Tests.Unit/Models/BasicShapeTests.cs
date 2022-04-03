@@ -1,5 +1,5 @@
-using Xunit;
 using FluentAssertions;
+using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
 using DiyProjectCalc.TestHelpers.TestModels;
 
