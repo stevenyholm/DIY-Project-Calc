@@ -20,11 +20,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyProjectCalc.Tests.Functi
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "DiyProjectCalc.Frontend", "DiyProjectCalc.Frontend\DiyProjectCalc.Frontend.esproj", "{16D01AA0-E681-4FA0-AE0C-0F93B151B8C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiyProjectCalc.Core", "DiyProjectCalc.Core\DiyProjectCalc.Core.csproj", "{8E142A88-001F-461E-8048-E7E698B9D456}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyProjectCalc.Core", "DiyProjectCalc.Core\DiyProjectCalc.Core.csproj", "{8E142A88-001F-461E-8048-E7E698B9D456}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiyProjectCalc.SharedKernel", "DiyProjectCalc.SharedKernel\DiyProjectCalc.SharedKernel.csproj", "{00550025-DB97-4B11-921D-5423332DA5A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyProjectCalc.SharedKernel", "DiyProjectCalc.SharedKernel\DiyProjectCalc.SharedKernel.csproj", "{00550025-DB97-4B11-921D-5423332DA5A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiyProjectCalc.Infrastructure", "DiyProjectCalc.Infrastructure\DiyProjectCalc.Infrastructure.csproj", "{2F78014F-EFCD-4E1A-A637-72CD84BB5B6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiyProjectCalc.Infrastructure", "DiyProjectCalc.Infrastructure\DiyProjectCalc.Infrastructure.csproj", "{2F78014F-EFCD-4E1A-A637-72CD84BB5B6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{43804AB9-471D-43F2-A2D1-AA358CECDB68}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E3686803-667D-4CB8-9144-6D2168B81CF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,17 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1CDEA068-05E1-4DB2-9BB6-CD349360AFF8} = {E3686803-667D-4CB8-9144-6D2168B81CF5}
+		{CF47898B-DAC1-40E3-A559-B93E4EBCD3CF} = {43804AB9-471D-43F2-A2D1-AA358CECDB68}
+		{9F2A2C3C-773B-4CA8-9C68-A742A9327932} = {43804AB9-471D-43F2-A2D1-AA358CECDB68}
+		{9F182D9B-D2C7-44BD-91A8-E01A34D36F7B} = {43804AB9-471D-43F2-A2D1-AA358CECDB68}
+		{63CBEA5F-7538-4A91-88E1-69826D78ECF9} = {43804AB9-471D-43F2-A2D1-AA358CECDB68}
+		{16D01AA0-E681-4FA0-AE0C-0F93B151B8C6} = {E3686803-667D-4CB8-9144-6D2168B81CF5}
+		{8E142A88-001F-461E-8048-E7E698B9D456} = {E3686803-667D-4CB8-9144-6D2168B81CF5}
+		{00550025-DB97-4B11-921D-5423332DA5A0} = {E3686803-667D-4CB8-9144-6D2168B81CF5}
+		{2F78014F-EFCD-4E1A-A637-72CD84BB5B6E} = {E3686803-667D-4CB8-9144-6D2168B81CF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B07C17D-7651-40A7-9CBD-52E1AF268BAE}
