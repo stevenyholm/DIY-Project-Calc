@@ -32,22 +32,24 @@ export class BasicShapesComponent implements OnInit {
       .subscribe(projectWithBasicShapes => this.projectWithBasicShapes = projectWithBasicShapes);
   }
 
-  add(name: string, _number1: string, _number2: string, _shapeType: string, projectId: number): void {
+  add(name: string, _number1: string, _number2: string, _shapeType: string): void {
+    const projectId = Number(this.route.snapshot.paramMap.get('projectId'));
     var number1: number = parseFloat(_number1);
     var number2: number = parseFloat(_number2);
     var shapeType: number = parseFloat(_shapeType);
     name = name.trim();
     if (!name) { return; }
-    this.basicShapeService.addBasicShape({ name, number1, number2, shapeType, projectId } as BasicShape)
+    this.basicShapeService.addBasicShape(projectId, { name, number1, number2, shapeType } as BasicShape)
       .subscribe(basicShape => {
         this.projectWithBasicShapes?.basicShapes.push(basicShape);
       });
   }
 
   delete(basicShape: BasicShape): void {
+    const projectId = Number(this.route.snapshot.paramMap.get('projectId'));
     if (this.projectWithBasicShapes) {
       this.projectWithBasicShapes.basicShapes = this.projectWithBasicShapes.basicShapes.filter(h => h !== basicShape);
-      this.basicShapeService.deleteBasicShape(basicShape.basicShapeId).subscribe();
+      this.basicShapeService.deleteBasicShape(projectId, basicShape.basicShapeId).subscribe();
     }
   }
 

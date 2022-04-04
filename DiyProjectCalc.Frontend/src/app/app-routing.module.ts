@@ -10,8 +10,7 @@ const routes: Routes = [
   { path: 'projects', component: ProjectsComponent },
   { path: 'projects/:id', component: ProjectDetailComponent },
   { path: 'projects/:projectId/basicShapes', component: BasicShapesComponent },
-  { path: 'basicShapes', component: BasicShapesComponent },
-  { path: 'basicShapes/:id', component: BasicShapeDetailComponent }
+  { path: 'projects/:projectId/basicShapes/:id', component: BasicShapeDetailComponent }
 ];
 
 @NgModule({

@@ -42,12 +42,10 @@ public class BasicShapeTestData
         get => new BasicShape()
         {
             Id = 3333,
-            ProjectId = ProjectTestData.MockSimpleProjectId,
             Name = "BasicShape For Testing",
             ShapeType = BasicShapeType.Curved,
             Number1 = 33.0,
             Number2 = 33.0,
-            Project = new Project() { Id = ProjectTestData.MockSimpleProjectId, Name = "parent project" }
         };
     }
 
@@ -55,12 +53,10 @@ public class BasicShapeTestData
     {
         get => new BasicShapeDTO(
             Id: BasicShapeTestData.MockSimpleBasicShape.Id,
-            ProjectId: BasicShapeTestData.MockSimpleBasicShape.ProjectId,
             Name: BasicShapeTestData.MockSimpleBasicShape.Name,
             ShapeType: BasicShapeTestData.MockSimpleBasicShape.ShapeType,
             Number1: BasicShapeTestData.MockSimpleBasicShape.Number1,
             Number2: BasicShapeTestData.MockSimpleBasicShape.Number2,
-            ProjectName: BasicShapeTestData.MockSimpleBasicShape.Project.Name ?? "", //field in BasicShape.Project.Name comes from another table in the database
             Description: "nice round shape", //in BasicShape this field is calculated 
             Area: 12.33, //in BasicShape this field is calculated 
             Distance: 1.2 //in BasicShape this field is calculated 
@@ -80,14 +76,6 @@ public class BasicShapeTestData
 
     public static BasicShape? ValidBasicShape(ApplicationDbContext dbContext, int basicShapeId) =>
         dbContext.BasicShapes.AsNoTracking().FirstOrDefault(m => m.Id == basicShapeId);
-
-    public static BasicShapeDTO NewBasicShapeDTOWithProjectId(int projectId) => new BasicShapeDTO(
-        ShapeType: BasicShapeTestData.NewBasicShape.ShapeType,
-        Name: BasicShapeTestData.NewBasicShape.Name,
-        Number1: BasicShapeTestData.NewBasicShape.Number1,
-        Number2: BasicShapeTestData.NewBasicShape.Number2,
-        ProjectId: projectId
-        );
 
 
     //==============================================================================================

@@ -114,7 +114,6 @@ public class MaterialsControllerTests : BaseControllerTests
         base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithMaterialsSpec>(), TestCancellationToken()))
             .ReturnsAsync(project);
         var expectedMaterial = project.Materials.First();
-        expectedMaterial.ProjectId = project.Id;
 
         //Act
         var result = await _controller.Edit(project.Id, expectedMaterial.Id);

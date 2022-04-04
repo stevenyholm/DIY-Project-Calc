@@ -4,19 +4,12 @@
 
 //public class Material : BaseEntity
 //{
-//    //public int MaterialId { get; set; }
 
 //    //TODO: [Display(Name = "Type of Measurement")]
 //    //TODO: [EnumDataType(typeof(MaterialMeasurement))]
 //    public MaterialMeasurement MeasurementType { get; set; }
 
 //    public string? Name { get; set; }
-
-//    //navigation properties 
-//    //TODO: [ForeignKey("Project")]
-//    //public int ProjectId { get; set; }
-//    //[ValidateNever]
-//    //public virtual Project Project { get; set; } = null!;
 
 //    public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
 
@@ -80,12 +73,6 @@ public class Material : BaseEntity
     public MaterialMeasurement MeasurementType { get; set; }
 
     public string? Name { get; set; }
-
-    //navigation properties 
-    [ForeignKey("Project")]
-    public int ProjectId { get; set; }
- //TODO:   [ValidateNever]
-    public virtual Project Project { get; set; } = null!;
 
     public virtual ICollection<BasicShape> BasicShapes { get; set; } = new HashSet<BasicShape>();
 

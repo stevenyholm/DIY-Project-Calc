@@ -46,6 +46,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
+            ViewData["ProjectId"] = projectId;
             return View(material);
         }
 
@@ -53,8 +54,8 @@ namespace DiyProjectCalc.Controllers
         public async Task<IActionResult> Create([FromRoute(Name = "ProjectId")] int projectId)
         {
             var project = await LoadAllProjectData(projectId);
-
-            return View(MapToViewModel(project));
+            var viewModel = MapToViewModel(project);
+            return View(viewModel);
         }
 
         // POST: ~/projects/5/materials/create
@@ -101,7 +102,7 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             [FromRoute(Name = "ProjectId")] int projectId, 
-            int id, 
+            [FromForm(Name = "Material.Id")] int id, 
             MaterialEditViewModel viewModel, 
             int[] selectedBasicShapeIds
             )
@@ -155,6 +156,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
+            ViewData["ProjectId"] = projectId;
             return View(material);
         }
 

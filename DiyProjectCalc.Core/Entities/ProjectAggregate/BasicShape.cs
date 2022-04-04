@@ -5,7 +5,6 @@
 //public class BasicShape : BaseEntity
 //{
 
-//    //public int BasicShapeId { get; set; }
 
 //    //TODO: [Display(Name = "Type of Shape")]
 //    //TODO: [EnumDataType(typeof(BasicShapeType))]
@@ -13,11 +12,6 @@
 
 //    public string? Name { get; set; }
 
-//    //navigation properties 
-//    //TODO: [ForeignKey("Project")] 
-//    //public int ProjectId { get; set; }
-//    //[ValidateNever]
-//    //public virtual Project Project { get; set; } = null!;
 
 //    public virtual ICollection<Material> Materials { get; set; } = new HashSet<Material>();
 
@@ -86,12 +80,6 @@ public class BasicShape : BaseEntity
     public BasicShapeType ShapeType { get; set; }
 
     public string? Name { get; set; }
-
-    //navigation properties 
-    [ForeignKey("Project")]
-    public int ProjectId { get; set; }
-    // TODO:    [ValidateNever]
-    public virtual Project Project { get; set; } = null!;
 
     public virtual ICollection<Material> Materials { get; set; } = new HashSet<Material>();
 

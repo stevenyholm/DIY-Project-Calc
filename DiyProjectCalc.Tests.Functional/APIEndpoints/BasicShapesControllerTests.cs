@@ -86,12 +86,11 @@ public class BasicShapesControllerTests : BaseAPIEndpointClassFixture
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            Id: basicShapeToUpdate!.Id,
-            ProjectId: project!.Id
+            Id: basicShapeToUpdate!.Id
             );
 
         //Act
-        var httpResponseMessage = await base.PutAsync($"projects/{project.Id}/basicshapes/{editedBasicShapeDTO.Id}", editedBasicShapeDTO);
+        var httpResponseMessage = await base.PutAsync($"projects/{project!.Id}/basicshapes/{editedBasicShapeDTO.Id}", editedBasicShapeDTO);
 
         //Assert
         httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);

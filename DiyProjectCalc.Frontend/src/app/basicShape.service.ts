@@ -27,30 +27,30 @@ export class BasicShapeService {
       );
   }
 
-  getBasicShape(id: number): Observable<BasicShape> {
-    const url = `${this.baseUrl}/basicshapes/${id}`;
+  getBasicShape(projectId: number, id: number): Observable<BasicShape> {
+    const url = `${this.baseUrl}/projects/${projectId}/basicshapes/${id}`;
     return this.http.get<BasicShape>(url).pipe(
       catchError(this.handleError<BasicShape>(`getBasicShape id=${id}`))
     );
   }
 
-  updateBasicShape(basicShape: BasicShape): Observable<any> {
-    const url = `${this.baseUrl}/basicshapes/${basicShape.basicShapeId}`;
+  updateBasicShape(projectId: number, basicShape: BasicShape): Observable<any> {
+    const url = `${this.baseUrl}/projects/${projectId}/basicshapes/${basicShape.basicShapeId}`;
 
     return this.http.put(url, basicShape, this.httpOptions).pipe(
       catchError(this.handleError<any>('updateBasicShape'))
     );
   }
 
-  addBasicShape(basicShape: BasicShape): Observable<BasicShape> {
-    const url = `${this.baseUrl}/basicshapes`;
+  addBasicShape(projectId: number, basicShape: BasicShape): Observable<BasicShape> {
+    const url = `${this.baseUrl}/projects/${projectId}/basicshapes`;
     return this.http.post<BasicShape>(url, basicShape, this.httpOptions).pipe(
       catchError(this.handleError<BasicShape>('addBasicShape'))
     );
   }
 
-  deleteBasicShape(id: number): Observable<BasicShape> {
-    const url = `${this.baseUrl}/basicshapes/${id}`;
+  deleteBasicShape(projectId: number, id: number): Observable<BasicShape> {
+    const url = `${this.baseUrl}/projects/${projectId}/basicshapes/${id}`;
 
     return this.http.delete<BasicShape>(url, this.httpOptions).pipe(
       catchError(this.handleError<BasicShape>('deleteBasicShape'))

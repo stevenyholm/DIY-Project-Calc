@@ -23,12 +23,6 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Project)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Project.Name)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Length)
         </dt>
         <dd class = "col-sm-10">
@@ -54,6 +48,6 @@
         </dd>    </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id" asp-route-ProjectId="@Model?.ProjectId">Edit</a> |
-    <a asp-action="Index" asp-route-ProjectId="@Model?.ProjectId">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" asp-route-ProjectId="@ViewData["ProjectId"]">Edit</a> |
+    <a asp-action="Index" asp-route-ProjectId="@ViewData["ProjectId"]">Back to List</a>
 </div>

@@ -23,7 +23,6 @@ public class Project : BaseAggregateRoot
         => AddAggregate<BasicShape>(BasicShapes, newBasicShape);
     public void UpdateBasicShape(BasicShape detachedBasicShapeWithUpdate, IMapper mapper)
     {
-        detachedBasicShapeWithUpdate.Project = this;
         UpdateAggregate<BasicShape>(BasicShapes, detachedBasicShapeWithUpdate, mapper);
     }
     public void RemoveBasicShape(int basicShapeId)
@@ -39,7 +38,6 @@ public class Project : BaseAggregateRoot
         => AddAggregate<Material>(Materials, newMaterial);
     public void UpdateMaterial(Material detachedMaterialWithUpdate, IMapper mapper)
     {
-        detachedMaterialWithUpdate.Project = this;
         UpdateAggregate<Material>(Materials, detachedMaterialWithUpdate, mapper);
     }
     public void RemoveMaterial(int materialId)

@@ -66,7 +66,6 @@ public class BasicShapeRepositoryTests : BaseDatabaseClassFixture
         var projectSpec = new ProjectWithBasicShapesSpec(projectId);
         var project = await _projectRepository.GetBySpecAsync(projectSpec);
         var newBasicShape = BasicShapeTestData.NewBasicShape;
-        newBasicShape.ProjectId = project!.Id;
         var beforeCount = ProjectTestData.ProjectBasicShapesCount(base.DbContext, projectId);
 
         //Act

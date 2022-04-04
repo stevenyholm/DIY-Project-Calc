@@ -4,6 +4,7 @@ using DiyProjectCalc.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiyProjectCalc.SharedKernel.Interfaces;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
 
 namespace DiyProjectCalc.Controllers.API;
 
@@ -76,7 +77,8 @@ public class ProjectsController : ControllerBase
     {
         try
         {
-            var projectToDelete = await _projectRepository.GetByIdAsync<int>(projectIdToDelete);
+            var projectSpec = new ProjectWithAggregatesSpec(projectIdToDelete);
+            var projectToDelete = await _projectRepository.GetBySpecAsync(projectSpec);
             if (projectToDelete == null)
                 return NotFound();
 

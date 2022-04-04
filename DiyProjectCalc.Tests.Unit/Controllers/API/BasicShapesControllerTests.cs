@@ -68,7 +68,7 @@ public class BasicShapesControllerTests : BaseControllerTests
     {
         //Arrange
         var projectId = ProjectTestData.MockSimpleProjectId;
-        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
+        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTO;
 
         //Act
         var result = await _controller.Post(projectId, newBasicShapeDTO);

@@ -13,7 +13,6 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="ProjectId" />
             <div class="form-group">
                 <label asp-for="ShapeType" class="control-label"></label>
                 <select asp-for="ShapeType" class="form-control" asp-items="Html.GetEnumSelectList<BasicShapeType>()">
@@ -44,6 +43,6 @@
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-ProjectId="@Model?.ProjectId">Back to List</a>
+    <a asp-action="Index" asp-route-ProjectId="@ViewData["ProjectId"]">Back to List</a>
 </div>
 

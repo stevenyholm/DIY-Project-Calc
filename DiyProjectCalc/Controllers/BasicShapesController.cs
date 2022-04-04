@@ -40,6 +40,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
+            ViewData["ProjectId"] = projectId;
             return View(basicShape);
         }
 
@@ -57,7 +58,7 @@ namespace DiyProjectCalc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             [FromRoute(Name = "ProjectId")] int projectId, 
-            [Bind("ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO newBasicShapeDTO
+            [Bind("ShapeType,Number1,Number2,Name")] BasicShapeDTO newBasicShapeDTO
             )
         {
             if (ModelState.IsValid)
@@ -85,6 +86,7 @@ namespace DiyProjectCalc.Controllers
             {
                 return NotFound();
             }
+            ViewData["ProjectId"] = projectId;
             return View(basicShapeToUpdate);
         }
 
@@ -96,7 +98,7 @@ namespace DiyProjectCalc.Controllers
         public async Task<IActionResult> Edit(
             [FromRoute(Name = "ProjectId")] int projectId, 
             int id, 
-            [Bind("Id,ShapeType,Number1,Number2,Name,ProjectId")] BasicShapeDTO updatedBasicShapeDTO
+            [Bind("Id,ShapeType,Number1,Number2,Name")] BasicShapeDTO updatedBasicShapeDTO
             )
         {
             if (id != updatedBasicShapeDTO.Id)
@@ -114,6 +116,7 @@ namespace DiyProjectCalc.Controllers
                 else
                     throw new Exception("Error in saving edits to basic shape.");
             }
+            ViewData["ProjectId"] = projectId;
             return View(updatedBasicShapeDTO);
         }
 
@@ -131,6 +134,7 @@ namespace DiyProjectCalc.Controllers
                 return NotFound();
             }
 
+            ViewData["ProjectId"] = projectId;
             return View(basicShape);
         }
 

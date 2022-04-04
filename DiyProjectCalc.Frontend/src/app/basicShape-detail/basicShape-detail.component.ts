@@ -25,8 +25,9 @@ export class BasicShapeDetailComponent implements OnInit {
   }
 
   getBasicShape(): void {
+    const projectId = Number(this.route.snapshot.paramMap.get('projectId'));
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.basicShapeService.getBasicShape(id)
+    this.basicShapeService.getBasicShape(projectId, id)
       .subscribe(basicShape => this.basicShape = basicShape);
   }
 
@@ -35,8 +36,9 @@ export class BasicShapeDetailComponent implements OnInit {
   }
 
   save(): void {
+    const projectId = Number(this.route.snapshot.paramMap.get('projectId'));
     if (this.basicShape) {
-      this.basicShapeService.updateBasicShape(this.basicShape)
+      this.basicShapeService.updateBasicShape(projectId, this.basicShape)
         .subscribe(() => this.goBack());
     }
   }

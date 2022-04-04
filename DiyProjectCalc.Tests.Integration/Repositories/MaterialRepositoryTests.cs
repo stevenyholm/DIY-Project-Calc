@@ -65,7 +65,6 @@ public class MaterialRepositoryTests : BaseDatabaseClassFixture
         var projectSpec = new ProjectWithMaterialsSpec(projectId);
         var project = await _projectRepository.GetBySpecAsync(projectSpec);
         var newMaterial = MaterialTestData.NewMaterial;
-        newMaterial.ProjectId = project!.Id;
         var beforeCount = ProjectTestData.ProjectMaterialsCount(base.DbContext, projectId);
 
         //Act

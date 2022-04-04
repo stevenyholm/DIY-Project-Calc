@@ -6,20 +6,7 @@ public class MaterialEditViewModel
 {
     public int ProjectId { get; set; }
 
-    private Material? _material;
-    public Material? Material 
-    {
-        get => (_material is null)
-                ? null 
-                : FixMaterialProjectId(_material, this.ProjectId);
-        set => _material = value; 
-    } 
-    private Material FixMaterialProjectId(Material material, int projectId)
-    {
-        if (material.ProjectId == default(int))
-            material.ProjectId = projectId;
-        return material;
-    }
+    public Material? Material { get; set; }
 
     public ICollection<BasicShape> BasicShapesForProject { get; set; } = new HashSet<BasicShape>(); 
    

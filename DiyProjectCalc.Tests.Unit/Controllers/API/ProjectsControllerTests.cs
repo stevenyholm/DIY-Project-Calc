@@ -10,6 +10,7 @@ using FluentAssertions;
 using DiyProjectCalc.Models.DTO;
 using DiyProjectCalc.TestHelpers.UnitTestBase;
 using DiyProjectCalc.Core.Entities.ProjectAggregate;
+using DiyProjectCalc.Core.Entities.ProjectAggregate.Specifications;
 
 namespace DiyProjectCalc.Tests.Unit.Controllers.API;
 public class ProjectsControllerTests : BaseControllerTests
@@ -88,7 +89,7 @@ public class ProjectsControllerTests : BaseControllerTests
     {
         //Arrange
         var deletedProject = ProjectTestData.MockSimpleProject;
-        base._mockProjectRepository.Setup(r => r.GetByIdAsync<int>(It.IsAny<int>(), TestCancellationToken()))
+        base._mockProjectRepository.Setup(r => r.GetBySpecAsync(It.IsAny<ProjectWithAggregatesSpec>(), TestCancellationToken()))
             .ReturnsAsync(deletedProject);
 
         //Act

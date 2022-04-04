@@ -81,7 +81,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
     {
         //Arrange
         var projectId = ProjectTestData.ValidProjectId(base.DbContext);
-        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTOWithProjectId(projectId);
+        var newBasicShapeDTO = BasicShapeTestData.NewBasicShapeDTO;
 
         //Act
         var result = await _controller.Create(projectId, newBasicShapeDTO);
@@ -117,8 +117,7 @@ public class BasicShapesControllerTests : BaseDatabaseClassFixture
             Name: "corner of door",
             Number1: 55.0,
             Number2: 100.0,
-            Id: editedBasicShape.Id,
-            ProjectId: editedBasicShape?.ProjectId ?? -1
+            Id: editedBasicShape.Id
             );
 
         //Act

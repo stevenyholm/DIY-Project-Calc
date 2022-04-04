@@ -43,8 +43,6 @@ public class MappingProfileTests
             result.Description.Should().Be(source.Description);
             result.Area.Should().Be(source.Area);
             result.Distance.Should().Be(source.Distance);
-            result.ProjectName.Should().Be(source.Project.Name);
-            result.ProjectId.Should().Be(source.Project.Id);
         }
     }
 
@@ -63,8 +61,7 @@ public class MappingProfileTests
             Description: "nice round shape", 
             Area: 12.33, 
             Distance: 1.2, 
-            ProjectName: "fence",
-            ProjectId: 34
+            ProjectName: "fence"
             );
 
         //Act
@@ -79,11 +76,9 @@ public class MappingProfileTests
             result.Name.Should().Be(source.Name);
             result.Number1.Should().Be(source.Number1);
             result.Number2.Should().Be(source.Number2);
-            result.ProjectId.Should().Be(source.ProjectId);
             result.Description.Should().NotBe(source.Description); //calculated field, should not be mapped
             result.Area.Should().NotBe(source.Area); //calculated field, should not be mapped
             result.Distance.Should().NotBe(source.Distance); //calculated field, should not be mapped
-            //result.Project.Name.Should().Be(source.ProjectName);  //populated from a different database table, does not matter if it is mapped
         }
     }
 

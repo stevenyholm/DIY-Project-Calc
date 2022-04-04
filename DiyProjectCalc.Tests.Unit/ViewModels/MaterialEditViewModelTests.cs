@@ -9,52 +9,6 @@ namespace DiyProjectCalc.Tests.Unit.ViewModels;
 public class MaterialEditViewModelTests
 {
     [Fact]
-    [Trait("Material.ProjectId", "")]
-    public void SameObject_Given_ValidProjectId_For_MaterialProperty()
-    {
-        //Arrange
-        var materialEditViewModel = new SUT.MaterialEditViewModel();
-        materialEditViewModel.Material = new Material()
-        {
-            ProjectId = 5,
-            MeasurementType = MaterialMeasurement.Linear,
-            Length = 5.0,
-            Name = "gravel",
-            BasicShapes = new HashSet<BasicShape>()
-        };
-
-        //Act
-        var result = materialEditViewModel.Material.ProjectId;
-
-        //Assert
-        result.Should().Be(5);
-    }
-
-    [Fact]
-    [Trait("Material.ProjectId", "")]
-    public void CorrectProjectId_Given_InvalidProjectId_For_MaterialProperty()
-    {
-        //Arrange
-        var materialEditViewModel = new SUT.MaterialEditViewModel();
-        materialEditViewModel.ProjectId = 5;
-        materialEditViewModel.Material = new Material()
-        {
-            ProjectId = 0,
-            MeasurementType = MaterialMeasurement.Linear,
-            Length = 5.0,
-            Name = "gravel",
-            BasicShapes = new HashSet<BasicShape>()
-        };
-
-        //Act
-        var result = materialEditViewModel.Material.ProjectId;
-
-        //Assert
-        result.Should().Be(5,
-            because: "it should replace the Material object's ProjectId with the value directly passed to the ViewModel");
-    }
-
-    [Fact]
     [Trait("BasicShapesData", "")]
     public void CorrectNumberSelected_Given_ValidState_For_BasicShapesData()
     {
@@ -63,7 +17,6 @@ public class MaterialEditViewModelTests
         materialEditViewModel.ProjectId = 5;
         materialEditViewModel.Material = new Material()
         {
-            ProjectId = 0,
             MeasurementType = MaterialMeasurement.Linear,
             Length = 5.0,
             Name = "gravel",

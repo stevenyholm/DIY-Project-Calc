@@ -14,7 +14,7 @@
   <input id="new-basicShapeShapeType" #basicShapeShapeType />
 
   <button type="button" class="add-button"
-          (click)="add(basicShapeName.value, basicShapeNumber1.value, basicShapeNumber2.value, basicShapeShapeType.value, projectWithBasicShapes.projectId );
+          (click)="add(basicShapeName.value, basicShapeNumber1.value, basicShapeNumber2.value, basicShapeShapeType.value );
           basicShapeName.value='';basicShapeNumber1.value='';basicShapeNumber2.value='';basicShapeShapeType.value=''">
     Add basic shape
   </button>
@@ -23,7 +23,7 @@
 
 <ul class="basicShapes">
   <li *ngFor="let basicShape of projectWithBasicShapes.basicShapes">
-    <a routerLink="/basicShapes/{{basicShape.basicShapeId}}">
+    <a routerLink="projects/{{projectWithBasicShapes.projectId}}/basicShapes/{{basicShape.basicShapeId}}">
       <span class="badge">{{basicShape.basicShapeId}}</span> {{basicShape.name}}
     </a>
     <button type="button" class="delete" title="delete basic shape"

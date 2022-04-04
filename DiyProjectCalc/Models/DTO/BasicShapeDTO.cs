@@ -12,8 +12,7 @@ public record BasicShapeDTO(
     string Description = "",
     double Area = default,
     double Distance = default,
-    string ProjectName = "",
-    int ProjectId = default
+    string ProjectName = ""
     ) : BaseDTO(Id)
 {
 }
