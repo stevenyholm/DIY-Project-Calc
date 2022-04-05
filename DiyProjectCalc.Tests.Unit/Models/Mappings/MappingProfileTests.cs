@@ -20,6 +20,61 @@ public class MappingProfileTests
         mapperConfiguration.AssertConfigurationIsValid();
     }
 
+
+    [Fact]
+    [Trait("Material_to_Material", "MappingProfile")]
+    public void MappingProfile_Material_to_Material() 
+    {
+        //Arrange
+        var mapper = MapperHelper.CreateMapper();
+        var source = MaterialTestData.MockMaterialWithBasicShapes; 
+
+        //Act
+        var result = mapper.Map<Material>(source);
+
+        //Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<Material>();
+            result.Id.Should().Be(source.Id);
+            result.Name.Should().Be(source.Name);
+            result.MeasurementType.Should().Be(source.MeasurementType);
+            result.Length.Should().Be(source.Length);
+            result.Width.Should().Be(source.Width);
+            result.Depth.Should().Be(source.Depth);
+            result.DepthNeeded.Should().Be(source.DepthNeeded);
+            result.BasicShapes.Should().HaveCount(source.BasicShapes.Count());
+        }
+
+    }
+
+    [Fact]
+    [Trait("BasicShape_to_BasicShape", "MappingProfile")]
+    public void MappingProfile_BasicShape_to_BasicShape()
+    {
+        //Arrange
+        var mapper = MapperHelper.CreateMapper();
+        var source = BasicShapeTestData.MockSimpleBasicShapeWithMaterials;
+
+        //Act
+        var result = mapper.Map<BasicShape>(source);
+
+        //Assert
+        using (new AssertionScope())
+        {
+            result.Should().BeOfType<BasicShape>();
+            result.Id.Should().Be(source.Id);
+            result.ShapeType.Should().Be(source.ShapeType);
+            result.Name.Should().Be(source.Name);
+            result.Number1.Should().Be(source.Number1);
+            result.Number2.Should().Be(source.Number2);
+            result.Description.Should().Be(source.Description);
+            result.Area.Should().Be(source.Area);
+            result.Distance.Should().Be(source.Distance);
+            result.Materials.Should().HaveCount(source.Materials.Count());
+        }
+    }
+
     [Fact]
     [Trait("BasicShape_to_BasicShapeDTO", "MappingProfile")]
     public void MappingProfile_BasicShape_to_BasicShapeDTO()
@@ -139,7 +194,7 @@ public class MappingProfileTests
             result.Should().BeOfType<ProjectDTOWithBasicShapes>();
             result.Id.Should().Be(source?.Id);
             result.Name.Should().Be(source?.Name);
-            result.BasicShapes.Count().Should().Be(source?.BasicShapes.Count);
+            result.BasicShapes.Count().Should().Be(source?.BasicShapes.Count());
         }
     }
 }

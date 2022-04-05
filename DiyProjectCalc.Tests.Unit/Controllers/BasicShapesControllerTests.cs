@@ -42,7 +42,7 @@ public class BasicShapesControllerTests : BaseControllerTests
         using (new AssertionScope())
         {
             result.As<ViewResult>().ViewData.Model.As<IEnumerable<BasicShapeDTO>>()
-                .Should().HaveCount(expectedProject.BasicShapes.Count);
+                .Should().HaveCount(expectedProject.BasicShapes.Count());
             result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProject.Id);
             result.As<ViewResult>().ViewData["ProjectName"].Should().Be(expectedProject.Name);
         }

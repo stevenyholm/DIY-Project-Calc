@@ -19,13 +19,12 @@ public class MaterialEditViewModelTests
         {
             MeasurementType = MaterialMeasurement.Linear,
             Length = 5.0,
-            Name = "gravel",
-            BasicShapes = new HashSet<BasicShape>()
-            {
-                new BasicShape() { Id = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 }, 
-                new BasicShape() { Id = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 }
-            }
+            Name = "gravel"
         };
+        materialEditViewModel.Material
+            .AddBasicShape(new BasicShape() { Id = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 });
+        materialEditViewModel.Material
+            .AddBasicShape(new BasicShape() { Id = 4, ShapeType = BasicShapeType.Triangle, Number1 = 15.0, Number2 = 12.0 });
         materialEditViewModel.BasicShapesForProject = new List<BasicShape>()
         {
                 new BasicShape() { Id = 1, ShapeType = BasicShapeType.Rectangle, Number1 = 5.0, Number2 = 2.0 },

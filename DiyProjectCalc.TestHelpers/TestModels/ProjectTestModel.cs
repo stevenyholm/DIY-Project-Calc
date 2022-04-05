@@ -1,5 +1,6 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.TestHelpers.TestModels.Abstractions;
+using System.Collections.Generic;
 using System.Text.Json;
 using Xunit.Abstractions;
 
@@ -12,6 +13,16 @@ public class ProjectTestModel : TestCasesAppearInTestExplorer
     //properties for testing return values 
     //(none yet)
 
+    public void AddBasicShapes(List<BasicShape> basicShapes)
+    {
+        foreach (var basicShape in basicShapes)
+            Project.AddBasicShape(basicShape);
+    }
+    public void AddMaterials(List<Material> materials)
+    {
+        foreach (var material in materials)
+            Project.AddMaterial(material);
+    }
 
     //methods required for nicely displaying test names in Visual Studio Test Explorer
     public override string ToString() => base.ToString();

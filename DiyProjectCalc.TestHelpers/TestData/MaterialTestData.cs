@@ -1,6 +1,5 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Infrastructure.Data;
-using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -45,34 +44,35 @@ public class MaterialTestData
 
     public static Material MockMaterialWithBasicShapes
     {
-        get => new Material()
+        get
         {
-            Id = 67,
-            Name = "Material For Testing",
-            MeasurementType = MaterialMeasurement.Area,
-            Length = 9.9,
-            Width = 8.8,
-            Depth = 7.7,
-            BasicShapes = new List<BasicShape>()
+            var material = new Material()
             {
-                new BasicShape() 
-                { 
-                    Id = 12,
-                    Name = "twelve",
-                    ShapeType = BasicShapeType.Rectangle,
-                    Number1 = 1.1,
-                    Number2 = 2.2
-                },
-                new BasicShape()
-                {
-                    Id = 13,
-                    Name = "thirteen",
-                    ShapeType = BasicShapeType.Curved,
-                    Number1 = 3.3,
-                    Number2 = 4.4
-                }
-            }
-        };
+                Id = 67,
+                Name = "Material For Testing",
+                MeasurementType = MaterialMeasurement.Area,
+                Length = 9.9,
+                Width = 8.8,
+                Depth = 7.7
+            };
+            material.AddBasicShape(new BasicShape()
+            {
+                Id = 12,
+                Name = "twelve",
+                ShapeType = BasicShapeType.Rectangle,
+                Number1 = 1.1,
+                Number2 = 2.2
+            });
+            material.AddBasicShape(new BasicShape()
+            {
+                Id = 13,
+                Name = "thirteen",
+                ShapeType = BasicShapeType.Curved,
+                Number1 = 3.3,
+                Number2 = 4.4
+            });
+            return material;
+        }
     }
 
     public static int[] MockBasicShapeIdsForMaterialEdit = new int[] { 12, 32, 34 };
@@ -104,135 +104,135 @@ public class MaterialTestData
     //===================================================================    TestModel    ==========
     //==============================================================================================
 
-
-    public MaterialTestModel? GravelTestModel; //use this to test "happy path"
-    public MaterialTestModel? EdgingTestModel;
-    public MaterialTestModel? PaverTestModel;
-    public MaterialTestModel? BaseboardTestModel;
-    public MaterialTestModel? UnderlaymentTestModel;
-    public MaterialTestModel? FlooringPanelTestModel;
-
-    private void InitTestModels(BasicShapeTestData basicShapesTestData)
+    //use this to test "happy path"
+    public MaterialTestModel GravelTestModel = new MaterialTestModel()
     {
-        GravelTestModel = new MaterialTestModel()
+        TestCaseName = "Gravel",
+        Material = new Material()
         {
-            TestCaseName = "Gravel",
-            Material = new Material()
-            {
-                Name = ValidName,
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForPatioArea),
-                MeasurementType = MaterialMeasurement.Volume,
-                Length = 3.0,
-                Width = 3.0,
-                Depth = 3.0,
-                DepthNeeded = 2.0
-            },
-            ExpectedDistanceNeeded = 57.7246,
-            ExpectedAreaNeeded = 193.2861,
-            ExpectedVolumeNeeded = 386.5722,
-            ExpectedQuantityNeeded = 14.3175,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = ValidName,
+            MeasurementType = MaterialMeasurement.Volume,
+            Length = 3.0,
+            Width = 3.0,
+            Depth = 3.0,
+            DepthNeeded = 2.0
+        },
+        ExpectedDistanceNeeded = 57.7246,
+        ExpectedAreaNeeded = 193.2861,
+        ExpectedVolumeNeeded = 386.5722,
+        ExpectedQuantityNeeded = 14.3175,
+        ExpectedCanCalculateQuantity = true
+    };
 
-        EdgingTestModel = new MaterialTestModel()
+    public MaterialTestModel EdgingTestModel = new MaterialTestModel()
+    {
+        TestCaseName = "Landscape Edging",
+        Material = new Material()
         {
-            TestCaseName = "Landscape Edging",
-            Material = new Material()
-            {
-                Name = "Landscape Edging",
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForPatioEdgeLinear),
-                MeasurementType = MaterialMeasurement.Linear,
-                Length = 20.0,
-                Width = 0.25,
-                Depth = 3.0,
-                DepthNeeded = 3.0
-            },
-            ExpectedDistanceNeeded = 57.7246,
-            ExpectedAreaNeeded = 163.2861,
-            ExpectedVolumeNeeded = 489.8583,
-            ExpectedQuantityNeeded = 2.8862,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = "Landscape Edging",
+            MeasurementType = MaterialMeasurement.Linear,
+            Length = 20.0,
+            Width = 0.25,
+            Depth = 3.0,
+            DepthNeeded = 3.0
+        },
+        ExpectedDistanceNeeded = 57.7246,
+        ExpectedAreaNeeded = 163.2861,
+        ExpectedVolumeNeeded = 489.8583,
+        ExpectedQuantityNeeded = 2.8862,
+        ExpectedCanCalculateQuantity = true
+    };
 
-        PaverTestModel = new MaterialTestModel()
+    public MaterialTestModel PaverTestModel = new MaterialTestModel()
+    {
+        TestCaseName = "Paver",
+        Material = new Material()
         {
-            TestCaseName = "Paver",
-            Material = new Material()
-            {
-                Name = "Paver",
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForPatioArea),
-                MeasurementType = MaterialMeasurement.Area,
-                Length = 8.0,
-                Width = 4.0,
-                Depth = 2.5,
-                DepthNeeded = 2.5
-            },
-            ExpectedDistanceNeeded = 57.7246,
-            ExpectedAreaNeeded = 193.2861,
-            ExpectedVolumeNeeded = 483.2153,
-            ExpectedQuantityNeeded = 6.0401,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = "Paver",
+            MeasurementType = MaterialMeasurement.Area,
+            Length = 8.0,
+            Width = 4.0,
+            Depth = 2.5,
+            DepthNeeded = 2.5
+        },
+        ExpectedDistanceNeeded = 57.7246,
+        ExpectedAreaNeeded = 193.2861,
+        ExpectedVolumeNeeded = 483.2153,
+        ExpectedQuantityNeeded = 6.0401,
+        ExpectedCanCalculateQuantity = true
+    };
 
-        BaseboardTestModel = new MaterialTestModel()
+    public MaterialTestModel BaseboardTestModel = new MaterialTestModel()
+    {
+        TestCaseName = "One Baseboard",
+        Material = new Material()
         {
-            TestCaseName = "One Baseboard",
-            Material = new Material()
-            {
-                Name = "One Baseboard",
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForReplaceBaseboardsLinear),
-                MeasurementType = MaterialMeasurement.Linear,
-                Length = 8.0,
-                Width = 1.0,
-                Depth = 1.0,
-                DepthNeeded = 1.0
-            },
-            ExpectedDistanceNeeded = 24.0,
-            ExpectedAreaNeeded = 24.0,
-            ExpectedVolumeNeeded = 24.0,
-            ExpectedQuantityNeeded = 3.0,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = "One Baseboard",
+            MeasurementType = MaterialMeasurement.Linear,
+            Length = 8.0,
+            Width = 1.0,
+            Depth = 1.0,
+            DepthNeeded = 1.0
+        },
+        ExpectedDistanceNeeded = 24.0,
+        ExpectedAreaNeeded = 24.0,
+        ExpectedVolumeNeeded = 24.0,
+        ExpectedQuantityNeeded = 3.0,
+        ExpectedCanCalculateQuantity = true
+    };
 
-        UnderlaymentTestModel = new MaterialTestModel()
+    public MaterialTestModel UnderlaymentTestModel = new MaterialTestModel()
+    {
+        TestCaseName = "Underlayment",
+        Material = new Material()
         {
-            TestCaseName = "Underlayment",
-            Material = new Material()
-            {
-                Name = "Underlayment",
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForFamilyRoomFlooringArea),
-                MeasurementType = MaterialMeasurement.Area,
-                Length = 30.0,
-                Width = 10.0,
-                Depth = 1.0,
-                DepthNeeded = 1.0
-            },
-            ExpectedDistanceNeeded = 30.1566,
-            ExpectedAreaNeeded = 185,
-            ExpectedVolumeNeeded = 185.0,
-            ExpectedQuantityNeeded = 0.6167,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = "Underlayment",
+            MeasurementType = MaterialMeasurement.Area,
+            Length = 30.0,
+            Width = 10.0,
+            Depth = 1.0,
+            DepthNeeded = 1.0
+        },
+        ExpectedDistanceNeeded = 30.1566,
+        ExpectedAreaNeeded = 185,
+        ExpectedVolumeNeeded = 185.0,
+        ExpectedQuantityNeeded = 0.6167,
+        ExpectedCanCalculateQuantity = true
+    };
 
-        FlooringPanelTestModel = new MaterialTestModel()
+    public MaterialTestModel FlooringPanelTestModel = new MaterialTestModel()
+    {
+        TestCaseName = "Flooring panel",
+        Material = new Material()
         {
-            TestCaseName = "Flooring panel",
-            Material = new Material()
-            {
-                Name = "One panel of flooring",
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForFamilyRoomFlooringArea),
-                MeasurementType = MaterialMeasurement.Area,
-                Length = 3.0,
-                Width = 0.5,
-                Depth = 1.0,
-                DepthNeeded = 1.0
-            },
-            ExpectedDistanceNeeded = 30.1566,
-            ExpectedAreaNeeded = 185,
-            ExpectedVolumeNeeded = 185.0,
-            ExpectedQuantityNeeded = 123.3333,
-            ExpectedCanCalculateQuantity = true
-        };
+            Name = "One panel of flooring",
+            MeasurementType = MaterialMeasurement.Area,
+            Length = 3.0,
+            Width = 0.5,
+            Depth = 1.0,
+            DepthNeeded = 1.0
+        },
+        ExpectedDistanceNeeded = 30.1566,
+        ExpectedAreaNeeded = 185,
+        ExpectedVolumeNeeded = 185.0,
+        ExpectedQuantityNeeded = 123.3333,
+        ExpectedCanCalculateQuantity = true
+    };
+
+    private void InitTestModels(BasicShapeTestData basicShapeTestData)
+    {
+        GravelTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForPatioArea));
+        EdgingTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForPatioEdgeLinear));
+        PaverTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForPatioArea));
+        BaseboardTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForReplaceBaseboardsLinear));
+        UnderlaymentTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForFamilyRoomFlooringArea));
+        FlooringPanelTestModel.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapeTestData.TestDataForFamilyRoomFlooringArea));
     }
 
 
@@ -275,15 +275,4 @@ public class MaterialTestData
     public static List<Material> MaterialsFor(List<MaterialTestModel> testModels) => 
         testModels.Select(testModel => testModel.Material).ToList();
 
-}
-
-
-//==================================================================================================
-//====================================================    Parameterized Test ClassData    ==========
-//==================================================================================================
-
-public class MaterialValidClassData : ParameterizedTestClassData
-{
-    public override IEnumerator<object[]> GetEnumerator() =>
-        base.GetEnumerator<MaterialTestModel>(new MaterialTestData().ValidMaterialTestModelList);
 }

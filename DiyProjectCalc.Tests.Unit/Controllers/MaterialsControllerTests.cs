@@ -43,7 +43,7 @@ public class MaterialsControllerTests : BaseControllerTests
         using (new AssertionScope())
         {
             result.As<ViewResult>().ViewData.Model.As<IEnumerable<Material>>()
-                .Should().HaveCount(expectedProject.Materials.Count);
+                .Should().HaveCount(expectedProject.Materials.Count());
             result.As<ViewResult>().ViewData["ProjectId"].Should().Be(expectedProject.Id);
             result.As<ViewResult>().ViewData["ProjectName"].Should().Be(expectedProject.Name);
         }

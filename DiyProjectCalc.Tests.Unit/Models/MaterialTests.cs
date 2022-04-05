@@ -2,18 +2,17 @@
 using FluentAssertions;
 using Xunit;
 using DiyProjectCalc.TestHelpers.TestData;
-using DiyProjectCalc.TestHelpers.TestModels;
 
 namespace DiyProjectCalc.Tests.Unit.Models;
 
 public class MaterialTests
 {
-    [Theory]
-    [ClassData(typeof(MaterialValidClassData))]
+    [Fact]
     [Trait("DistanceNeeded", "")]
-    public void ValidInput_Returns_CorrectValue_For_DistanceNeeded(MaterialTestModel testData)
+    public void ValidInput_Returns_CorrectValue_For_DistanceNeeded()
     {
         //Arrange
+        var testData = new MaterialTestData().ValidMaterialTestModel;
         var material = testData.Material;
 
         //Act
@@ -24,12 +23,12 @@ public class MaterialTests
             because: "(debug tip: check distance calculations of all child BasicShapes");
     }
 
-    [Theory]
-    [ClassData(typeof(MaterialValidClassData))]
+    [Fact]
     [Trait("AreaNeeded", "")]
-    public void ValidInput_Returns_CorrectValue_For_AreaNeeded(MaterialTestModel testData)
+    public void ValidInput_Returns_CorrectValue_For_AreaNeeded()
     {
         //Arrange
+        var testData = new MaterialTestData().ValidMaterialTestModel;
         var material = testData.Material;
 
         //Act
@@ -40,12 +39,12 @@ public class MaterialTests
             because: "(debug tip: check area calculations of all child BasicShapes");
     }
 
-    [Theory]
-    [ClassData(typeof(MaterialValidClassData))]
+    [Fact]
     [Trait("VolumeNeeded", "")]
-    public void ValidInput_Returns_CorrectValue_For_VolumeNeeded(MaterialTestModel testData)
+    public void ValidInput_Returns_CorrectValue_For_VolumeNeeded()
     {
         //Arrange
+        var testData = new MaterialTestData().ValidMaterialTestModel;
         var material = testData.Material;
 
         //Act
@@ -56,12 +55,12 @@ public class MaterialTests
             because: "(debug tip: check area calculations of all child BasicShapes");
     }
 
-    [Theory]
-    [ClassData(typeof(MaterialValidClassData))]
+    [Fact]
     [Trait("QuantityNeeded", "")]
-    public void ValidInput_Returns_CorrectValue_For_QuantityNeeded(MaterialTestModel testData)
+    public void ValidInput_Returns_CorrectValue_For_QuantityNeeded()
     {
         //Arrange
+        var testData = new MaterialTestData().ValidMaterialTestModel;
         var material = testData.Material;
 
         //Act
@@ -71,12 +70,12 @@ public class MaterialTests
         result.Should().BeApproximately(testData.ExpectedQuantityNeeded, MaterialTestData.TestPrecision);
     }
 
-    [Theory]
-    [ClassData(typeof(MaterialValidClassData))]
+    [Fact]
     [Trait("CanCalculateQuantity", "")]
-    public void ValidInput_Returns_CorrectValue_For_CanCalculateQuantity(MaterialTestModel testData)
+    public void ValidInput_Returns_CorrectValue_For_CanCalculateQuantity()
     {
         //Arrange
+        var testData = new MaterialTestData().ValidMaterialTestModel;
         var material = testData.Material;
 
         //Act
@@ -92,14 +91,14 @@ public class MaterialTests
     {
         //Arrange
         var material = MaterialTestData.MockSimpleMaterial;
-        var expectedCount = material.BasicShapes.Count + 1;
+        var expectedCount = material.BasicShapes.Count() + 1;
         var basicShapeToAdd = BasicShapeTestData.NewBasicShape;
 
         //Act
         material.AddBasicShape(basicShapeToAdd);
 
         //Assert
-        var afterCount = material.BasicShapes.Count;
+        var afterCount = material.BasicShapes.Count();
         afterCount.Should().Be(expectedCount);
     }
 
@@ -109,14 +108,14 @@ public class MaterialTests
     {
         //Arrange
         var material = MaterialTestData.MockMaterialWithBasicShapes;
-        var expectedCount = material.BasicShapes.Count - 1;
+        var expectedCount = material.BasicShapes.Count() - 1;
         var basicShapeToRemove = material.BasicShapes.First();
 
         //Act
         material.RemoveBasicShape(basicShapeToRemove);
 
         //Assert
-        var afterCount = material.BasicShapes.Count;
+        var afterCount = material.BasicShapes.Count();
         afterCount.Should().Be(expectedCount);
     }
 }

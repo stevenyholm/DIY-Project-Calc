@@ -49,22 +49,24 @@ public class ProjectTestData
 
     public static Project MockSimpleProjectWithBasicShapes
     {
-        get => new Project()
+        get
         {
-            Id = ProjectTestData.MockSimpleProject.Id,
-            Name = ProjectTestData.MockSimpleProject.Name,
-            BasicShapes = MockBasicShapesCollection
-        };
+            var project = MockSimpleProject;
+            foreach(var basicShape in MockBasicShapesCollection)
+                project.AddBasicShape(basicShape);
+            return project;
+        }
     }
 
     public static Project MockSimpleProjectWithMaterials
     {
-        get => new Project()
+        get
         {
-            Id = ProjectTestData.MockSimpleProject.Id,
-            Name = ProjectTestData.MockSimpleProject.Name,
-            Materials = MockMaterialsCollection
-        };
+            var project = MockSimpleProject;
+            foreach(var material in MockMaterialsCollection)
+                project.AddMaterial(material);
+            return project;
+        }
     }
 
     private static ICollection<BasicShape> MockBasicShapesCollection
@@ -96,12 +98,12 @@ public class ProjectTestData
 
     public static int MockSimpleProjectCountBasicShapes
     {
-        get => MockSimpleProject.BasicShapes.Count;
+        get => MockSimpleProject.BasicShapes.Count();
     }
 
     public static int MockSimpleProjectCountMaterials
     {
-        get => MockSimpleProject.Materials.Count;
+        get => MockSimpleProject.Materials.Count();
     }
 
     public ProjectTestData()
@@ -151,44 +153,50 @@ public class ProjectTestData
     //==============================================================================================
 
 
-    public ProjectTestModel? PatioProjectTestData;  //use this to test "happy path"
-    public ProjectTestModel? FamilyRoomFlooringProjectTestData;
-    public ProjectTestModel? ReplaceBaseboardsProjectTestData;
+    //use this to test "happy path"
+    public ProjectTestModel PatioProjectTestData = new ProjectTestModel()
+    {
+        TestCaseName = "Patio measures in volume",
+        Project = new Project()
+        {
+            Name = ValidName
+        }
+    };
+
+    public ProjectTestModel FamilyRoomFlooringProjectTestData = new ProjectTestModel()
+    {
+        TestCaseName = "Family Room Flooring measures in area",
+        Project = new Project()
+        {
+            Name = "Family Room Flooring"
+        }
+    };
+
+    public ProjectTestModel ReplaceBaseboardsProjectTestData = new ProjectTestModel()
+    {
+        TestCaseName = "Replace Baseboards measures in linear",
+        Project = new Project()
+        {
+            Name = "Replace Baseboards"
+        }
+    };
 
     private void InitTestModels(MaterialTestData materialsTestData, BasicShapeTestData basicShapesTestData)
     {
-        PatioProjectTestData = new ProjectTestModel()
-        {
-            TestCaseName = "Patio measures in volume",
-            Project = new Project()
-            {
-                Materials = MaterialTestData.MaterialsFor(materialsTestData.TestDataForPatio),
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForPatioCombined),
-                Name = ValidName
-            }
-        };
+        PatioProjectTestData.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapesTestData.TestDataForPatioCombined));
+        PatioProjectTestData.AddMaterials(MaterialTestData.MaterialsFor(
+            materialsTestData.TestDataForPatio));
 
-        FamilyRoomFlooringProjectTestData = new ProjectTestModel()
-        {
-            TestCaseName = "Family Room Flooring measures in area",
-            Project = new Project()
-            {
-                Materials = MaterialTestData.MaterialsFor(materialsTestData.TestDataForFamilyRoomFlooring),
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForFamilyRoomFlooringArea),
-                Name = "Family Room Flooring"
-            }
-        };
+        FamilyRoomFlooringProjectTestData.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapesTestData.TestDataForFamilyRoomFlooringArea));
+        FamilyRoomFlooringProjectTestData.AddMaterials(MaterialTestData.MaterialsFor(
+            materialsTestData.TestDataForFamilyRoomFlooring));
 
-        ReplaceBaseboardsProjectTestData = new ProjectTestModel()
-        {
-            TestCaseName = "Replace Baseboards measures in linear",
-            Project = new Project()
-            {
-                Materials = MaterialTestData.MaterialsFor(materialsTestData.TestDataForReplaceBaseboards),
-                BasicShapes = BasicShapeTestData.BasicShapesFor(basicShapesTestData.TestDataForReplaceBaseboardsLinear),
-                Name = "Replace Baseboards"
-            }
-        };
+        ReplaceBaseboardsProjectTestData.AddBasicShapes(BasicShapeTestData.BasicShapesFor(
+            basicShapesTestData.TestDataForReplaceBaseboardsLinear));
+        ReplaceBaseboardsProjectTestData.AddMaterials(MaterialTestData.MaterialsFor(
+            materialsTestData.TestDataForReplaceBaseboards));
     }
 
 
@@ -212,16 +220,4 @@ public class ProjectTestData
 
     public static List<Project> ProjectsFor(List<ProjectTestModel> testModels) => 
         testModels.Select(testModel => testModel.Project).ToList();
-}
-
-
-
-//==================================================================================================
-//====================================================    Parameterized Test ClassData    ==========
-//==================================================================================================
-
-public class ProjectValidClassData : ParameterizedTestClassData
-{
-    public override IEnumerator<object[]> GetEnumerator() => 
-        base.GetEnumerator<ProjectTestModel>(new ProjectTestData().ValidProjectTestModelList);
 }

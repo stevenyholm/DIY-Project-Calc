@@ -1,5 +1,6 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.TestHelpers.TestModels.Abstractions;
+using System.Collections.Generic;
 using System.Text.Json;
 using Xunit.Abstractions;
 
@@ -16,6 +17,11 @@ public class MaterialTestModel : TestCasesAppearInTestExplorer
     public double ExpectedQuantityNeeded;
     public bool ExpectedCanCalculateQuantity;
 
+    public void AddBasicShapes(List<BasicShape> basicShapes)
+    {
+        foreach(var basicShape in basicShapes)
+            Material.AddBasicShape(basicShape);
+    }
 
     //methods required for nicely displaying test names in Visual Studio Test Explorer
     public override string ToString() => $"{base.TestCaseName}: {Material.MeasurementType} ({Material.Length}, {Material.Width}, {Material.Depth})";

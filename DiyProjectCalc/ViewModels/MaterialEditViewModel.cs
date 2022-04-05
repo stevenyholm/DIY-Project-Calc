@@ -8,7 +8,7 @@ public class MaterialEditViewModel
 
     public Material? Material { get; set; }
 
-    public ICollection<BasicShape> BasicShapesForProject { get; set; } = new HashSet<BasicShape>(); 
+    public IEnumerable<BasicShape> BasicShapesForProject { get; set; } = new HashSet<BasicShape>(); 
    
     public List<(int BasicShapeId, string Description, bool Selected)> BasicShapesData() =>
         BasicShapesForProject.ToList()

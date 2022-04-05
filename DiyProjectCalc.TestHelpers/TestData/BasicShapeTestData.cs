@@ -1,7 +1,6 @@
 ﻿using DiyProjectCalc.Core.Entities.ProjectAggregate;
 using DiyProjectCalc.Infrastructure.Data;
 using DiyProjectCalc.Models.DTO;
-using DiyProjectCalc.TestHelpers.TestData.Abstractions;
 using DiyProjectCalc.TestHelpers.TestModels;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -49,6 +48,40 @@ public class BasicShapeTestData
         };
     }
 
+    public static BasicShape MockSimpleBasicShapeWithMaterials
+    {
+        get
+        {
+            var basicShape = new BasicShape()
+            {
+                Id = 3333,
+                Name = "BasicShape For Testing",
+                ShapeType = BasicShapeType.Curved,
+                Number1 = 33.0,
+                Number2 = 33.0,
+            };
+            basicShape.AddMaterial(new Material()
+            {
+                Id = 67,
+                Name = "Material For Testing",
+                MeasurementType = MaterialMeasurement.Area,
+                Length = 9.9,
+                Width = 8.8,
+                Depth = 7.7
+            });
+            basicShape.AddMaterial(new Material()
+            {
+                Id = 1967,
+                Name = "Another Material For Testing",
+                MeasurementType = MaterialMeasurement.Volume,
+                Length = 90.9,
+                Width = 88.88,
+                Depth = 17.17
+            });
+            return basicShape;
+        }
+    }
+
     public static BasicShapeDTO MockSimpleBasicShapeDTO
     {
         get => new BasicShapeDTO(
@@ -93,7 +126,7 @@ public class BasicShapeTestData
             Number1 = 15.0,
             Number2 = 3.0
         },
-        ExpectedDistance = 15.0, 
+        ExpectedDistance = 15.0,
         ExpectedArea = 45.0
     };
 
@@ -293,13 +326,3 @@ public class BasicShapeTestData
 
 }
 
-
-//==================================================================================================
-//====================================================    Parameterized Test ClassData    ==========
-//==================================================================================================
-
-public class BasicShapeValidClassData : ParameterizedTestClassData
-{
-    public override IEnumerator<object[]> GetEnumerator() => 
-        base.GetEnumerator<BasicShapeTestModel>(new BasicShapeTestData().ValidBasicShapeTestModelList);
-}

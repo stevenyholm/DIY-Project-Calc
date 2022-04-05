@@ -46,14 +46,14 @@ public class ProjectTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var expectedCount = project.BasicShapes.Count + 1;
+        var expectedCount = project.BasicShapes.Count() + 1;
         var newBasicShape = BasicShapeTestData.NewBasicShape;
 
         //Act
         project.AddBasicShape(newBasicShape);
 
         //Assert
-        var afterCount = project.BasicShapes.Count;
+        var afterCount = project.BasicShapes.Count();
         afterCount.Should().Be(expectedCount);
     }
 
@@ -88,14 +88,14 @@ public class ProjectTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProjectWithBasicShapes;
-        var expectedCount = project.BasicShapes.Count - 1;
+        var expectedCount = project.BasicShapes.Count() - 1;
         var removedBasicShape = project.BasicShapes.First();
 
         //Act
         project.RemoveBasicShape(removedBasicShape.Id);
 
         //Assert
-        var afterCount = project.BasicShapes.Count;
+        var afterCount = project.BasicShapes.Count();
         afterCount.Should().Be(expectedCount);
     }
 
@@ -138,14 +138,14 @@ public class ProjectTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProject;
-        var expectedCount = project.Materials.Count + 1;
+        var expectedCount = project.Materials.Count() + 1;
         var newMaterial = MaterialTestData.NewMaterial;
 
         //Act
         project.AddMaterial(newMaterial);
 
         //Assert
-        var afterCount = project.Materials.Count;
+        var afterCount = project.Materials.Count();
         afterCount.Should().Be(expectedCount);
     }
 
@@ -181,14 +181,14 @@ public class ProjectTests
     {
         //Arrange
         var project = ProjectTestData.MockSimpleProjectWithMaterials;
-        var expectedCount = project.Materials.Count - 1;
+        var expectedCount = project.Materials.Count() - 1;
         var removedMaterial = project.Materials.First();
 
         //Act
         project.RemoveMaterial(removedMaterial.Id);
 
         //Assert
-        var afterCount = project.Materials.Count;
+        var afterCount = project.Materials.Count();
         afterCount.Should().Be(expectedCount);
     }
 
